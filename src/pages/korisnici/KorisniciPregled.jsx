@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
-import { Container } from "react-bootstrap";
+import { Container, Table } from "react-bootstrap";
 import KorisniciService from "../../services/korisnici/KorisniciService";
+import { GrDislike, GrLike } from "react-icons/gr";
 
 export default function KorisniciPregled(){
 
@@ -18,11 +19,42 @@ export default function KorisniciPregled(){
 
     return(
         <>
-        <ul>
-            {korisnici && korisnici.map((korisnik)=>(
-                <li>{korisnik.korisnickoIme}</li>
-            ))}
-        </ul>
+        <Table>
+            <thead>
+                <tr>
+                    <th>Ime i prezime</th>
+                    <th>Korisničko ime</th>
+                    <th>Email</th>
+                    <th>Administrator</th>
+                    <th>Akcija</th>
+                </tr>
+            </thead>
+            <tbody>
+                {korisnici && korisnici.map((korisnik)=>(
+                    <tr>
+                        <td>{korisnik.ime} {korisnik.prezime}</td>
+                        <td>{korisnik.korisnickoIme}</td>
+                        <td>{korisnik.email}</td>
+                        <td>
+                            {(korisnik.administrator) &&
+                            <GrLike 
+                                size={20}
+                                color='green'
+                            />
+                            }
+                            {(!korisnik.administrator) &&
+                            <GrDislike 
+                                size={20}
+                                color='red'
+                            />
+                            }
+                            
+                        </td>
+                        <td></td>
+                    </tr>
+                ))}
+            </tbody>
+        </Table>
         </>
     )
 }
