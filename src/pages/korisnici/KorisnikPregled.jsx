@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
-import { Container, Table } from "react-bootstrap";
+import { Button, Container, Table } from "react-bootstrap";
 import KorisniciService from "../../services/korisnici/KorisnikService";
 import { GrDislike, GrLike } from "react-icons/gr";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { RouteNames } from "../../constants";
 
 export default function KorisniciPregled(){
 
+    const navigate = useNavigate()
     const[korisnici, setKorisnici] = useState([])
 
     useEffect(()=>{
@@ -55,7 +56,11 @@ export default function KorisniciPregled(){
                             }
                             
                         </td>
-                        <td></td>
+                        <td>
+                            <Button onClick={()=>{navigate(`/korisnici/${korisnik.sifra}`)}}>
+                                Promjena
+                            </Button>
+                        </td>
                     </tr>
                 ))}
             </tbody>
