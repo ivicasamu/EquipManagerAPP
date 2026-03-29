@@ -48,7 +48,7 @@ export default function KorisnikNovi(){
 
                 <Form.Group controlId="email">
                     <Form.Label>Email</Form.Label>
-                    <Form.Control type="text" name="email" />
+                    <Form.Control type="email" name="email" />
                 </Form.Group>
 
                 <Form.Group controlId="lozinka">
