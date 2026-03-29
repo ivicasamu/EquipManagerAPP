@@ -4,6 +4,7 @@ import KorisniciService from "../../services/korisnici/KorisnikService";
 import { GrDislike, GrLike } from "react-icons/gr";
 import { Link, useNavigate } from "react-router-dom";
 import { RouteNames } from "../../constants";
+import KorisnikService from "../../services/korisnici/KorisnikService";
 
 export default function KorisniciPregled(){
 
@@ -18,6 +19,14 @@ export default function KorisniciPregled(){
         await KorisniciService.get().then((odgovor)=>{
             setKorisnici(odgovor.data)
         })
+    }
+
+    async function obrisi(sifra) {
+        if(!confirm('Sigurno obrisati')){
+            return
+        }
+        await KorisnikService.obrisi(sifra)
+        ucitajKorisnike()
     }
 
     return(
@@ -59,6 +68,10 @@ export default function KorisniciPregled(){
                         <td>
                             <Button onClick={()=>{navigate(`/korisnici/${korisnik.sifra}`)}}>
                                 Promjena
+                            </Button>
+                            &nbsp;&nbsp;
+                            <Button variant="danger" onClick={()=>{obrisi(korisnik.sifra)}}>
+                                Obriši
                             </Button>
                         </td>
                     </tr>

@@ -28,9 +28,15 @@ function nadiIndex(sifra){
     return korisnici.findIndex(s => s. sifra === parseInt(sifra))
 }
 
+async function obrisi(sifra) {
+    const index = nadiIndex(sifra)
+    korisnici.splice(index,1)
+}
+
 export default{
     get,
     dodaj,
     getBySifra,
-    promjeni
+    promjeni,
+    obrisi
 }
