@@ -25,7 +25,7 @@ export default function KorisniciPregled(){
         <Link to={RouteNames.KORISNICI_NOVI} className="btn btn-success w-100 mb-3 mt-3">
             Dodavanje novog korisnika
         </Link>
-        <Table>
+        <Table striped bordered hover>
             <thead>
                 <tr>
                     <th>Ime i prezime</th>
