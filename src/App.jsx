@@ -5,7 +5,8 @@ import Izbornik from './components/Izbornik'
 import { IME_APLIKACIJE, RouteNames } from './constants'
 import { Route, Routes } from 'react-router-dom'
 import Home from './pages/Home'
-import KorisniciPregled from './pages/korisnici/KorisniciPregled'
+import KorisnikPregled from './pages/korisnici/KorisnikPregled'
+import KorisnikNovi from './pages/korisnici/KorisnikNovi'
 
 function App() {
 
@@ -14,10 +15,11 @@ function App() {
       <Izbornik />
       <Routes>
         <Route path={RouteNames.HOME} element={<Home />} />
-        <Route path={RouteNames.KORISNICI} element={<KorisniciPregled />} />
+        <Route path={RouteNames.KORISNICI} element={<KorisnikPregled />} />
+        <Route path={RouteNames.KORISNICI_NOVI} element={<KorisnikNovi />} />
       </Routes>
       <hr />
-      &copy, {IME_APLIKACIJE}
+      &copy; {IME_APLIKACIJE}
     </Container>
   )
 }

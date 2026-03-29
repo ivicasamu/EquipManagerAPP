@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import { Container, Table } from "react-bootstrap";
-import KorisniciService from "../../services/korisnici/KorisniciService";
+import KorisniciService from "../../services/korisnici/KorisnikService";
 import { GrDislike, GrLike } from "react-icons/gr";
+import { Link } from "react-router-dom";
+import { RouteNames } from "../../constants";
 
 export default function KorisniciPregled(){
 
@@ -19,6 +21,9 @@ export default function KorisniciPregled(){
 
     return(
         <>
+        <Link to={RouteNames.KORISNICI_NOVI} className="btn btn-success w-100 mb-3 mt-3">
+            Dodavanje novog korisnika
+        </Link>
         <Table>
             <thead>
                 <tr>
@@ -31,7 +36,7 @@ export default function KorisniciPregled(){
             </thead>
             <tbody>
                 {korisnici && korisnici.map((korisnik)=>(
-                    <tr>
+                    <tr key={korisnik.sifra}>
                         <td>{korisnik.ime} {korisnik.prezime}</td>
                         <td>{korisnik.korisnickoIme}</td>
                         <td>{korisnik.email}</td>
