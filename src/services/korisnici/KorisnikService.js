@@ -2,7 +2,7 @@ import { korisnici } from "./KorisnikPodaci"
 
 
 async function get() {
-    return {data: korisnici}
+    return {data: [...korisnici]}
 }
 
 async function getBySifra(sifra){
