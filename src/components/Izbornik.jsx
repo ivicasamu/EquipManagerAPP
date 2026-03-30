@@ -20,9 +20,9 @@ export default function Izbornik() {
                         <Nav.Link
                         onClick={()=>navigate(RouteNames.KORISNICI)}
                         >Korisnici</Nav.Link>
-                        <NavDropdown title="Dropdown" id="basic-nav-dropdown">
+                        {/* <NavDropdown title="Dropdown" id="basic-nav-dropdown">
                             <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
-                        </NavDropdown>
+                        </NavDropdown> */}
                     </Nav>
                 </Navbar.Collapse>
             </Container>
