@@ -17,6 +17,10 @@ export default function KorisniciPregled(){
 
     async function ucitajKorisnike() {
         await KorisniciService.get().then((odgovor)=>{
+            if(!odgovor.success){
+                alert('Nije implementiran servis')
+                return
+            }
             setKorisnici(odgovor.data)
         })
     }

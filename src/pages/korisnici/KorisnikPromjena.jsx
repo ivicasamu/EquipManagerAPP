@@ -13,6 +13,12 @@ export default function KorisnikPromjena(){
 
     async function ucitajKorisnika(){
         await KorisnikService.getBySifra(params.sifra).then((odgovor)=>{
+            
+            if(!odgovor.success){
+                alert('Nije implementiran servis')
+                return
+            }
+            
             const s = odgovor.data
 
             setKorisnik(s)
