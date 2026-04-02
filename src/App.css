@@ -3,3 +3,12 @@ app{
 }app{
   min-height: 500px;
 }
+
+.localhostOznaka{
+  text-align: right;
+  margin: 10px;
+  padding: 10px;
+  color:white;
+  background-color:red;
+  visibility: window.location.hostname === 'localhost' ? visible : hidden;
+}

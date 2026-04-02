@@ -13,6 +13,7 @@ function App() {
 
   return (
     <Container>
+      <h4 class="localhostOznaka">LOKALNO</h4>
       <Izbornik />
       <Container className='app'>
         <Routes>
