@@ -12,8 +12,7 @@ import KorisnikPromjena from './pages/korisnici/KorisnikPromjena'
 function App() {
 
   return (
-    <Container>
-      <h4 class="localhostOznaka">LOKALNO</h4>
+    <Container style={ {backgroundColor: window.location.hostname === 'localhost' ? '#ffff023c' : 'none'}}>
       <Izbornik />
       <Container className='app'>
         <Routes>
