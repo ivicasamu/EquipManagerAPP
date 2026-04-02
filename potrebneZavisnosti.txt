@@ -7,3 +7,5 @@ U terminalu nakon što ste zaustavili aplikaciju (ctrl + c) izvesti:
     npm install react-icons
 
     npm install @lottiefiles/dotlottie-react
+
+    npm install --save-dev ftp-deploy
