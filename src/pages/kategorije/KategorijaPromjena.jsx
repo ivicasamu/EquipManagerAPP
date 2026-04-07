@@ -1,0 +1,106 @@
+import { Button, Col, Form, Row } from "react-bootstrap";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { RouteNames } from "../../constants";
+import { useEffect, useState } from "react";
+import KategorijaService from "../../services/kategorije/KategorijaService";
+
+export default function KorisnikPromjena(){
+
+    const navigate = useNavigate()
+    const params = useParams()
+
+    const [kategorija, setKategorija] = useState({
+        naziv: "",
+        aktivna: false
+    })
+
+    async function ucitajKategoriju(){
+        await KategorijaService.getBySifra(params.sifra).then((odgovor)=>{
+            
+            if(!odgovor.success){
+                alert('Nije implementiran servis')
+                return
+            }
+            
+            const s = odgovor.data
+
+            setKategorija({
+                naziv: s.naziv || "",
+                aktivna: !!s.aktivna // uvijek boolean
+            })
+        })
+    }
+
+    useEffect(()=>{
+        ucitajKategoriju()
+    },[])
+
+    async function promjeni(kategorija){
+        await KategorijaService.promjeni(params.sifra, kategorija).then(()=>{
+            navigate(RouteNames.KATEGORIJE)
+        })
+    }
+
+    function odradiSubmit(e){
+        e.preventDefault()
+
+        if (!kategorija.naziv || kategorija.naziv.trim().length === 0) {
+            alert("Naziv je obavezan i ne smije sadržavati samo razmake!")
+            return
+        }
+
+        promjeni(kategorija)
+    }
+
+    return(
+        <>
+            <h3>Promjena kategorije</h3>
+
+            <Form onSubmit={odradiSubmit}>
+
+                <Form.Group controlId="naziv">
+                    <Form.Label>Naziv</Form.Label>
+                    <Form.Control
+                        type="text"
+                        value={kategorija.naziv}
+                        onChange={(e) =>
+                            setKategorija({
+                                ...kategorija,
+                                naziv: e.target.value
+                            })
+                        }
+                    />
+                </Form.Group>
+
+                <Form.Group controlId="aktivna">
+                    <Form.Check
+                        label="Aktivna"
+                        checked={kategorija.aktivna}
+                        onChange={(e) =>
+                            setKategorija({
+                                ...kategorija,
+                                aktivna: e.target.checked
+                            })
+                        }
+                    />
+                </Form.Group>
+
+                <hr style={{marginTop: '50px', border:'0'}} />
+
+                <Row>
+                    <Col>
+                        <Link to={RouteNames.KATEGORIJE} className="btn btn-danger">
+                            Odustani
+                        </Link>
+                    </Col>
+                    <Col>
+                        <Button type="submit" variant="success">
+                            Promjeni kategoriju
+                        </Button>
+                    </Col>
+                </Row>
+
+            </Form>
+        </>
+    )
+}
