@@ -15,14 +15,12 @@ export default function Izbornik() {
                     <Nav className="me-auto">
                         <Nav.Link
                         onClick={()=>navigate(RouteNames.HOME)}
-                        >Početna</Nav.Link>
+                        >POČETNA</Nav.Link>
 
-                        <Nav.Link
-                        onClick={()=>navigate(RouteNames.KORISNICI)}
-                        >Korisnici</Nav.Link>
-                        {/* <NavDropdown title="Dropdown" id="basic-nav-dropdown">
-                            <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
-                        </NavDropdown> */}
+                        {/* <Nav.Link>KORISNICI</Nav.Link> */}
+                        <NavDropdown title="ADMINISTRACIJA" id="basic-nav-dropdown">
+                            <NavDropdown.Item onClick={()=>navigate(RouteNames.KORISNICI)}>KORISNICI</NavDropdown.Item>
+                        </NavDropdown>
                     </Nav>
                 </Navbar.Collapse>
             </Container>
