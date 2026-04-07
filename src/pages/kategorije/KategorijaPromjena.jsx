@@ -24,6 +24,8 @@ export default function KorisnikPromjena(){
             
             const s = odgovor.data
 
+            console.log(s)
+
             setKategorija({
                 naziv: s.naziv || "",
                 aktivna: !!s.aktivna // uvijek boolean
@@ -72,10 +74,13 @@ export default function KorisnikPromjena(){
                     />
                 </Form.Group>
 
-                <Form.Group controlId="aktivna">
+                <Form.Group controlId="aktivna" className="mb-3 mt-md-3">
                     <Form.Check
-                        label="Aktivna"
+                        type="switch"
+                        label="Kategorija je aktivna"
+                        name="aktivna"
                         checked={kategorija.aktivna}
+                        className="fs-5"
                         onChange={(e) =>
                             setKategorija({
                                 ...kategorija,

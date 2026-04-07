@@ -18,6 +18,12 @@ export default function KategorijaNovi(){
         e.preventDefault()
         const podaci = new FormData(e.target)
         // console.log(podaci.get('aktivna'))
+
+        if (!podaci.get('naziv') || podaci.get('naziv').trim().length === 0) {
+            alert("Naziv je obavezan i ne smije sadržavati samo razmake!")
+            return // Prekid
+        }
+
         dodaj({
             naziv: podaci.get('naziv'),
             aktivna: podaci.get('aktivna') === 'on'
@@ -33,8 +39,13 @@ export default function KategorijaNovi(){
                     <Form.Control type="text" name="naziv"/>
                 </Form.Group>
 
-                <Form.Group controlId="aktivna">
-                    <Form.Check label="Aktivna" name="aktivna" />
+                <Form.Group controlId="aktivna" className="mb-3 mt-md-3">
+                    <Form.Check
+                        type="switch"
+                        label="Kategorija je aktivna"
+                        name="aktivna"
+                        className="fs-5"
+                    />
                 </Form.Group>
 
                 <hr style={{marginTop: '50px', border:'0'}} />
