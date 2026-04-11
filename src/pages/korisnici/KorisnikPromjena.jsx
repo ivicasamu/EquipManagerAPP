@@ -39,12 +39,31 @@ export default function KorisnikPromjena(){
     function odradiSubmit(e){
         e.preventDefault()
         const podaci = new FormData(e.target)
+
+        if(!podaci.get('ime') || podaci.get('ime').trim().length === 0){
+            alert("Ime je obavezno!")
+            return
+        }
+
+        if(podaci.get('ime').trim().length < 3) {
+            alert("Ime korisnika mora imati najmanje 3 znaka!")
+            return
+        }
+
+        if(!podaci.get('prezime') || podaci.get('prezime').trim().length === 0){
+            alert("Prezime je obavezno!")
+            return
+        }
+
+        if(podaci.get('prezime').trim().length < 3) {
+            alert("Prezime korisnika mora imati najmanje 3 znaka!")
+            return
+        }
+
         promjeni({
             ime: podaci.get('ime'),
             prezime: podaci.get('prezime'),
-            korisnickoIme: podaci.get('korisnickoIme'),
             email: podaci.get('email'),
-            lozinka: podaci.get('lozinka'),
             administrator: podaci.get('administrator') === 'on'
         })
     }
@@ -53,41 +72,58 @@ export default function KorisnikPromjena(){
         <>
             <h3>Unos novog korisnika:</h3>
             <Form onSubmit={odradiSubmit}>
-                <Form.Group controlId="ime">
-                    <Form.Label>Ime</Form.Label>
-                    <Form.Control type="text" name="ime"
-                    defaultValue={korisnik.ime} />
-                </Form.Group>
+                <Row>
+                    <Col md={6}>
+                        <Form.Group controlId="ime" className="mb-3">
+                            <Form.Label>Ime</Form.Label>
+                            <Form.Control type="text" name="ime"
+                            defaultValue={korisnik.ime} 
+                            />
+                        </Form.Group>
+                    </Col>
 
-                <Form.Group controlId="imprezimee">
-                    <Form.Label>Prezime</Form.Label>
-                    <Form.Control type="text" name="prezime"
-                    defaultValue={korisnik.prezime} />
-                </Form.Group>
+                    <Col md={6}>
+                        <Form.Group controlId="prezime" className="mb-3">
+                            <Form.Label>Prezime</Form.Label>
+                            <Form.Control type="text" name="prezime" 
+                            defaultValue={korisnik.prezime} 
+                            />
+                        </Form.Group> 
+                    </Col>    
 
-                <Form.Group controlId="korisnickoIme">
-                    <Form.Label>Korisničko ime</Form.Label>
-                    <Form.Control type="text" name="korisnickoIme" required
-                    defaultValue={korisnik.korisnickoIme} />
-                </Form.Group>
+                    <Col md={6}>
+                        <Form.Group controlId="email" className="mb-3">
+                            <Form.Label>Email</Form.Label>
+                            <Form.Control type="email" name="email"
+                            defaultValue={korisnik.email} />
+                        </Form.Group>
+                    </Col>
+                    
+                    <Col md={6}>
+                        <Form.Group controlId="administrator" className="mb-3 mt-md-3">
+                            <Form.Check
+                                type="switch"
+                                label="Korisnik je administrator"
+                                name="administrator"
+                                checked={korisnik.administrator}
+                                className="fs-5"
+                                onChange={(e) =>
+                                    setKorisnik({
+                                        ...korisnik,
+                                        administrator: e.target.checked
+                                    })
+                                }
+                            />
+                        </Form.Group>
+                    </Col>
 
-                <Form.Group controlId="email">
-                    <Form.Label>Email</Form.Label>
-                    <Form.Control type="email" name="email"
-                    defaultValue={korisnik.email} />
-                </Form.Group>
+                </Row>
 
-                <Form.Group controlId="lozinka">
-                    <Form.Label>Lozinka</Form.Label>
-                    <Form.Control type="password" name="lozinka" required
-                    defaultValue={korisnik.lozinka} />
-                </Form.Group>
-
-                <Form.Group controlId="aktivadministratoran">
-                    <Form.Check label="Administrator" name="administrator"
-                    checked={administrator}
-                    onChange={(e)=>{setAdministrator(e.target.checked)}} />
-                </Form.Group>
+                <Row className="d-grid gap-2 d-md-flex justify-content-md-left mt-4">
+                    <Col md={6}>
+                        <a href="" className="btn btn-outline-primary ml-auto">Promjena lozinke</a>
+                    </Col>
+                </Row>   
 
                 <hr style={{marginTop: '50px', border:'0'}} />
 

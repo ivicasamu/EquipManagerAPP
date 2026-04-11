@@ -24,6 +24,11 @@ export default function KategorijaNovi(){
             return // Prekid
         }
 
+        if(podaci.get('naziv').trim().length < 3) {
+            alert("Naziv kategorije mora imati najmanje 3 znaka!")
+            return
+        }
+
         dodaj({
             naziv: podaci.get('naziv'),
             aktivna: podaci.get('aktivna') === 'on'
