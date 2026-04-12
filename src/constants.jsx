@@ -14,6 +14,10 @@ export const RouteNames = {
     STATUSI: '/statusi',
     STATUSI_NOVI: '/statusi/novi',
     STATUSI_PROMJENA: '/statusi/:sifra',
+
+    UREDJAJI: '/uredjaji',
+    UREDJAJI_NOVI: '/uredjaji/novi',
+    UREDJAJI_PROMJENA: '/uredjaji/:sifra',
 }
 
 // memorija, localStorage, firebase
