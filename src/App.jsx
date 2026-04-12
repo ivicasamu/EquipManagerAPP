@@ -11,6 +11,9 @@ import KorisnikPromjena from './pages/korisnici/KorisnikPromjena'
 import KategorijaPregled from './pages/kategorije/KategorijaPregled'
 import KategorijaNovi from './pages/kategorije/KategorijaNovi'
 import KategorijaPromjena from './pages/kategorije/KategorijaPromjena'
+import StatusPregled from './pages/statusi/StatusPregled'
+import StatusNovi from './pages/statusi/StatusNovi'
+import StatusPromjena from './pages/statusi/StatusPromjena'
 
 function App() {
 
@@ -20,12 +23,18 @@ function App() {
       <Container className='app'>
         <Routes>
           <Route path={RouteNames.HOME} element={<Home />} />
+
           <Route path={RouteNames.KORISNICI} element={<KorisnikPregled />} />
           <Route path={RouteNames.KORISNICI_NOVI} element={<KorisnikNovi />} />
           <Route path={RouteNames.KORISNICI_PROMJENA} element={<KorisnikPromjena />} />
+
           <Route path={RouteNames.KATEGORIJE} element={<KategorijaPregled />} />
           <Route path={RouteNames.KATEGORIJE_NOVI} element={<KategorijaNovi />} />
           <Route path={RouteNames.KATEGORIJE_PROMJENA} element={<KategorijaPromjena />} />
+
+          <Route path={RouteNames.STATUSI} element={<StatusPregled />} />
+          <Route path={RouteNames.STATUSI_NOVI} element={<StatusNovi />} />
+          <Route path={RouteNames.STATUSI_PROMJENA} element={<StatusPromjena />} />
         </Routes>
         <hr />
         &copy; {IME_APLIKACIJE}

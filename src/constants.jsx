@@ -10,6 +10,10 @@ export const RouteNames = {
     KATEGORIJE: '/kategorije',
     KATEGORIJE_NOVI: '/kategorije/novi',
     KATEGORIJE_PROMJENA: '/kategorije/:sifra',
+
+    STATUSI: '/statusi',
+    STATUSI_NOVI: '/statusi/novi',
+    STATUSI_PROMJENA: '/statusi/:sifra',
 }
 
 // memorija, localStorage, firebase

@@ -21,6 +21,7 @@ export default function Izbornik() {
                         <NavDropdown title="ADMINISTRACIJA" id="basic-nav-dropdown">
                             <NavDropdown.Item onClick={()=>navigate(RouteNames.KORISNICI)}>KORISNICI</NavDropdown.Item>
                             <NavDropdown.Item onClick={()=>navigate(RouteNames.KATEGORIJE)}>KATEGORIJE UREĐAJA</NavDropdown.Item>
+                            <NavDropdown.Item onClick={()=>navigate(RouteNames.STATUSI)}>STATUSI UREĐAJA</NavDropdown.Item>
                         </NavDropdown>
                     </Nav>
                 </Navbar.Collapse>
