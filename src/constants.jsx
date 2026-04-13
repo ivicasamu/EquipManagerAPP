@@ -19,6 +19,10 @@ export const RouteNames = {
     UREDJAJI_NOVI: '/uredjaji/novi',
     UREDJAJI_PROMJENA: '/uredjaji/:sifra',
 
+    KLIJENTI: '/klijenti',
+    KLIJENTI_NOVI: '/klijenti/novi',
+    KLIJENTI_PROMJENA: '/klijenti/:sifra',
+
     // GENERIRANJE_PODATAKA: '/generiraj-podatke',
 }
 

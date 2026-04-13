@@ -17,7 +17,9 @@ import StatusPromjena from './pages/statusi/StatusPromjena'
 import UredjajPregled from './pages/uredjaji/UredjajPregled'
 import UredjajNovi from './pages/uredjaji/UredjajNovi'
 import UredjajPromjena from './pages/uredjaji/UredjajPromjena'
-
+import KlijentPregled from './pages/klijenti/KlijentPregled'
+import KlijentNovi from './pages/klijenti/KlijentNovi'
+import KlijentPromjena from './pages/klijenti/KlijentPromjena'
 
 function App() {
 
@@ -43,6 +45,10 @@ function App() {
           <Route path={RouteNames.UREDJAJI} element={<UredjajPregled />} />
           <Route path={RouteNames.UREDJAJI_NOVI} element={<UredjajNovi />} />
           <Route path={RouteNames.UREDJAJI_PROMJENA} element={<UredjajPromjena />} />
+
+          <Route path={RouteNames.KLIJENTI} element={<KlijentPregled />} />
+          <Route path={RouteNames.KLIJENTI_NOVI} element={<KlijentNovi />} />
+          <Route path={RouteNames.KLIJENTI_PROMJENA} element={<KlijentPromjena />} />
         </Routes>
         <hr />
         &copy; {IME_APLIKACIJE}
