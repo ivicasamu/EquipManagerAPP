@@ -18,6 +18,8 @@ export const RouteNames = {
     UREDJAJI: '/uredjaji',
     UREDJAJI_NOVI: '/uredjaji/novi',
     UREDJAJI_PROMJENA: '/uredjaji/:sifra',
+
+    // GENERIRANJE_PODATAKA: '/generiraj-podatke',
 }
 
 // memorija, localStorage, firebase
