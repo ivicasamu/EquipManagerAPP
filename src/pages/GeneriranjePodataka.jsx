@@ -1,30 +1,34 @@
-import { useState } from 'react';
-import { Button, Form, Alert, Container, Row, Col } from 'react-bootstrap';
-import { Faker, hr } from '@faker-js/faker';
-import KategorijaService from '../services/kategorije/KategorijaService';
-import UredjajiService from '../services/uredjaji/UredjajService';
-import StatusService from '../services/statusi/StatusService';
+import { useState } from 'react'
+import { Button, Form, Alert, Container, Row, Col } from 'react-bootstrap'
+import { en, en_US, Faker, hr } from '@faker-js/faker'
+import KategorijaService from '../services/kategorije/KategorijaService'
+import StatusService from '../services/statusi/StatusService'
+import UredjajService from '../services/uredjaji/UredjajService'
+import KlijentService from '../services/klijenti/KlijentService'
+import KorisnikService from '../services/korisnici/KorisnikService'
+import { kategorije } from '../services/kategorije/KategorijaPodaci'
+import { statusi } from '../services/statusi/StatusPodaci'
 
 
 
 export default function GeneriranjePodataka() {
-    const [brojKorisnika, setBrojKorisnika] = useState(5);
-    const [brojUredjaja, setBrojUredjaja] = useState(20);
-    const [brojKlijenata, setBrojKlijenata] = useState(10);
-    const [poruka, setPoruka] = useState(null);
-    const [loading, setLoading] = useState(false);
+    const [brojKorisnika, setBrojKorisnika] = useState(5)
+    const [brojUredjaja, setBrojUredjaja] = useState(20)
+    const [brojKlijenata, setBrojKlijenata] = useState(10)
+    const [poruka, setPoruka] = useState(null)
+    const [loading, setLoading] = useState(false)
 
     if (kategorije.length === 0) {
-        throw new Error('Nema dostupnih kategorija. Prvo generirajte kategorije.');
+        throw new Error('Nema dostupnih kategorija. Prvo generirajte kategorije.')
     }
 
     if (statusi.length === 0) {
-        throw new Error('Nema dostupnih statusa. Prvo generirajte statuse.');
+        throw new Error('Nema dostupnih statusa. Prvo generirajte statuse.')
     }
 
   
     const faker = new Faker({
-        locale: [hr]
+        locale: [en]
     });
 
     const generirajKorisnike = async (broj) => {
@@ -35,9 +39,9 @@ export default function GeneriranjePodataka() {
                 korisnickoIme: faker.internet.username(),
                 lozinka: faker.internet.password({length: 6, pattern: /[0-9]/}),
                 email: faker.internet.email(),
-                administrator: faker.internet.boolean()
+                administrator: faker.datatype.boolean()
             };
-            await KategorijaService.dodaj(korisnik);
+            await KorisnikService.dodaj(korisnik);
         }
     };
 
@@ -63,8 +67,8 @@ export default function GeneriranjePodataka() {
 
         for (let i = 0; i < broj; i++) {
             // Odaberi nasumični smjer
-            const randomKategorija = kategorije[faker.number.int({ min: 0, max: kategorije.length - 1 })];
-            const randomStatus = statusi[faker.number.int({ min: 0, max: statusi.length - 1 })];
+            const randomKategorija = kategorije[faker.number.int({ min: 0, max: kategorije.length - 1 })]
+            const randomStatus = statusi[faker.number.int({ min: 0, max: statusi.length - 1 })]
   
             const grupa = {
                 kategorija: randomKategorija.sifra,
@@ -74,7 +78,7 @@ export default function GeneriranjePodataka() {
                 napomena: faker.lorem.sentence(2)
             };
             
-            await GrupaService.dodaj(grupa);
+            await UredjajService.dodaj(grupa)
         }
 
 
@@ -89,15 +93,15 @@ export default function GeneriranjePodataka() {
                 kontaktOsoba: faker.person.firstName(i % 2 === 0 ? 'male' : 'female') + ' ' + faker.person.lastName(),
                 tel: '09' + faker.string.numeric(8),
                 email: faker.internet.email()
-            };
-            await PolaznikService.dodaj(klijent);
+            }
+            await KlijentService.dodaj(klijent)
         }
     }
 
     const handleGenerirajUredjaje = async (e) => {
-        e.preventDefault();
-        setLoading(true);
-        setPoruka(null);
+        e.preventDefault()
+        setLoading(true)
+        setPoruka(null)
 
         try {
             await generirajUredjaje(brojUredjaja);
@@ -114,139 +118,138 @@ export default function GeneriranjePodataka() {
         } finally {
             setLoading(false);
         }
-    };
+    }
 
-    // ovdje sam stao
-
-    const handleGenerirajPolaznike = async (e) => {
-        e.preventDefault();
-        setLoading(true);
-        setPoruka(null);
+    const handleGenerirajKorisnike = async (e) => {
+        e.preventDefault()
+        setLoading(true)
+        setPoruka(null)
 
         try {
             
-            await generirajPolaznike(brojPolaznika);
+            await generirajKorisnike(brojKorisnika)
 
             setPoruka({
                 tip: 'success',
-                tekst: `Uspješno generirano ${brojPolaznika} polaznika!`
+                tekst: `Uspješno generirano ${brojKorisnika} korisnika!`
             });
         } catch (error) {
             setPoruka({
                 tip: 'danger',
-                tekst: 'Greška pri generiranju polaznika: ' + error.message
+                tekst: 'Greška pri generiranju korisnika: ' + error.message
             });
         } finally {
-            setLoading(false);
+            setLoading(false)
         }
-    };
+    }
 
-    const handleObrisiPolaznike = async () => {
-        if (!window.confirm('Jeste li sigurni da želite obrisati sve polaznike?')) {
-            return;
-        }
-
-        setLoading(true);
-        setPoruka(null);
+        const handleGenerirajKlijente = async (e) => {
+        e.preventDefault()
+        setLoading(true)
+        setPoruka(null)
 
         try {
-            const rezultat = await PolaznikService.get();
-            const polaznici = rezultat.data;
             
-            for (const polaznik of polaznici) {
-                await PolaznikService.obrisi(polaznik.sifra);
+            await generirajKlijente(brojKlijenata)
+
+            setPoruka({
+                tip: 'success',
+                tekst: `Uspješno generirano ${brojKlijenata} klijenata!`
+            });
+        } catch (error) {
+            setPoruka({
+                tip: 'danger',
+                tekst: 'Greška pri generiranju klijenata: ' + error.message
+            });
+        } finally {
+            setLoading(false)
+        }
+    }
+
+    const handleObrisiKorisnike = async () => {
+        if (!window.confirm('Jeste li sigurni da želite obrisati sve korisnike?')) {
+            return
+        }
+
+        setLoading(true)
+        setPoruka(null)
+
+        try {
+            const rezultat = await KorisnikService.get();
+            const korisnici = rezultat.data;
+            
+            for (const korisnik of korisnici) {
+                await KorisnikService.obrisi(korisnik.sifra);
             }
 
             setPoruka({
                 tip: 'success',
-                tekst: `Uspješno obrisano ${polaznici.length} polaznika!`
-            });
+                tekst: `Uspješno obrisano ${korisnici.length} korisnika!`
+            })
         } catch (error) {
             setPoruka({
                 tip: 'danger',
-                tekst: 'Greška pri brisanju polaznika: ' + error.message
-            });
+                tekst: 'Greška pri brisanju korisnika: ' + error.message
+            })
         } finally {
-            setLoading(false);
+            setLoading(false)
         }
-    };
+    }
 
-    const handleObrisiSmjerove = async () => {
-        if (!window.confirm('Jeste li sigurni da želite obrisati sve smjerove?')) {
-            return;
+    const handleObrisiUredjaje = async () => {
+        if (!window.confirm('Jeste li sigurni da želite obrisati sve uređaje?')) {
+            return
         }
 
         setLoading(true);
         setPoruka(null);
 
         try {
-            const rezultat = await SmjerService.get();
-            const smjerovi = rezultat.data;
+            const rezultat = await UredjajService.get();
+            const uredjaji = rezultat.data;
             
-            for (const smjer of smjerovi) {
-                await SmjerService.obrisi(smjer.sifra);
+            for (const uredjaj of uredjaji) {
+                await UredjajService.obrisi(uredjaj.sifra);
             }
 
             setPoruka({
                 tip: 'success',
-                tekst: `Uspješno obrisano ${smjerovi.length} smjerova!`
+                tekst: `Uspješno obrisano ${uredjaji.length} uređaja!`
             });
         } catch (error) {
             setPoruka({
                 tip: 'danger',
-                tekst: 'Greška pri brisanju smjerova: ' + error.message
+                tekst: 'Greška pri brisanju uređaja: ' + error.message
             });
         } finally {
-            setLoading(false);
+            setLoading(false)
         }
-    };
+    }
 
-    const handleGenerirajGrupe = async (e) => {
-        e.preventDefault();
-        setLoading(true);
-        setPoruka(null);
-
-        try {
-            await generirajGrupe(brojGrupa);
-
-            setPoruka({
-                tip: 'success',
-                tekst: `Uspješno generirano ${brojGrupa} grupa!`
-            });
-        } catch (error) {
-            setPoruka({
-                tip: 'danger',
-                tekst: 'Greška pri generiranju grupa: ' + error.message
-            });
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    const handleObrisiGrupe = async () => {
-        if (!window.confirm('Jeste li sigurni da želite obrisati sve grupe?')) {
+    const handleObrisiKlijente = async () => {
+        if (!window.confirm('Jeste li sigurni da želite obrisati sve klijente?')) {
             return;
         }
 
-        setLoading(true);
-        setPoruka(null);
+        setLoading(true)
+        setPoruka(null)
 
         try {
-            const rezultat = await GrupaService.get();
-            const grupe = rezultat.data;
+            const rezultat = await KlijentService.get();
+            const klijenti = rezultat.data
             
-            for (const grupa of grupe) {
-                await GrupaService.obrisi(grupa.sifra);
+            for (const klijent of klijenti) {
+                await KlijentService.obrisi(klijent.sifra);
             }
 
             setPoruka({
                 tip: 'success',
-                tekst: `Uspješno obrisano ${grupe.length} grupa!`
+                tekst: `Uspješno obrisano ${klijenti.length} klijenata!`
             });
         } catch (error) {
             setPoruka({
                 tip: 'danger',
-                tekst: 'Greška pri brisanju grupa: ' + error.message
+                tekst: 'Greška pri brisanju klijenata: ' + error.message
             });
         } finally {
             setLoading(false);
@@ -268,19 +271,19 @@ export default function GeneriranjePodataka() {
 
             <Row>
                 <Col md={4}>
-                    <Form onSubmit={handleGenerirajSmjerove}>
+                    <Form onSubmit={handleGenerirajKorisnike}>
                         <Form.Group className="mb-3">
-                            <Form.Label>Broj smjerova</Form.Label>
+                            <Form.Label>Broj korisnika</Form.Label>
                             <Form.Control
                                 type="number"
                                 min="1"
                                 max="50"
-                                value={brojSmjerova}
-                                onChange={(e) => setBrojSmjerova(parseInt(e.target.value))}
+                                value={brojKorisnika}
+                                onChange={(e) => setBrojKorisnika(parseInt(e.target.value))}
                                 disabled={loading}
                             />
                             <Form.Text className="text-muted">
-                                Unesite broj smjerova (1-50)
+                                Unesite broj korisnika (1-50)
                             </Form.Text>
                         </Form.Group>
                         <Button 
@@ -289,24 +292,24 @@ export default function GeneriranjePodataka() {
                             disabled={loading}
                             className="w-100"
                         >
-                            {loading ? 'Generiranje...' : 'Generiraj smjerove'}
+                            {loading ? 'Generiranje...' : 'Generiraj korisnika'}
                         </Button>
                     </Form>
                 </Col>
                 <Col md={4}>
-                    <Form onSubmit={handleGenerirajPolaznike}>
+                    <Form onSubmit={handleGenerirajKlijente}>
                         <Form.Group className="mb-3">
-                            <Form.Label>Broj polaznika</Form.Label>
+                            <Form.Label>Broj klijenata</Form.Label>
                             <Form.Control
                                 type="number"
                                 min="1"
                                 max="200"
-                                value={brojPolaznika}
-                                onChange={(e) => setBrojPolaznika(parseInt(e.target.value))}
+                                value={brojKlijenata}
+                                onChange={(e) => setBrojKlijenata(parseInt(e.target.value))}
                                 disabled={loading}
                             />
                             <Form.Text className="text-muted">
-                                Unesite broj polaznika (1-200)
+                                Unesite broj klijenata (1-200)
                             </Form.Text>
                         </Form.Group>
                         <Button 
@@ -315,24 +318,24 @@ export default function GeneriranjePodataka() {
                             disabled={loading}
                             className="w-100"
                         >
-                            {loading ? 'Generiranje...' : 'Generiraj polaznike'}
+                            {loading ? 'Generiranje...' : 'Generiraj klijenata'}
                         </Button>
                     </Form>
                 </Col>
                 <Col md={4}>
-                    <Form onSubmit={handleGenerirajGrupe}>
+                    <Form onSubmit={handleGenerirajUredjaje}>
                         <Form.Group className="mb-3">
-                            <Form.Label>Broj grupa</Form.Label>
+                            <Form.Label>Broj uređaja</Form.Label>
                             <Form.Control
                                 type="number"
                                 min="1"
                                 max="100"
-                                value={brojGrupa}
-                                onChange={(e) => setBrojGrupa(parseInt(e.target.value))}
+                                value={brojUredjaja}
+                                onChange={(e) => setBrojUredjaja(parseInt(e.target.value))}
                                 disabled={loading}
                             />
                             <Form.Text className="text-muted">
-                                Unesite broj grupa (1-100)
+                                Unesite broj uređaja (1-100)
                             </Form.Text>
                         </Form.Group>
                         <Button 
@@ -341,7 +344,7 @@ export default function GeneriranjePodataka() {
                             disabled={loading}
                             className="w-100"
                         >
-                            {loading ? 'Generiranje...' : 'Generiraj grupe'}
+                            {loading ? 'Generiranje...' : 'Generiraj uređaje'}
                         </Button>
                     </Form>
                 </Col>
@@ -363,31 +366,31 @@ export default function GeneriranjePodataka() {
                 <Col md={4}>
                     <Button 
                         variant="danger" 
-                        onClick={handleObrisiSmjerove}
+                        onClick={handleObrisiKorisnike}
                         disabled={loading}
                         className="w-100 mb-2"
                     >
-                        {loading ? 'Brisanje...' : 'Obriši sve smjerove'}
+                        {loading ? 'Brisanje...' : 'Obriši sve korisnike'}
                     </Button>
                 </Col>
                 <Col md={4}>
                     <Button 
                         variant="danger" 
-                        onClick={handleObrisiPolaznike}
+                        onClick={handleObrisiKlijente}
                         disabled={loading}
                         className="w-100 mb-2"
                     >
-                        {loading ? 'Brisanje...' : 'Obriši sve polaznike'}
+                        {loading ? 'Brisanje...' : 'Obriši sve klijente'}
                     </Button>
                 </Col>
                 <Col md={4}>
                     <Button 
                         variant="danger" 
-                        onClick={handleObrisiGrupe}
+                        onClick={handleObrisiUredjaje}
                         disabled={loading}
                         className="w-100 mb-2"
                     >
-                        {loading ? 'Brisanje...' : 'Obriši sve grupe'}
+                        {loading ? 'Brisanje...' : 'Obriši sve uređaje'}
                     </Button>
                 </Col>
             </Row>

@@ -1,4 +1,4 @@
-const STORAGE_KEY = 'statusi';
+const STORAGE_KEY = 'status';
 
 function dohvatiSveIzStorage() {
     const podaci = localStorage.getItem(STORAGE_KEY);
@@ -31,7 +31,7 @@ async function dodaj(status) {
     }
     
     statusi.push(status);
-    spremiUStorage(status);
+    spremiUStorage(statusi);
     return { data: status };
 }
 

@@ -23,8 +23,8 @@ export const RouteNames = {
     KLIJENTI_NOVI: '/klijenti/novi',
     KLIJENTI_PROMJENA: '/klijenti/:sifra',
 
-    // GENERIRANJE_PODATAKA: '/generiraj-podatke',
+    GENERIRANJE_PODATAKA: '/generiraj-podatke',
 }
 
 // memorija, localStorage, firebase
-export const DATA_SOURCE = 'memorija'
+export const DATA_SOURCE = 'localStorage'
