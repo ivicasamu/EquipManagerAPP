@@ -4,13 +4,16 @@ import { DotLottieReact } from "@lottiefiles/dotlottie-react"
 import KorisnikService from "../services/korisnici/KorisnikService";
 import UredjajService from "../services/uredjaji/UredjajService";
 import { useEffect, useState } from "react";
+import KlijentService from "../services/klijenti/KlijentService";
 
 export default function Home(){
     const [brojKorisnika, setBrojKorisnika] = useState(0);
     const [brojUredjaja, setBrojUredjaja] = useState(0);
+    const [brojKlijenata, setBrojKlijenata] = useState(0);
     // const [brojEventa, setBrojEventa] = useState(0);
     const [animatedKorisnici, setAnimatedKorisnici] = useState(0);
     const [animatedUredjaji, setAnimatedUredjaji] = useState(0);
+    const [animatedKlijenti, setAnimatedKlijenti] = useState(0);
     // const [animatedEventi, setAnimatedEventi] = useState(0);
 
     useEffect(() => {
@@ -18,10 +21,12 @@ export default function Home(){
             try {
                 const korisnik = await KorisnikService.get();
                 const uredjaj = await UredjajService.get();
+                const klijent = await KlijentService.get();
                 // const event = await EventService.get();
                 
                 setBrojKorisnika(korisnik.data.length);
                 setBrojUredjaja(uredjaj.data.length);
+                setBrojKlijenata(klijent.data.length);
                 // setBrojEvenata(eventi.data.length);
             } catch (error) {
                 console.error('Greška pri dohvaćanju podataka:', error);
@@ -48,6 +53,15 @@ export default function Home(){
             return () => clearTimeout(timer);
         }
     }, [animatedUredjaji, brojUredjaja]);
+
+    useEffect(() => {
+        if (animatedKlijenti < brojUredjaja) {
+            const timer = setTimeout(() => {
+                setAnimatedKlijenti(prev => Math.min(prev + 1, brojKlijenata));
+            }, 100);
+            return () => clearTimeout(timer);
+        }
+    }, [animatedKlijenti, brojKlijenata]);
 
     // useEffect(() => {
     //     if (animatedEventi < brojEvenata) {
@@ -76,6 +90,15 @@ export default function Home(){
                             <p className="text-white">Korisnici</p>
                             <div className="statistikaTekst">
                                 {animatedKorisnici}
+                            </div>
+                        </Card.Body>
+                    </Card>
+
+                    <Card className="mb-3 shadow-lg border-0 statistikaPanel">
+                        <Card.Body className="text-center">
+                            <p className="text-white">Klijenti</p>
+                            <div className="statistikaTekst">
+                                {animatedKlijenti}
                             </div>
                         </Card.Body>
                     </Card>

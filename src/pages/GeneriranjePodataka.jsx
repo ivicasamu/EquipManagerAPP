@@ -2,17 +2,27 @@ import { useState } from 'react';
 import { Button, Form, Alert, Container, Row, Col } from 'react-bootstrap';
 import { Faker, hr } from '@faker-js/faker';
 import KategorijaService from '../services/kategorije/KategorijaService';
+import UredjajiService from '../services/uredjaji/UredjajService';
+import StatusService from '../services/statusi/StatusService';
 
 
 
 export default function GeneriranjePodataka() {
     const [brojKorisnika, setBrojKorisnika] = useState(5);
     const [brojUredjaja, setBrojUredjaja] = useState(20);
-    // const [brojKlijenata, setBrojKlijenata] = useState(10);
+    const [brojKlijenata, setBrojKlijenata] = useState(10);
     const [poruka, setPoruka] = useState(null);
     const [loading, setLoading] = useState(false);
 
-    // Postavi faker na hrvatski jezik
+    if (kategorije.length === 0) {
+        throw new Error('Nema dostupnih kategorija. Prvo generirajte kategorije.');
+    }
+
+    if (statusi.length === 0) {
+        throw new Error('Nema dostupnih statusa. Prvo generirajte statuse.');
+    }
+
+  
     const faker = new Faker({
         locale: [hr]
     });
@@ -32,92 +42,81 @@ export default function GeneriranjePodataka() {
     };
 
     const generirajUredjaje = async (broj) => {
-        const nazivi = [
-            'Web programiranje',
-            'Java programiranje',
-            'Python programiranje',
-            'Frontend razvoj',
-            'Backend razvoj',
-            'Full Stack razvoj',
-            'Mobile razvoj',
-            'DevOps',
-            'Data Science',
-            'Cyber Security',
-            'UI/UX dizajn',
-            'Digital Marketing',
-            'Grafički dizajn',
-            'Video produkcija',
-            'Fotografija'
-        ];
 
-        for (let i = 0; i < broj; i++) {
-            await SmjerService.dodaj({
-                naziv: naziviSmjerova[i % naziviSmjerova.length] + (i >= naziviSmjerova.length ? ` ${Math.floor(i / naziviSmjerova.length) + 1}` : ''),
-                trajanje: faker.number.int({ min: 130, max: 350 }),
-                cijena: faker.number.float({ min: 1100, max: 5000, precision: 0.01 }).toFixed(2),
-                datumPokretanja: faker.date.soon().toISOString().split('T')[0],
-                aktivan: faker.datatype.boolean()
-            });
-        }
-    };
+        const rezultatKategorije = await KategorijaService.get()
+        const rezultatStatusi = await StatusService.get()
+        const kategorije = rezultatKategorije.data
+        const statusi = rezultatStatusi.data;
 
-    const generirajPolaznike = async (broj) => {
-        for (let i = 0; i < broj; i++) {
-            const polaznik = {
-                ime: i%2===0? faker.person.firstName('male') : faker.person.firstName('female'),
-                prezime: faker.person.lastName(),
-                email: faker.internet.email(),
-                oib: faker.string.numeric(11)
-            };
-            await PolaznikService.dodaj(polaznik);
-        }
-    };
+        const modeliOpreme = [
+            'Epson PU2213',
+            'Epson PU2008',
+            'Epson PQ2216',
+            'NEC PA803UL',
+            'NECPX1004',
+            'VIOSO Media 8',
+            'VIOSO Pico',
+            'Mac Studio M2 Max',
+            'Mac Studio M3',
+            'Mac mini M4'
+        ]
 
-    const generirajGrupe = async (broj) => {
-
-        // Dohvati sve smjerove
-        const rezultatSmjerovi = await SmjerService.get();
-        const smjerovi = rezultatSmjerovi.data;
-
-        
-        if (smjerovi.length === 0) {
-            throw new Error('Nema dostupnih smjerova. Prvo generirajte smjerove.');
-        }
-        
         for (let i = 0; i < broj; i++) {
             // Odaberi nasumični smjer
-            const randomSmjer = smjerovi[faker.number.int({ min: 0, max: smjerovi.length - 1 })];
+            const randomKategorija = kategorije[faker.number.int({ min: 0, max: kategorije.length - 1 })];
+            const randomStatus = statusi[faker.number.int({ min: 0, max: statusi.length - 1 })];
   
             const grupa = {
-                naziv: randomSmjer.naziv.trim().split(/\s+/).slice(0, 2).map(rijec => rijec[0]).join('').toUpperCase(),   
-                smjer: randomSmjer.sifra
+                kategorija: randomKategorija.sifra,
+                model: modeliOpreme[i % modeliOpreme.length] + (i >= modeliOpreme.length ? ` ${Math.floor(i / modeliOpreme.length) + 1}` : ''),
+                serijskiBroj: faker.string.alphanumeric(10),
+                status: randomStatus.sifra,
+                napomena: faker.lorem.sentence(2)
             };
             
             await GrupaService.dodaj(grupa);
         }
-    };
 
-    const handleGenerirajSmjerove = async (e) => {
+
+    }
+
+    const generirajKlijente = async (broj) => {
+        for (let i = 0; i < broj; i++) {
+            const klijent = {
+                naziv: faker.company.name() + ' d.o.o.',
+                adresa: faker.location.street() + ' ' + faker.number.int({ min: 1, max: 200 }) + ', ' + faker.location.city(),
+                oib: faker.string.numeric(11),
+                kontaktOsoba: faker.person.firstName(i % 2 === 0 ? 'male' : 'female') + ' ' + faker.person.lastName(),
+                tel: '09' + faker.string.numeric(8),
+                email: faker.internet.email()
+            };
+            await PolaznikService.dodaj(klijent);
+        }
+    }
+
+    const handleGenerirajUredjaje = async (e) => {
         e.preventDefault();
         setLoading(true);
         setPoruka(null);
 
         try {
-            await generirajSmjerove(brojSmjerova);
+            await generirajUredjaje(brojUredjaja);
 
             setPoruka({
                 tip: 'success',
-                tekst: `Uspješno generirano ${brojSmjerova} smjerova!`
+                tekst: `Uspješno generirano ${brojUredjaja} uređaja!`
             });
         } catch (error) {
             setPoruka({
                 tip: 'danger',
-                tekst: 'Greška pri generiranju smjerova: ' + error.message
+                tekst: 'Greška pri generiranju uređaja: ' + error.message
             });
         } finally {
             setLoading(false);
         }
     };
+
+    // ovdje sam stao
 
     const handleGenerirajPolaznike = async (e) => {
         e.preventDefault();
