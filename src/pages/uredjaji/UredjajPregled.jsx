@@ -72,7 +72,7 @@ export default function UredjajPregled(){
         <>
         <Link to={RouteNames.UREDJAJI_NOVI}
         className="btn btn-success w-100 my-3">
-            Dodavanje novog uredjaji
+            Dodavanje novog uređaja
         </Link>
         <Table striped bordered hover>
             <thead className="text-center">

@@ -164,7 +164,7 @@ export default function UredjajNovi() {
                                     Odustani
                                 </Link>
                                 <Button type="submit" variant="success">
-                                    Dodaj novu grupu
+                                    Dodaj novi uređaj
                                 </Button>
                             </div>
                         </Card.Body>
