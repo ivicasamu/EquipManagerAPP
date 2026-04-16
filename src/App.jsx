@@ -20,6 +20,8 @@ import UredjajPromjena from './pages/uredjaji/UredjajPromjena'
 import KlijentPregled from './pages/klijenti/KlijentPregled'
 import KlijentNovi from './pages/klijenti/KlijentNovi'
 import KlijentPromjena from './pages/klijenti/KlijentPromjena'
+import EventPregled from './pages/eventi/EventPregled'
+import EventNovi from './pages/eventi/EventNovi'
 import GeneriranjePodataka from './pages/GeneriranjePodataka'
 
 function App() {
@@ -50,6 +52,9 @@ function App() {
           <Route path={RouteNames.KLIJENTI} element={<KlijentPregled />} />
           <Route path={RouteNames.KLIJENTI_NOVI} element={<KlijentNovi />} />
           <Route path={RouteNames.KLIJENTI_PROMJENA} element={<KlijentPromjena />} />
+
+          <Route path={RouteNames.EVENTI} element={<EventPregled />} />
+          <Route path={RouteNames.EVENTI_NOVI} element={<EventNovi />} />
 
           <Route path={RouteNames.GENERIRANJE_PODATAKA} element={<GeneriranjePodataka />} />
         </Routes>
