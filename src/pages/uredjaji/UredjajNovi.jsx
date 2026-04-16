@@ -65,7 +65,7 @@ export default function UredjajNovi() {
             return;
         }
 
-        const odabraniStatus = parseInt(podaci.get('kategorija'));
+        const odabraniStatus = parseInt(podaci.get('status'));
         if (isNaN(odabraniStatus) || odabraniStatus <= 0) {
             alert("Odabrani status nije valjan!");
             return;

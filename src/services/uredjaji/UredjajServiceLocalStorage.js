@@ -27,17 +27,13 @@ async function getBySifra(sifra) {
 // 2/4 Create - dodaj novi
 async function dodaj(uredjaj) {
     const uredjaji = dohvatiSveIzStorage();
-    
-    if (uredjaji.length === 0) {
-        uredjaji.sifra = 1;
-    } else {
-        // Pronalaženje najveće šifre da izbjegnemo duplikate
-        const maxSifra = Math.max(...uredjaji.map(g => g.sifra));
-        uredjaj.sifra = maxSifra + 1;
-    }
-    
+
+    const maxSifra = Math.max(0, ...uredjaji.map(g => g.sifra || 0));
+    uredjaj.sifra = maxSifra + 1;
+
     uredjaji.push(uredjaj);
     spremiUStorage(uredjaji);
+
     return { data: uredjaj };
 }
 
