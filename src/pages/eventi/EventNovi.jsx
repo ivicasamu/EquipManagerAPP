@@ -130,6 +130,7 @@ export default function EventNovi() {
             predvidenoTrajanje: podaci.get('predvidenoTrajanje'),
             lokacija: podaci.get('lokacija'),
             klijent: odabraniKlijent,
+            uredjaji: odabraniUredjaji.map(u => u.sifra),
             napomena: podaci.get('napomena')
         })
     }
@@ -283,7 +284,7 @@ export default function EventNovi() {
                                     Odustani
                                 </Link>
                                 <Button type="submit" variant="success">
-                                    Dodaj novu grupu
+                                    Dodaj novi event
                                 </Button>
                             </div>
                         </Card.Body>

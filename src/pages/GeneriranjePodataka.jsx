@@ -7,7 +7,6 @@ import UredjajService from '../services/uredjaji/UredjajService'
 import KlijentService from '../services/klijenti/KlijentService'
 import KorisnikService from '../services/korisnici/KorisnikService'
 import EventService from '../services/eventi/EventService'
-import { klijenti } from '../services/klijenti/KlijentPodaci'
 
 export default function GeneriranjePodataka() {
     const [brojKorisnika, setBrojKorisnika] = useState(5)
@@ -133,6 +132,8 @@ export default function GeneriranjePodataka() {
     }
 
     const generirajEvente = async (broj) => {
+        const rezultat = await KlijentService.get()
+        const klijenti = rezultat.data
 
         for (let i = 0; i < broj; i++) {
             const randomKlijent = klijenti[faker.number.int({ min: 0, max: klijenti.length - 1 })]

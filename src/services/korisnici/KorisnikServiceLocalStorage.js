@@ -22,16 +22,13 @@ async function getBySifra(sifra) {
 
 async function dodaj(korisnik) {
     const korisnici = dohvatiSveIzStorage();
-    
-    if (korisnici.length === 0) {
-        korisnik.sifra = 1;
-    } else {
-        const maxSifra = Math.max(...korisnici.map(s => s.sifra));
-        korisnik.sifra = maxSifra + 1;
-    }
-    
+
+    const maxSifra = Math.max(0, ...korisnici.map(k => k.sifra || 0));
+    korisnik.sifra = maxSifra + 1;
+
     korisnici.push(korisnik);
     spremiUStorage(korisnici);
+
     return { data: korisnik };
 }
 

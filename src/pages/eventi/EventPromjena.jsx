@@ -172,7 +172,9 @@ export default function EventNovi() {
                                         <Form.Label className="fw-bold">Klijent</Form.Label>
                                         <Form.Select name="klijent" required value={event.klijent || ''} onChange={(e) => setEvent({...event, klijent: parseInt(e.target.value)})}>
                                             <option value="">Odaberite klijenta</option>
-                                            {klijenti && klijenti.map((klijent) => (
+                                            {klijenti && [...klijenti]
+                                                .sort((a, b) => a.naziv.localeCompare(b.naziv, 'hr'))
+                                                .map((klijent) => (
                                                 <option key={klijent.sifra} value={klijent.sifra}>
                                                     {klijent.naziv}
                                                 </option>
