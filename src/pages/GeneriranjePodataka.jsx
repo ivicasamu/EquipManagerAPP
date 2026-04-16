@@ -6,65 +6,64 @@ import StatusService from '../services/statusi/StatusService'
 import UredjajService from '../services/uredjaji/UredjajService'
 import KlijentService from '../services/klijenti/KlijentService'
 import KorisnikService from '../services/korisnici/KorisnikService'
-import { kategorije } from '../services/kategorije/KategorijaPodaci'
-import { statusi } from '../services/statusi/StatusPodaci'
-
-
+import EventService from '../services/eventi/EventService'
+import { klijenti } from '../services/klijenti/KlijentPodaci'
 
 export default function GeneriranjePodataka() {
     const [brojKorisnika, setBrojKorisnika] = useState(5)
     const [brojUredjaja, setBrojUredjaja] = useState(20)
     const [brojKlijenata, setBrojKlijenata] = useState(10)
+    const [brojEvenata, setBrojEvenata] = useState(10)
     const [poruka, setPoruka] = useState(null)
     const [loading, setLoading] = useState(false)
 
     async function osigurajKategorijeIStatuse() {
-    const rezultatKategorije = await KategorijaService.get()
-    const rezultatStatusi = await StatusService.get()
+        const rezultatKategorije = await KategorijaService.get()
+        const rezultatStatusi = await StatusService.get()
 
-    let kategorije = rezultatKategorije.data
-    let statusi = rezultatStatusi.data
+        let kategorije = rezultatKategorije.data
+        let statusi = rezultatStatusi.data
 
-    // Ako nema kategorija → kreiraj
-    if (!kategorije || kategorije.length === 0) {
-        const defaultKategorije = [
-            { sifra: 1, naziv: 'Projektor', aktivna: true },
-            { sifra: 2, naziv: 'Leća', aktivna: true },
-            { sifra: 3, naziv: 'Server', aktivna: true },
-            { sifra: 4, naziv: 'Video server', aktivna: true },
-            { sifra: 5, naziv: 'Računalo', aktivna: true },
-            { sifra: 6, naziv: 'Procesor zvuka', aktivna: true },
-        ]
+        // Ako nema kategorija → kreiraj
+        if (!kategorije || kategorije.length === 0) {
+            const defaultKategorije = [
+                { sifra: 1, naziv: 'Projektor', aktivna: true },
+                { sifra: 2, naziv: 'Leća', aktivna: true },
+                { sifra: 3, naziv: 'Server', aktivna: true },
+                { sifra: 4, naziv: 'Video server', aktivna: true },
+                { sifra: 5, naziv: 'Računalo', aktivna: true },
+                { sifra: 6, naziv: 'Procesor zvuka', aktivna: true },
+            ]
 
-        for (const k of defaultKategorije) {
-            await KategorijaService.dodaj(k)
+            for (const k of defaultKategorije) {
+                await KategorijaService.dodaj(k)
+            }
+
+            const res = await KategorijaService.get()
+            kategorije = res.data
         }
 
-        const res = await KategorijaService.get()
-        kategorije = res.data
-    }
+        // Ako nema statusa → kreiraj
+        if (!statusi || statusi.length === 0) {
+            const defaultStatusi = [
+                { sifra: 1, naziv: 'Dostupno', opis: 'Može se iznajmiti odmah' },
+                { sifra: 2, naziv: 'Rezervirano', opis: 'Netko je napravio booking (ali još nije preuzeo)' },
+                { sifra: 3, naziv: 'Iznajmljeno', opis: 'Trenutno kod korisnika' },
+                { sifra: 4, naziv: 'U povratu / pregled', opis: 'Vraćeno, ali još nije provjereno' },
+                { sifra: 5, naziv: 'U servisu', opis: 'Pokvareno ili na održavanju' },
+                { sifra: 6, naziv: 'Neaktivno', opis: 'Nije u ponudi(staro, otpisno, blokirano' }
+            ]
 
-    // Ako nema statusa → kreiraj
-    if (!statusi || statusi.length === 0) {
-        const defaultStatusi = [
-            { sifra: 1, naziv: 'Dostupno', opis: 'Može se iznajmiti odmah' },
-            { sifra: 2, naziv: 'Rezervirano', opis: 'Netko je napravio booking (ali još nije preuzeo)' },
-            { sifra: 3, naziv: 'Iznajmljeno', opis: 'Trenutno kod korisnika' },
-            { sifra: 4, naziv: 'U povratu / pregled', opis: 'Vraćeno, ali još nije provjereno' },
-            { sifra: 5, naziv: 'U servisu', opis: 'Pokvareno ili na održavanju' },
-            { sifra: 6, naziv: 'Neaktivno', opis: 'Nije u ponudi(staro, otpisno, blokirano' }
-        ]
+            for (const s of defaultStatusi) {
+                await StatusService.dodaj(s)
+            }
 
-        for (const s of defaultStatusi) {
-            await StatusService.dodaj(s)
+            const res = await StatusService.get()
+            statusi = res.data
         }
 
-        const res = await StatusService.get()
-        statusi = res.data
+        return { kategorije, statusi }
     }
-
-    return { kategorije, statusi }
-}
 
   
     const faker = new Faker({
@@ -107,7 +106,7 @@ export default function GeneriranjePodataka() {
             const randomKategorija = kategorije[faker.number.int({ min: 0, max: kategorije.length - 1 })]
             const randomStatus = statusi[faker.number.int({ min: 0, max: statusi.length - 1 })]
   
-            const grupa = {
+            const uredjaj = {
                 kategorija: randomKategorija.sifra,
                 model: modeliOpreme[i % modeliOpreme.length] + (i >= modeliOpreme.length ? ` ${Math.floor(i / modeliOpreme.length) + 1}` : ''),
                 serijskiBroj: faker.string.alphanumeric(10),
@@ -115,10 +114,8 @@ export default function GeneriranjePodataka() {
                 napomena: faker.lorem.sentence(2)
             };
             
-            await UredjajService.dodaj(grupa)
+            await UredjajService.dodaj(uredjaj)
         }
-
-
     }
 
     const generirajKlijente = async (broj) => {
@@ -132,6 +129,23 @@ export default function GeneriranjePodataka() {
                 email: faker.internet.email()
             }
             await KlijentService.dodaj(klijent)
+        }
+    }
+
+    const generirajEvente = async (broj) => {
+
+        for (let i = 0; i < broj; i++) {
+            const randomKlijent = klijenti[faker.number.int({ min: 0, max: klijenti.length - 1 })]
+  
+            const uredjaj = {
+                datumPocetka: faker.date.soon().toISOString().split('T')[0],
+                predvidenoTrajanje: faker.number.int({ min: 0, max: 30 }),
+                lokacija: faker.location.city(),
+                klijent: randomKlijent.sifra,
+                napomena: faker.lorem.sentence(2)
+            };
+            
+            await EventService.dodaj(uredjaj)
         }
     }
 
@@ -180,7 +194,7 @@ export default function GeneriranjePodataka() {
         }
     }
 
-        const handleGenerirajKlijente = async (e) => {
+    const handleGenerirajKlijente = async (e) => {
         e.preventDefault()
         setLoading(true)
         setPoruka(null)
@@ -200,6 +214,28 @@ export default function GeneriranjePodataka() {
             });
         } finally {
             setLoading(false)
+        }
+    }
+
+    const handleGenerirajEvente = async (e) => {
+        e.preventDefault()
+        setLoading(true)
+        setPoruka(null)
+
+        try {
+            await generirajEvente(brojEvenata);
+
+            setPoruka({
+                tip: 'success',
+                tekst: `Uspješno generirano ${brojEvenata} evenata!`
+            });
+        } catch (error) {
+            setPoruka({
+                tip: 'danger',
+                tekst: 'Greška pri generiranju evenata: ' + error.message
+            });
+        } finally {
+            setLoading(false);
         }
     }
 
@@ -293,6 +329,36 @@ export default function GeneriranjePodataka() {
         }
     };
 
+    const handleObrisiEvente = async () => {
+        if (!window.confirm('Jeste li sigurni da želite obrisati sve evente?')) {
+            return
+        }
+
+        setLoading(true);
+        setPoruka(null);
+
+        try {
+            const rezultat = await EventService.get();
+            const eventi = rezultat.data;
+            
+            for (const event of eventi) {
+                await EventService.obrisi(event.sifra);
+            }
+
+            setPoruka({
+                tip: 'success',
+                tekst: `Uspješno obrisano ${eventi.length} evenata!`
+            });
+        } catch (error) {
+            setPoruka({
+                tip: 'danger',
+                tekst: 'Greška pri brisanju evenata: ' + error.message
+            });
+        } finally {
+            setLoading(false)
+        }
+    }
+
     return (
         <Container className="mt-4">
             <h1>Generiranje podataka</h1>
@@ -307,7 +373,7 @@ export default function GeneriranjePodataka() {
             )}
 
             <Row>
-                <Col md={4}>
+                <Col md={3}>
                     <Form onSubmit={handleGenerirajKorisnike}>
                         <Form.Group className="mb-3">
                             <Form.Label>Broj korisnika</Form.Label>
@@ -333,7 +399,7 @@ export default function GeneriranjePodataka() {
                         </Button>
                     </Form>
                 </Col>
-                <Col md={4}>
+                <Col md={3}>
                     <Form onSubmit={handleGenerirajKlijente}>
                         <Form.Group className="mb-3">
                             <Form.Label>Broj klijenata</Form.Label>
@@ -359,7 +425,7 @@ export default function GeneriranjePodataka() {
                         </Button>
                     </Form>
                 </Col>
-                <Col md={4}>
+                <Col md={3}>
                     <Form onSubmit={handleGenerirajUredjaje}>
                         <Form.Group className="mb-3">
                             <Form.Label>Broj uređaja</Form.Label>
@@ -385,6 +451,32 @@ export default function GeneriranjePodataka() {
                         </Button>
                     </Form>
                 </Col>
+                <Col md={3}>
+                    <Form onSubmit={handleGenerirajEvente}>
+                        <Form.Group className="mb-3">
+                            <Form.Label>Broj evenata</Form.Label>
+                            <Form.Control
+                                type="number"
+                                min="1"
+                                max="100"
+                                value={brojEvenata}
+                                onChange={(e) => setBrojEvenata(parseInt(e.target.value))}
+                                disabled={loading}
+                            />
+                            <Form.Text className="text-muted">
+                                Unesite broj evenata (1-100)
+                            </Form.Text>
+                        </Form.Group>
+                        <Button 
+                            variant="primary" 
+                            type="submit" 
+                            disabled={loading}
+                            className="w-100"
+                        >
+                            {loading ? 'Generiranje...' : 'Generiraj evenata'}
+                        </Button>
+                    </Form>
+                </Col>
             </Row>
 
             <Alert variant="warning" className="mt-3">
@@ -400,7 +492,7 @@ export default function GeneriranjePodataka() {
             </p>
 
             <Row className="mt-3">
-                <Col md={4}>
+                <Col md={3}>
                     <Button 
                         variant="danger" 
                         onClick={handleObrisiKorisnike}
@@ -410,7 +502,7 @@ export default function GeneriranjePodataka() {
                         {loading ? 'Brisanje...' : 'Obriši sve korisnike'}
                     </Button>
                 </Col>
-                <Col md={4}>
+                <Col md={3}>
                     <Button 
                         variant="danger" 
                         onClick={handleObrisiKlijente}
@@ -420,7 +512,7 @@ export default function GeneriranjePodataka() {
                         {loading ? 'Brisanje...' : 'Obriši sve klijente'}
                     </Button>
                 </Col>
-                <Col md={4}>
+                <Col md={3}>
                     <Button 
                         variant="danger" 
                         onClick={handleObrisiUredjaje}
@@ -428,6 +520,16 @@ export default function GeneriranjePodataka() {
                         className="w-100 mb-2"
                     >
                         {loading ? 'Brisanje...' : 'Obriši sve uređaje'}
+                    </Button>
+                </Col>
+                <Col md={3}>
+                    <Button 
+                        variant="danger" 
+                        onClick={handleObrisiEvente}
+                        disabled={loading}
+                        className="w-100 mb-2"
+                    >
+                        {loading ? 'Brisanje...' : 'Obriši sve evente'}
                     </Button>
                 </Col>
             </Row>

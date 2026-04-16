@@ -1,14 +1,16 @@
 import { useEffect, useState } from "react"
 import EventService from "../../services/eventi/EventService"
-import { Button, Table } from "react-bootstrap"
 import { Link, useNavigate } from "react-router-dom"
 import { RouteNames } from "../../constants"
 import KlijentService from "../../services/klijenti/KlijentService"
-import FormatDatuma from "../../components/FormatDatuma"
+import EventPregledGrid from "./EventPregledGrid"
+import EventPregledTablica from "./EventPregledTablica"
+import useBreakpoint from "../../hooks/useBrakepoint";
 
 export default function EventPregled(){
 
     const navigate = useNavigate()
+    const sirina = useBreakpoint();
 
     const [eventi, setEventi] = useState([])
     const [klijenti, setKlijenti] = useState([])
@@ -57,38 +59,21 @@ export default function EventPregled(){
         className="btn btn-success w-100 my-3">
             Dodavanje novog eventa
         </Link>
-        <Table striped bordered hover>
-            <thead className="text-center">
-                <tr>
-                    <th>Datum početka</th>
-                    <th>Predviđeno trajanje</th>
-                    <th>Lokacija</th>
-                    <th>Klijent</th>
-                    <th>Napomena</th>
-                    <th>Akcija</th>
-                </tr>
-            </thead>
-            <tbody>
-                {eventi && eventi.map((event)=>(
-                    <tr key={event.sifra}>
-                        <td className="lead text-center"><FormatDatuma datum={event.datumPocetka} /></td>
-                        <td className="text-center">{event.predvidenoTrajanje}</td>
-                        <td>{event.lokacija}</td>
-                        <td>{dohvatiNazivKlijenta(event.klijent)}</td>
-                        <td>{event.napomena}</td>
-                        <td>
-                            <Button onClick={()=>{navigate(`/eventi/${event.sifra}`)}}>
-                                Promjeni
-                            </Button>
-                            &nbsp;&nbsp;
-                            <Button variant="danger" onClick={() => brisanje(event.sifra)}>
-                                Obriši
-                            </Button>
-                        </td>
-                    </tr>
-                ))}
-            </tbody>
-        </Table>
+        {['xs', 'sm', 'md'].includes(sirina) ? (
+        <EventPregledGrid
+            eventi={eventi} 
+            dohvatiNazivKlijenta={dohvatiNazivKlijenta}
+            navigate={navigate} 
+            brisanje={brisanje} 
+        />
+        ) : (
+        <EventPregledTablica
+            eventi={eventi} 
+            dohvatiNazivKlijenta={dohvatiNazivKlijenta}
+            navigate={navigate} 
+            brisanje={brisanje} 
+        />
+    )}
         </>
     )
 }

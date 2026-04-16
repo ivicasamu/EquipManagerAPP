@@ -1,14 +1,16 @@
 import { useEffect, useState } from "react";
-import { Button, Container, Table } from "react-bootstrap";
 import KorisniciService from "../../services/korisnici/KorisnikService";
-import { GrDislike, GrLike } from "react-icons/gr";
 import { Link, useNavigate } from "react-router-dom";
 import { RouteNames } from "../../constants";
 import KorisnikService from "../../services/korisnici/KorisnikService";
+import KorisnikPregledGrid from "./KorisnikPregledGrid";
+import KorisnikPregledTablica from "./KorisnikPregledTable";
+import useBreakpoint from "../../hooks/useBrakepoint";
 
 export default function KorisniciPregled(){
 
     const navigate = useNavigate()
+    const sirina = useBreakpoint();
     const[korisnici, setKorisnici] = useState([])
 
     useEffect(()=>{
@@ -25,7 +27,7 @@ export default function KorisniciPregled(){
         })
     }
 
-    async function obrisi(sifra) {
+    async function brisanje(sifra) {
         if(!confirm('Sigurno obrisati')){
             return
         }
@@ -38,50 +40,19 @@ export default function KorisniciPregled(){
         <Link to={RouteNames.KORISNICI_NOVI} className="btn btn-success w-100 mb-3 mt-3">
             Dodavanje novog korisnika
         </Link>
-        <Table striped bordered hover>
-            <thead className="text-center">
-                <tr>
-                    <th>Ime i prezime</th>
-                    <th>Korisničko ime</th>
-                    <th>Email</th>
-                    <th>Administrator</th>
-                    <th>Akcija</th>
-                </tr>
-            </thead>
-            <tbody>
-                {korisnici && korisnici.map((korisnik)=>(
-                    <tr key={korisnik.sifra}>
-                        <td>{korisnik.ime} {korisnik.prezime}</td>
-                        <td>{korisnik.korisnickoIme}</td>
-                        <td>{korisnik.email}</td>
-                        <td>
-                            {(korisnik.administrator) &&
-                            <GrLike 
-                                size={20}
-                                color='green'
-                            />
-                            }
-                            {(!korisnik.administrator) &&
-                            <GrDislike 
-                                size={20}
-                                color='red'
-                            />
-                            }
-                            
-                        </td>
-                        <td>
-                            <Button onClick={()=>{navigate(`/korisnici/${korisnik.sifra}`)}}>
-                                Promjena
-                            </Button>
-                            &nbsp;&nbsp;
-                            <Button variant="danger" onClick={()=>{obrisi(korisnik.sifra)}}>
-                                Obriši
-                            </Button>
-                        </td>
-                    </tr>
-                ))}
-            </tbody>
-        </Table>
+        {['xs', 'sm', 'md'].includes(sirina) ? (
+            <KorisnikPregledGrid
+                korisnici={korisnici} 
+                navigate={navigate} 
+                brisanje={brisanje} 
+            />
+        ) : (
+            <KorisnikPregledTablica
+                korisnici={korisnici} 
+                navigate={navigate} 
+                brisanje={brisanje}  
+            />
+        )}
         </>
     )
 }

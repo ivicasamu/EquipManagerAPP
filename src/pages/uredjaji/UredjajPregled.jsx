@@ -1,14 +1,17 @@
 import { useEffect, useState } from "react"
 import UredjajService from "../../services/uredjaji/UredjajService"
-import { Button, Table } from "react-bootstrap"
 import { Link, useNavigate } from "react-router-dom"
 import { RouteNames } from "../../constants"
 import KategorijaService from "../../services/kategorije/KategorijaService"
 import StatusService from "../../services/statusi/StatusService"
+import useBreakpoint from "../../hooks/useBrakepoint"
+import UredjajPregledTablica from "./UredjajPregledTablica"
+import UredjajPregledGrid from "./UredjajPregledGrid"
 
 export default function UredjajPregled(){
 
     const navigate = useNavigate()
+    const sirina = useBreakpoint();
 
     const [uredjaji, setUredjaji] = useState([])
     const [kategorije, setKategorije] = useState([])
@@ -74,38 +77,23 @@ export default function UredjajPregled(){
         className="btn btn-success w-100 my-3">
             Dodavanje novog uređaja
         </Link>
-        <Table striped bordered hover>
-            <thead className="text-center">
-                <tr>
-                    <th>Kategorija</th>
-                    <th>Model</th>
-                    <th>Serijski broj</th>
-                    <th>Status</th>
-                    <th>Napomena</th>
-                    <th>Akcija</th>
-                </tr>
-            </thead>
-            <tbody>
-                {uredjaji && uredjaji.map((uredjaj)=>(
-                    <tr key={uredjaj.sifra}>
-                        <td className="lead">{dohvatiNazivKategorije(uredjaj.kategorija)}</td>
-                        <td>{uredjaj.model}</td>
-                        <td>{uredjaj.serijskiBroj}</td>
-                        <td>{dohvatiNazivStatusa(uredjaj.status)}</td>
-                        <td>{uredjaj.napomena}</td>
-                        <td>
-                            <Button onClick={()=>{navigate(`/uredjaji/${uredjaj.sifra}`)}}>
-                                Promjeni
-                            </Button>
-                            &nbsp;&nbsp;
-                            <Button variant="danger" onClick={() => brisanje(uredjaj.sifra)}>
-                                Obriši
-                            </Button>
-                        </td>
-                    </tr>
-                ))}
-            </tbody>
-        </Table>
+        {['xs', 'sm', 'md'].includes(sirina) ? (
+            <UredjajPregledGrid
+                uredjaji={uredjaji} 
+                dohvatiNazivKategorije={dohvatiNazivKategorije}
+                dohvatiNazivStatusa={dohvatiNazivStatusa}
+                navigate={navigate} 
+                brisanje={brisanje} 
+            />
+        ) : (
+            <UredjajPregledTablica
+                uredjaji={uredjaji}
+                dohvatiNazivKategorije={dohvatiNazivKategorije}
+                dohvatiNazivStatusa={dohvatiNazivStatusa} 
+                navigate={navigate} 
+                brisanje={brisanje} 
+            />
+        )}
         </>
     )
 }
