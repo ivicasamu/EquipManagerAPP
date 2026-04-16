@@ -1,187 +1,287 @@
 import { useEffect, useState } from "react"
-import { Form, Button, Row, Col, Container, Card } from "react-bootstrap"
+import { Form, Button, Row, Col, Container, Card, Table } from "react-bootstrap"
 import { RouteNames } from "../../constants"
 import { Link, useNavigate, useParams } from "react-router-dom"
+import EventService from "../../services/eventi/EventService"
+import KlijentService from "../../services/klijenti/KlijentService"
 import UredjajService from "../../services/uredjaji/UredjajService"
-import KategorijaService from "../../services/kategorije/KategorijaService"
-import StatusService from "../../services/statusi/StatusService"
 
-
-export default function UredjajNovi() {
+export default function EventNovi() {
 
     const navigate = useNavigate()
     const params = useParams()
-    const [uredjaj, setUredjaj] = useState([])
-    const [kategorije, setKategorije] = useState([])
-    const [statusi, setStatusi] = useState([])
+
+    const [event, setEvent] = useState({})
+    const [klijenti, setKlijenti] = useState([])
+    const [uredjaji, setUredjaji] = useState([])
+    const [odabraniUredjaji, setOdabraniUredjaji] = useState([])
+    const [pretragaUredjaja, setPretragaUredjaja] = useState('')
+    const [prikaziAutocomplete, setPrikaziAutocomplete] = useState(false)
+    const [odabraniIndex, setOdabraniIndex] = useState(-1)
 
     useEffect(() => {
-        ucitajUredjaj()
-        ucitajKategorije()
-        ucitajStatuse()
+        ucitajEvent()
+        ucitajKlijente()
+        ucitajUredjaje()
     }, [])
 
-    async function ucitajUredjaj() {
-        await UredjajService.getBySifra(params.sifra).then((odgovor)=>{
-            if (!odgovor.success) {
-                alert('Nije implementiran servis')
-                return
-            }
-            setUredjaj(odgovor.data)
-        })
+    useEffect(() => {
+        if (event.uredjaji && event.uredjaji.length > 0 && uredjaji.length > 0) {
+            const odabrani = uredjaji.filter(p => event.uredjaji.includes(p.sifra))
+            setOdabraniUredjaji(odabrani)
+        }
+    }, [event, uredjaji])
+
+    async function ucitajEvent() {
+        if (!params.sifra) return
+        const odgovor = await EventService.getBySifra(params.sifra)
+        if (!odgovor.success) {
+            alert('Nije implementiran servis')
+            return
+        }
+        setEvent(odgovor.data)
     }
 
-    async function ucitajKategorije() {
-        await KategorijaService.get().then((odgovor) => {
-            if (!odgovor.success) {
-                alert('Nije implementiran servis za kategorije')
-                return
-            }
-            setKategorije(odgovor.data)
-        })
+    async function ucitajKlijente() {
+        const odgovor = await KlijentService.get()
+        if (!odgovor.success) {
+            alert('Nije implementiran servis za klijente')
+            return
+        }
+        setKlijenti(odgovor.data)
     }
 
-    async function ucitajStatuse() {
-        await StatusService.get().then((odgovor) => {
-            if (!odgovor.success) {
-                alert('Nije implementiran servis za statuse')
-                return
-            }
-            setStatusi(odgovor.data)
-        })
+    async function ucitajUredjaje() {
+        const odgovor = await UredjajService.get()
+        if (!odgovor.success) {
+            alert('Nije implementiran servis za uređaje')
+            return
+        }
+        setUredjaji(odgovor.data)
     }
 
-    async function promjeni(uredjaj) {
-        await UredjajService.promjeni(params.sifra,uredjaj).then(()=>{
-            navigate(RouteNames.UREDJAJI)
-        })
+    function dodajUredjaj(uredjaj) {
+        if (!odabraniUredjaji.find(p => p.sifra === uredjaj.sifra)) {
+            setOdabraniUredjaji(prev => [...prev, uredjaj])
+        }
+        setPretragaUredjaja('')
+        setPrikaziAutocomplete(false)
+        setOdabraniIndex(-1)
+    }
+
+    function ukloniUredjaj(sifra) {
+        setOdabraniUredjaji(prev => prev.filter(p => p.sifra !== sifra))
+    }
+
+    function filtrirajUredjaje() {
+        if (!pretragaUredjaja) return []
+        return uredjaji.filter(p =>
+            !odabraniUredjaji.find(op => op.sifra === p.sifra) &&
+            (
+                p.model.toLowerCase().includes(pretragaUredjaja.toLowerCase()) ||
+                p.serijskiBroj.toLowerCase().includes(pretragaUredjaja.toLowerCase())
+            )
+        )
+    }
+
+    function handleKeyDown(e) {
+        const filtrirani = filtrirajUredjaje()
+
+        if (e.key === 'ArrowDown') {
+            e.preventDefault()
+            setOdabraniIndex(prev => (prev + 1) % filtrirani.length)
+        } else if (e.key === 'ArrowUp') {
+            e.preventDefault()
+            setOdabraniIndex(prev => (prev <= 0 ? filtrirani.length - 1 : prev - 1))
+        } else if (e.key === 'Enter' && odabraniIndex >= 0 && filtrirani.length > 0) {
+            e.preventDefault()
+            dodajUredjaj(filtrirani[odabraniIndex])
+        } else if (e.key === 'Escape') {
+            setPrikaziAutocomplete(false)
+            setOdabraniIndex(-1)
+        }
+    }
+
+    async function dodaj(noviEvent) {
+        await EventService.dodaj(noviEvent)
+        navigate(RouteNames.EVENTI)
+    }
+
+    async function promjeni(sifra, event) {
+        await EventService.promjeni(sifra, event)
+        navigate(RouteNames.EVENTI)
     }
 
     function odradiSubmit(e) {
         e.preventDefault()
         const podaci = new FormData(e.target)
 
-        const odabranaKategorija = parseInt(podaci.get('kategorija'));
-        if (isNaN(odabranaKategorija) || odabranaKategorija <= 0) {
-            alert("Odabrana kategorija nije valjana!");
-            return;
-        }
+        const odabraniKlijent = parseInt(podaci.get('klijent'))
 
-
-        if (!podaci.get('model') || podaci.get('model').trim().length === 0) {
-            alert("Model uređaja je obavezan i ne smije sadržavati samo razmake!");
-            return;
-        }
-
-        if (podaci.get('model').trim().length < 3) {
-            alert("Model uređaja mora imati najmanje 3 znaka!");
-            return;
-        }
-
-        const odabraniStatus = parseInt(podaci.get('status'));
-        if (isNaN(odabraniStatus) || odabraniStatus <= 0) {
-            alert("Odabrani status nije valjan!");
-            return;
-        }
-
-        promjeni({
-            kategorija: odabranaKategorija,
-            model: podaci.get('model'),
-            serijskiBroj: podaci.get('serijskiBroj'),
-            status: odabraniStatus,
+        promjeni(params.sifra,{
+            datumPocetka: new Date(podaci.get('datumPocetka')).toISOString(),
+            predvidenoTrajanje: podaci.get('predvidenoTrajanje'),
+            lokacija: podaci.get('lokacija'),
+            klijent: odabraniKlijent,
+            uredjaji: odabraniUredjaji.map(u => u.sifra),
             napomena: podaci.get('napomena')
         })
     }
 
     return (
         <>
-            <h3>Unos novog uređaja</h3>
+            <h3>Unos novog eventa</h3>
             <Form onSubmit={odradiSubmit}>
                 <Container className="mt-4">
                     <Card className="shadow-sm">
                         <Card.Body>
-                            <Card.Title className="mb-4">Podaci o uređaju</Card.Title>
+                            <Card.Title className="mb-4">Podaci o eventu</Card.Title>
 
                             <Row>
                                 <Col xs={6}>
-                                    <Form.Group controlId="model" className="mb-3">
-                                        <Form.Label className="fw-bold">Model</Form.Label>
-                                        <Form.Control
-                                            type="text"
-                                            name="model"
-                                            placeholder="Unesite model uređaja"
-                                            required
-                                            defaultValue={uredjaj.model}
+                                    <Form.Group controlId="datumPocetka" className="mb-3">
+                                        <Form.Label className="fw-bold">Datum početka</Form.Label>
+                                        <Form.Control type="date" name="datumPocetka" 
+                                            onClick={(e) => e.target.showPicker()} 
+                                            onFocus={(e) => e.target.showPicker()}
+                                            defaultValue={event.datumPocetka?.substring(0, 10)}
                                         />
                                     </Form.Group>
-                                </Col>
-                                <Col xs={6}>
-                                    <Form.Group controlId="serijskiBroj" className="mb-3">
-                                        <Form.Label className="fw-bold">Serijski broj</Form.Label>
+
+                                    <Form.Group controlId="predvidenoTrajanje" className="mb-3">
+                                        <Form.Label className="fw-bold">Predviđeno trajanje</Form.Label>
                                         <Form.Control
                                             type="text"
-                                            name="serijskiBroj"
-                                            placeholder="Unesite serijski broj"
-                                            defaultValue={uredjaj.serijskiBroj}
+                                            name="predvidenoTrajanje"
+                                            placeholder="Unesite predviđeno trajanje eventa"
+                                            defaultValue={event.predvidenoTrajanje}
                                         />
                                     </Form.Group>
-                                </Col>
-                            </Row>
-                            
-                            <Row>
-                                <Col xs={6}>
-                                    <Form.Group controlId="kategorija" className="mb-3">
-                                        <Form.Label className="fw-bold">Kategorija</Form.Label>
-                                        <Form.Select name="kategorija" required value={uredjaj.kategorija || ''} onChange={(e) => setUredjaj({...uredjaj, kategorija: parseInt(e.target.value)})}>
-                                            <option value="">Odaberite kategoriju</option>
-                                            {kategorije && kategorije.map((kategorija) => (
-                                                <option key={kategorija.sifra} value={kategorija.sifra}>
-                                                    {kategorija.naziv}
+
+                                    <Form.Group controlId="lokacija" className="mb-3">
+                                        <Form.Label className="fw-bold">Lokacija eventa:</Form.Label>
+                                        <Form.Control
+                                            type="text"
+                                            name="lokacija"
+                                            placeholder="Unesite lokaciju eventa"
+                                            defaultValue={event.lokacija}
+                                        />
+                                    </Form.Group>
+
+                                    <Form.Group controlId="klijent" className="mb-3">
+                                        <Form.Label className="fw-bold">Klijent</Form.Label>
+                                        <Form.Select name="klijent" required value={event.klijent || ''} onChange={(e) => setEvent({...event, klijent: parseInt(e.target.value)})}>
+                                            <option value="">Odaberite klijenta</option>
+                                            {klijenti && [...klijenti]
+                                                .sort((a, b) => a.naziv.localeCompare(b.naziv, 'hr'))
+                                                .map((klijent) => (
+                                                <option key={klijent.sifra} value={klijent.sifra}>
+                                                    {klijent.naziv}
                                                 </option>
                                             ))}
                                         </Form.Select>
                                     </Form.Group>
-                                </Col>
 
-                                <Col xs={6}>
-                                    <Form.Group controlId="status" className="mb-3">
-                                        <Form.Label className="fw-bold">Status</Form.Label>
-                                        <Form.Select name="status" required value={uredjaj.status || ''} onChange={(e) => setUredjaj({...uredjaj, status: parseInt(e.target.value)})}>
-                                            <option value="">Odaberite status</option>
-                                            {statusi && statusi.map((status) => (
-                                                <option key={status.sifra} value={status.sifra}>
-                                                    {status.naziv}
-                                                </option>
-                                            ))}
-                                        </Form.Select>
-                                    </Form.Group>
-                                </Col>
-                            </Row>
-                            
-                            <Row>
-                                <Col xs={12}>
                                     <Form.Group controlId="napomena" className="mb-3">
                                         <Form.Label className="fw-bold">Napomena</Form.Label>
                                         <Form.Control
-                                            type="textBox"
+                                            as="textarea"
+                                            rows={3}
                                             name="napomena"
                                             placeholder="Unesite napomenu za uređaj"
-                                            defaultValue={uredjaj.napomena}
+                                            defaultValue={event.napomena}
                                         />
                                     </Form.Group>
                                 </Col>
-                            </Row>
 
+                                <Col xs={6}>
+                                    <Card className="shadow-sm">
+                                        <Card.Body>
+                                            <Card.Title className="mb-4">Uređaji</Card.Title>
+
+                                            <Form.Group className="mb-3 position-relative">
+                                                <Form.Label className="fw-bold">Dodaj uređaj</Form.Label>
+                                                <Form.Control
+                                                    type="text"
+                                                    placeholder="Pretraži uređaje..."
+                                                    value={pretragaUredjaja}
+                                                    onChange={(e) => {
+                                                        setPretragaUredjaja(e.target.value)
+                                                        setPrikaziAutocomplete(e.target.value.length > 0)
+                                                        setOdabraniIndex(-1)
+                                                    }}
+                                                    onFocus={() => setPrikaziAutocomplete(pretragaUredjaja.length > 0)}
+                                                    onKeyDown={handleKeyDown}
+                                                />
+                                                {prikaziAutocomplete && filtrirajUredjaje().length > 0 && (
+                                                    <div className="position-absolute w-100 bg-white border rounded shadow-sm" style={{ zIndex: 1000, maxHeight: '200px', overflowY: 'auto' }}>
+                                                        {filtrirajUredjaje().map((uredjaj, index) => (
+                                                            <div
+                                                                key={uredjaj.sifra}
+                                                                className="p-2 cursor-pointer"
+                                                                style={{
+                                                                    cursor: 'pointer',
+                                                                    backgroundColor: index === odabraniIndex ? '#007bff' : 'white',
+                                                                    color: index === odabraniIndex ? 'white' : 'black'
+                                                                }}
+                                                                onClick={() => dodajUredjaj(uredjaj)}
+                                                                onMouseEnter={(e) => {
+                                                                    setOdabraniIndex(index)
+                                                                }}
+                                                            >
+                                                                {uredjaj.model}, (sn: {uredjaj.serijskiBroj})
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                )}
+                                            </Form.Group>
+
+                                            {odabraniUredjaji.length > 0 && (
+                                                <div style={{overflow: 'auto', maxHeight: '300px'}}>
+                                                    <Table striped bordered hover size="sm">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Model i serijski broj</th>
+                                                                <th style={{ width: '80px' }}>Akcija</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            {odabraniUredjaji.map(uredjaj => (
+                                                                <tr key={uredjaj.sifra}>
+                                                                    <td>{uredjaj.model} (sn:{uredjaj.serijskiBroj})</td>
+                                                                    <td>
+                                                                        <Button
+                                                                            variant="danger"
+                                                                            size="sm"
+                                                                            onClick={() => ukloniUredjaj(uredjaj.sifra)}
+                                                                        >
+                                                                            Obriši
+                                                                        </Button>
+                                                                    </td>
+                                                                </tr>
+                                                            ))}
+                                                        </tbody>
+                                                    </Table>
+                                                </div>
+
+                                            )}
+                                            {odabraniUredjaji.length === 0 && (
+                                                <p className="text-muted">Nema odabranih uređaja</p>
+                                            )}
+                                        </Card.Body>
+                                    </Card>
+                                </Col>
+                            </Row>
 
                             <hr />
 
                             {/* Gumbi za akciju */}
                             <div className="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
-                                <Link to={RouteNames.UREDJAJI} className="btn btn-danger px-4">
+                                <Link to={RouteNames.EVENTI} className="btn btn-danger px-4">
                                     Odustani
                                 </Link>
                                 <Button type="submit" variant="success">
-                                    Promjeni uređaj
+                                    Promjeni event
                                 </Button>
                             </div>
                         </Card.Body>

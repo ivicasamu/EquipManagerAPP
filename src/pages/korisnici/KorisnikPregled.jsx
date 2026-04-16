@@ -39,7 +39,7 @@ export default function KorisniciPregled(){
             Dodavanje novog korisnika
         </Link>
         <Table striped bordered hover>
-            <thead>
+            <thead className="text-center">
                 <tr>
                     <th>Ime i prezime</th>
                     <th>Korisničko ime</th>

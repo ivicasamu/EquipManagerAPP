@@ -191,7 +191,7 @@ export default function EventNovi() {
                                             as="textarea"
                                             rows={3}
                                             name="napomena"
-                                            placeholder="Unesite napomenu za uređaj"
+                                            placeholder="Unesite napomenu za event"
                                         />
                                     </Form.Group>
                                 </Col>

@@ -58,7 +58,7 @@ export default function EventPregled(){
             Dodavanje novog eventa
         </Link>
         <Table striped bordered hover>
-            <thead>
+            <thead className="text-center">
                 <tr>
                     <th>Datum početka</th>
                     <th>Predviđeno trajanje</th>

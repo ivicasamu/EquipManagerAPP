@@ -18,17 +18,57 @@ export default function GeneriranjePodataka() {
     const [poruka, setPoruka] = useState(null)
     const [loading, setLoading] = useState(false)
 
-    if (kategorije.length === 0) {
-        throw new Error('Nema dostupnih kategorija. Prvo generirajte kategorije.')
+    async function osigurajKategorijeIStatuse() {
+    const rezultatKategorije = await KategorijaService.get()
+    const rezultatStatusi = await StatusService.get()
+
+    let kategorije = rezultatKategorije.data
+    let statusi = rezultatStatusi.data
+
+    // Ako nema kategorija → kreiraj
+    if (!kategorije || kategorije.length === 0) {
+        const defaultKategorije = [
+            { sifra: 1, naziv: 'Projektor', aktivna: true },
+            { sifra: 2, naziv: 'Leća', aktivna: true },
+            { sifra: 3, naziv: 'Server', aktivna: true },
+            { sifra: 4, naziv: 'Video server', aktivna: true },
+            { sifra: 5, naziv: 'Računalo', aktivna: true },
+            { sifra: 6, naziv: 'Procesor zvuka', aktivna: true },
+        ]
+
+        for (const k of defaultKategorije) {
+            await KategorijaService.dodaj(k)
+        }
+
+        const res = await KategorijaService.get()
+        kategorije = res.data
     }
 
-    if (statusi.length === 0) {
-        throw new Error('Nema dostupnih statusa. Prvo generirajte statuse.')
+    // Ako nema statusa → kreiraj
+    if (!statusi || statusi.length === 0) {
+        const defaultStatusi = [
+            { sifra: 1, naziv: 'Dostupno', opis: 'Može se iznajmiti odmah' },
+            { sifra: 2, naziv: 'Rezervirano', opis: 'Netko je napravio booking (ali još nije preuzeo)' },
+            { sifra: 3, naziv: 'Iznajmljeno', opis: 'Trenutno kod korisnika' },
+            { sifra: 4, naziv: 'U povratu / pregled', opis: 'Vraćeno, ali još nije provjereno' },
+            { sifra: 5, naziv: 'U servisu', opis: 'Pokvareno ili na održavanju' },
+            { sifra: 6, naziv: 'Neaktivno', opis: 'Nije u ponudi(staro, otpisno, blokirano' }
+        ]
+
+        for (const s of defaultStatusi) {
+            await StatusService.dodaj(s)
+        }
+
+        const res = await StatusService.get()
+        statusi = res.data
     }
+
+    return { kategorije, statusi }
+}
 
   
     const faker = new Faker({
-        locale: [en]
+        locale: [hr, en, en_US]
     });
 
     const generirajKorisnike = async (broj) => {
@@ -47,10 +87,7 @@ export default function GeneriranjePodataka() {
 
     const generirajUredjaje = async (broj) => {
 
-        const rezultatKategorije = await KategorijaService.get()
-        const rezultatStatusi = await StatusService.get()
-        const kategorije = rezultatKategorije.data
-        const statusi = rezultatStatusi.data;
+        const { kategorije, statusi } = await osigurajKategorijeIStatuse()
 
         const modeliOpreme = [
             'Epson PU2213',

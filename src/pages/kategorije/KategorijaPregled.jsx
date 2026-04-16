@@ -39,7 +39,7 @@ export default function KategorijaPregled(){
             Dodavanje nove kategorije
         </Link>
         <Table striped bordered hover>
-            <thead>
+            <thead className="text-center">
                 <tr>
                     <th>Naziv</th>
                     <th>Aktivna</th>

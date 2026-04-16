@@ -25,9 +25,10 @@ export const RouteNames = {
 
     EVENTI: '/eventi',
     EVENTI_NOVI: '/eventi/novi',
+    EVENTI_PROMJENA: '/eventi/:sifra',
 
     GENERIRANJE_PODATAKA: '/generiraj-podatke',
 }
 
 // memorija, localStorage, firebase
-export const DATA_SOURCE = 'memorija'
+export const DATA_SOURCE = 'localStorage'

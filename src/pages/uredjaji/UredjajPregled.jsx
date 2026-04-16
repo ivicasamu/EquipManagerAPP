@@ -75,7 +75,7 @@ export default function UredjajPregled(){
             Dodavanje novog uredjaji
         </Link>
         <Table striped bordered hover>
-            <thead>
+            <thead className="text-center">
                 <tr>
                     <th>Kategorija</th>
                     <th>Model</th>

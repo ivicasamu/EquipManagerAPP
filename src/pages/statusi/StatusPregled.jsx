@@ -39,7 +39,7 @@ export default function StatusPregled(){
             Dodavanje novi status
         </Link>
         <Table striped bordered hover>
-            <thead>
+            <thead className="text-center">
                 <tr>
                     <th>Naziv</th>
                     <th>Opis</th>
