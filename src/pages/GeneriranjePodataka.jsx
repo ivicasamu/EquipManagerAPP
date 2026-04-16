@@ -71,10 +71,10 @@ export default function GeneriranjePodataka() {
             const randomStatus = statusi[faker.number.int({ min: 0, max: statusi.length - 1 })]
   
             const grupa = {
-                kategorija: {sifra: randomKategorija.sifra},
+                kategorija: randomKategorija.sifra,
                 model: modeliOpreme[i % modeliOpreme.length] + (i >= modeliOpreme.length ? ` ${Math.floor(i / modeliOpreme.length) + 1}` : ''),
                 serijskiBroj: faker.string.alphanumeric(10),
-                status: {sifra: randomStatus.sifra},
+                status: randomStatus.sifra,
                 napomena: faker.lorem.sentence(2)
             };
             
