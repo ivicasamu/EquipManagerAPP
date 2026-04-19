@@ -11,3 +11,5 @@ U terminalu nakon što ste zaustavili aplikaciju (ctrl + c) izvesti:
     npm install --save-dev ftp-deploy
 
     npm install @faker-js/faker
+
+    npm install jspdf jspdf-autotable

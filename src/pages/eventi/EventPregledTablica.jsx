@@ -1,7 +1,7 @@
 import { Button, Table } from "react-bootstrap";
 import FormatDatuma from "../../components/FormatDatuma";
 
-export default function EventPregledTablica({  eventi, dohvatiNazivKlijenta, navigate, brisanje }) {
+export default function EventPregledTablica({  eventi, dohvatiNazivKlijenta, navigate, brisanje, generirajPDFZaEvent }) {
     
     return (
        <Table striped bordered hover>
@@ -30,6 +30,10 @@ export default function EventPregledTablica({  eventi, dohvatiNazivKlijenta, nav
                             &nbsp;&nbsp;
                             <Button variant="danger" onClick={() => brisanje(event.sifra)}>
                                 Obriši
+                            </Button>
+                            &nbsp;&nbsp;        
+                            <Button variant="info" onClick={() => generirajPDFZaEvent(event)} title="Generiraj PDF">
+                                PDF
                             </Button>
                         </td>
                     </tr>

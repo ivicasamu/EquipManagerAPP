@@ -3,9 +3,11 @@ import EventService from "../../services/eventi/EventService"
 import { Link, useNavigate } from "react-router-dom"
 import { RouteNames } from "../../constants"
 import KlijentService from "../../services/klijenti/KlijentService"
+import UredjajService from "../../services/uredjaji/UredjajService"
 import EventPregledGrid from "./EventPregledGrid"
 import EventPregledTablica from "./EventPregledTablica"
-import useBreakpoint from "../../hooks/useBrakepoint";
+import useBreakpoint from "../../hooks/useBrakepoint"
+import EventPDFGenerator from "../../components/EventPDFGenerator"
 
 export default function EventPregled(){
 
@@ -53,6 +55,35 @@ export default function EventPregled(){
         return klijent ? klijent.naziv : 'Nepoznati klijent'
     }
 
+    async function generirajPDFZaEvent(event) {
+        // Dohvati klijenta
+        const klijent = klijenti.find(s => s.sifra === event.klijent)
+        if (!klijent) {
+            alert('Klijent nije pronađen')
+            return
+        }
+
+        // Dohvati sve uređaje
+        const odgovorUredjaji = await UredjajService.get()
+        if (!odgovorUredjaji.success) {
+            alert('Nije moguće dohvatiti uređaje')
+            return
+        }
+
+        // Filtriraj uređaje koji pripadaju ovom eventu
+        const uredjajiNaEventu = odgovorUredjaji.data.filter(p =>
+            event.uredjaji && event.uredjaji.includes(p.sifra)
+        )
+
+        // Generiraj PDF
+        const generiraj = EventPDFGenerator({
+            event,
+            klijent,
+            uredjaji: uredjajiNaEventu
+        })
+        await generiraj()
+    }
+
     return(
         <>
         <Link to={RouteNames.EVENTI_NOVI}
@@ -64,14 +95,16 @@ export default function EventPregled(){
             eventi={eventi} 
             dohvatiNazivKlijenta={dohvatiNazivKlijenta}
             navigate={navigate} 
-            brisanje={brisanje} 
+            brisanje={brisanje}
+            generirajPDFZaEvent={generirajPDFZaEvent} 
         />
         ) : (
         <EventPregledTablica
             eventi={eventi} 
             dohvatiNazivKlijenta={dohvatiNazivKlijenta}
             navigate={navigate} 
-            brisanje={brisanje} 
+            brisanje={brisanje}
+            generirajPDFZaEvent={generirajPDFZaEvent}  
         />
     )}
         </>

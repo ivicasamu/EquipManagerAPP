@@ -1,8 +1,8 @@
 import { Button, Card, Row, Col, Container } from "react-bootstrap"
-import { FaEdit, FaTrash } from "react-icons/fa"
+import { FaEdit, FaPrint, FaTrash } from "react-icons/fa"
 import FormatDatuma from "../../components/FormatDatuma";
 
-export default function EventPregledGrid({ eventi, dohvatiNazivKlijenta, navigate, brisanje }) {
+export default function EventPregledGrid({ eventi, dohvatiNazivKlijenta, navigate, brisanje, generirajPDFZaEvent }) {
 
     function skratiTekst(tekst, max = 100) {
         if (!tekst) return '-'
@@ -58,6 +58,10 @@ export default function EventPregledGrid({ eventi, dohvatiNazivKlijenta, navigat
                                 >
                                     <FaTrash />
                                 </Button>
+                                <Button variant="info" onClick={() => generirajPDFZaEvent(event)} title="Generiraj PDF">
+                                    <FaPrint />
+                                </Button>
+
                             </Card.Footer>
                         </Card>
                     </Col>
