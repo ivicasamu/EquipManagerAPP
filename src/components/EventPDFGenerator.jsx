@@ -89,7 +89,7 @@ export default function GrupaPDFGenerator({ event, klijent, uredjaji }) {
         // Popis polaznika
         doc.setFontSize(16);
         doc.setFont(undefined, 'bold');
-        doc.text('Popis iznejmljene opreme:', 20, yPosition);
+        doc.text('Popis iznajmljene opreme:', 20, yPosition);
         yPosition += 20;
 
         if (uredjaji && uredjaji.length > 0) {
