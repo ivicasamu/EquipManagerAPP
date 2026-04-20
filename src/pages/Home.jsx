@@ -5,16 +5,17 @@ import KorisnikService from "../services/korisnici/KorisnikService";
 import UredjajService from "../services/uredjaji/UredjajService";
 import { useEffect, useState } from "react";
 import KlijentService from "../services/klijenti/KlijentService";
+import EventService from "../services/eventi/EventService";
 
 export default function Home(){
     const [brojKorisnika, setBrojKorisnika] = useState(0);
     const [brojUredjaja, setBrojUredjaja] = useState(0);
     const [brojKlijenata, setBrojKlijenata] = useState(0);
-    // const [brojEventa, setBrojEventa] = useState(0);
+    const [brojEvenata, setBrojEvenata] = useState(0);
     const [animatedKorisnici, setAnimatedKorisnici] = useState(0);
     const [animatedUredjaji, setAnimatedUredjaji] = useState(0);
     const [animatedKlijenti, setAnimatedKlijenti] = useState(0);
-    // const [animatedEventi, setAnimatedEventi] = useState(0);
+    const [animatedEventi, setAnimatedEventi] = useState(0);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -22,12 +23,12 @@ export default function Home(){
                 const korisnik = await KorisnikService.get();
                 const uredjaj = await UredjajService.get();
                 const klijent = await KlijentService.get();
-                // const event = await EventService.get();
+                const event = await EventService.get();
                 
                 setBrojKorisnika(korisnik.data.length);
                 setBrojUredjaja(uredjaj.data.length);
                 setBrojKlijenata(klijent.data.length);
-                // setBrojEvenata(eventi.data.length);
+                setBrojEvenata(event.data.length);
             } catch (error) {
                 console.error('Greška pri dohvaćanju podataka:', error);
             }
@@ -63,14 +64,14 @@ export default function Home(){
         }
     }, [animatedKlijenti, brojKlijenata]);
 
-    // useEffect(() => {
-    //     if (animatedEventi < brojEvenata) {
-    //         const timer = setTimeout(() => {
-    //             setAnimatedEventi(prev => Math.min(prev + 1, brojEvenata));
-    //         }, 200);
-    //         return () => clearTimeout(timer);
-    //     }
-    // }, [animatedEventi, brojEvenata]);
+    useEffect(() => {
+        if (animatedEventi < brojEvenata) {
+            const timer = setTimeout(() => {
+                setAnimatedEventi(prev => Math.min(prev + 1, brojEvenata));
+                }, 20);
+            return () => clearTimeout(timer);
+        }
+    }, [animatedEventi, brojEvenata]);
     return(
         <>
         <Row>
@@ -112,14 +113,14 @@ export default function Home(){
                         </Card.Body>
                     </Card>
 
-                    {/* <Card className="shadow-lg border-0 statistikaPanel">
+                    <Card className="shadow-lg border-0 statistikaPanel">
                         <Card.Body className="text-center">
-                            <p className="text-white">Grupe</p>
+                            <p className="text-white">Eventi</p>
                             <div className="statistikaTekst">
-                                {animatedGrupe}
+                                {animatedEventi}
                             </div>
                         </Card.Body>
-                    </Card> */}
+                    </Card>
                 </div>
             </Col>
         </Row>
