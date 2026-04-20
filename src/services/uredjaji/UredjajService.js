@@ -22,7 +22,8 @@ const PrazanServis = {
     getBySifra: async (sifra) => ({ success: false, data: {} }),
     dodaj: async (uredjaj) => { console.error("Servis nije učitan"); },
     promjeni: async (sifra, uredjaj) => { console.error("Servis nije učitan"); },
-    obrisi: async (sifra) => { console.error("Servis nije učitan"); }
+    obrisi: async (sifra) => { console.error("Servis nije učitan"); },
+    getPage: async (page, pageSize) => ({ success: false, data: [], totalPages: 0, totalItems: 0 })
 };
 
 // 3. Jedan jedini export na kraju
@@ -34,5 +35,6 @@ export default {
     getBySifra: (sifra) => AktivniServis.getBySifra(sifra),
     dodaj: (uredjaj) => AktivniServis.dodaj(uredjaj),
     promjeni: (sifra, uredjaj) => AktivniServis.promjeni(sifra, uredjaj),
-    obrisi: (sifra) => AktivniServis.obrisi(sifra)
+    obrisi: (sifra) => AktivniServis.obrisi(sifra),
+    getPage: (page, pageSize) => AktivniServis.getPage(page, pageSize)
 };

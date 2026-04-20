@@ -4,6 +4,7 @@ import { GrDislike, GrLike } from "react-icons/gr"
 import { Link, useNavigate } from "react-router-dom"
 import { RouteNames } from "../../constants"
 import KategorijaService from "../../services/kategorije/KategorijaService"
+import { FaEdit, FaTrash } from "react-icons/fa"
 
 export default function KategorijaPregled(){
 
@@ -65,13 +66,13 @@ export default function KategorijaPregled(){
                             }
                             
                         </td>
-                        <td>
+                        <td className="text-center">
                             <Button onClick={()=>{navigate(`/kategorije/${kategorija.sifra}`)}}>
-                                Promjena
+                                <FaEdit />
                             </Button>
                             &nbsp;&nbsp;
                             <Button variant="danger" onClick={()=>{obrisi(kategorija.sifra)}}>
-                                Obriši
+                                <FaTrash />
                             </Button>
                         </td>
                     </tr>

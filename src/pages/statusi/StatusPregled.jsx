@@ -4,6 +4,7 @@ import { GrDislike, GrLike } from "react-icons/gr"
 import { Link, useNavigate } from "react-router-dom"
 import { RouteNames } from "../../constants"
 import StatusService from "../../services/statusi/StatusService"
+import { FaEdit, FaTrash } from "react-icons/fa"
 
 export default function StatusPregled(){
 
@@ -51,13 +52,13 @@ export default function StatusPregled(){
                     <tr key={status.sifra}>
                         <td>{status.naziv}</td>
                         <td>{status.opis}</td>
-                        <td>
+                        <td className="text-center">
                             <Button onClick={()=>{navigate(`/statusi/${status.sifra}`)}}>
-                                Promjena
+                                <FaEdit />
                             </Button>
                             &nbsp;&nbsp;
                             <Button variant="danger" onClick={()=>{obrisi(status.sifra)}}>
-                                Obriši
+                                <FaTrash />
                             </Button>
                         </td>
                     </tr>

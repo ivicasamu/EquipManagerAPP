@@ -32,12 +32,12 @@ export default function KorisnikPregledGrid({ korisnici, navigate, brisanje }) {
                             <Card.Body>
                                 <div className="d-flex justify-content-between mb-2">
                                     <span className="text-muted">Korisničko ime:</span>
-                                    <span className="fw-semibold"> {korisnik.korisnickoIme}</span>
+                                    <span className="fw-semibold brakeAll"> {korisnik.korisnickoIme}</span>
                                 </div>
 
                                 <div className="d-flex justify-content-between mb-2">
                                     <span className="text-muted">Email:</span>
-                                    <span className="fw-semibold">{korisnik.email}</span>
+                                    <span className="fw-semibold brakeAll">{korisnik.email}</span>
                                 </div>
 
                             </Card.Body>

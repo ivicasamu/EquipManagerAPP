@@ -1,4 +1,6 @@
 import { Button, Table } from "react-bootstrap";
+import { FaEdit, FaTrash } from "react-icons/fa";
+import { GrDislike, GrLike } from "react-icons/gr";
 
 export default function KorisnikPregledTablica({ korisnici, navigate, brisanje }) {
     
@@ -34,13 +36,13 @@ export default function KorisnikPregledTablica({ korisnici, navigate, brisanje }
                             }
                             
                         </td>
-                        <td>
+                        <td className="text-center">
                             <Button onClick={()=>{navigate(`/korisnici/${korisnik.sifra}`)}}>
-                                Promjena
+                                <FaEdit />
                             </Button>
                             &nbsp;&nbsp;
                             <Button variant="danger" onClick={()=>{obrisi(korisnik.sifra)}}>
-                                Obriši
+                                <FaTrash />
                             </Button>
                         </td>
                     </tr>

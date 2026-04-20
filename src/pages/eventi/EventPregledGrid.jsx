@@ -1,8 +1,8 @@
-import { Button, Card, Row, Col, Container } from "react-bootstrap"
+import { Button, Card, Row, Col, Container, Pagination } from "react-bootstrap"
 import { FaEdit, FaPrint, FaTrash } from "react-icons/fa"
 import FormatDatuma from "../../components/FormatDatuma";
 
-export default function EventPregledGrid({ eventi, dohvatiNazivKlijenta, navigate, brisanje, generirajPDFZaEvent }) {
+export default function EventPregledGrid({ eventi, dohvatiNazivKlijenta, navigate, brisanje, generirajPDFZaEvent, totalPages, currentPage, handlePageChange }) {
 
     function skratiTekst(tekst, max = 100) {
         if (!tekst) return '-'
@@ -12,6 +12,7 @@ export default function EventPregledGrid({ eventi, dohvatiNazivKlijenta, navigat
     }
 
     return (
+        <>
         <Container className="py-3 px-0">
             <Row>
                 {eventi && eventi.map((event) => (
@@ -68,5 +69,61 @@ export default function EventPregledGrid({ eventi, dohvatiNazivKlijenta, navigat
                 ))}
             </Row>
         </Container>
+
+        {/* Pagination komponenta */}
+            {totalPages > 1 && (
+
+                <div className="d-flex justify-content-center">
+                    <Pagination>
+                        <Pagination.First
+                            onClick={() => handlePageChange(1)}
+                            disabled={currentPage === 1}
+                        />
+                        <Pagination.Prev
+                            onClick={() => handlePageChange(currentPage - 1)}
+                            disabled={currentPage === 1}
+                        />
+
+                        {[...Array(totalPages)].map((_, index) => {
+                            const pageNumber = index + 1;
+                            // Prikaži samo stranice blizu trenutne stranice
+                            if (
+                                pageNumber === 1 ||
+                                pageNumber === totalPages ||
+                                (pageNumber >= currentPage - 2 && pageNumber <= currentPage + 2)
+                            ) {
+                                return (
+                                    <Pagination.Item
+                                        key={pageNumber}
+                                        active={pageNumber === currentPage}
+                                        onClick={() => handlePageChange(pageNumber)}
+                                    >
+                                        {pageNumber}
+                                    </Pagination.Item>
+                                );
+                            } else if (
+                                pageNumber === currentPage - 3 ||
+                                pageNumber === currentPage + 3
+                            ) {
+                                return <Pagination.Ellipsis key={pageNumber} disabled />;
+                            }
+                            return null;
+                        })}
+
+                        <Pagination.Next
+                            onClick={() => handlePageChange(currentPage + 1)}
+                            disabled={currentPage === totalPages}
+                        />
+                        <Pagination.Last
+                            onClick={() => handlePageChange(totalPages)}
+                            disabled={currentPage === totalPages}
+                        />
+                    </Pagination>
+                </div>
+
+            )}
+
+        </>
+        
     );
 }

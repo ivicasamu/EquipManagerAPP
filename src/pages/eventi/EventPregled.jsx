@@ -16,19 +16,25 @@ export default function EventPregled(){
 
     const [eventi, setEventi] = useState([])
     const [klijenti, setKlijenti] = useState([])
+    const [currentPage, setCurrentPage] = useState(1)
+    const [totalPages, setTotalPages] = useState(0)
+    const [totalItems, setTotalItems] = useState(0)
+    const pageSize = 10
 
     useEffect(()=>{
-        ucitajEventi()
+        ucitajEventi(currentPage)
         ucitajKlijente()
-    },[])
+    },[currentPage])
 
-    async function ucitajEventi() {
-        await EventService.get().then((odgovor)=>{
+    async function ucitajEventi(page) {
+        await EventService.getPage(page, pageSize).then((odgovor)=>{
             if(!odgovor.success){
                 alert('Nije implementiran servis')
                 return
             }
             setEventi(odgovor.data)
+            setTotalPages(odgovor.totalPages)
+            setTotalItems(odgovor.totalItems)
         })
     }
 
@@ -45,9 +51,18 @@ export default function EventPregled(){
     async function brisanje(sifra) {
         if (!confirm('Sigurno obrisati?')) return;
         await EventService.obrisi(sifra);
-        await EventService.get().then((odgovor)=>{
-            setEventi(odgovor.data)
-        })
+        const newTotalItems = totalItems - 1;
+        const newTotalPages = Math.ceil(newTotalItems / pageSize);
+
+        if (currentPage > newTotalPages && newTotalPages > 0) {
+            setCurrentPage(newTotalPages);
+        } else {
+            ucitajEventi(currentPage);
+        }
+    }
+
+    function handlePageChange(page) {
+        setCurrentPage(page)
     }
 
     function dohvatiNazivKlijenta(sifraKlijent) {
@@ -96,7 +111,10 @@ export default function EventPregled(){
             dohvatiNazivKlijenta={dohvatiNazivKlijenta}
             navigate={navigate} 
             brisanje={brisanje}
-            generirajPDFZaEvent={generirajPDFZaEvent} 
+            generirajPDFZaEvent={generirajPDFZaEvent}
+            totalPages={totalPages}
+            currentPage={currentPage}
+            handlePageChange={handlePageChange} 
         />
         ) : (
         <EventPregledTablica
@@ -104,7 +122,10 @@ export default function EventPregled(){
             dohvatiNazivKlijenta={dohvatiNazivKlijenta}
             navigate={navigate} 
             brisanje={brisanje}
-            generirajPDFZaEvent={generirajPDFZaEvent}  
+            generirajPDFZaEvent={generirajPDFZaEvent}
+            totalPages={totalPages}
+            currentPage={currentPage}
+            handlePageChange={handlePageChange}  
         />
     )}
         </>

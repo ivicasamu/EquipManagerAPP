@@ -40,11 +40,30 @@ async function obrisi(sifra) {
     return;
 }
 
+// Straničenje - dohvati stranicu polaznika
+async function getPage(page = 1, pageSize = 8) {
+    const startIndex = (page - 1) * pageSize;
+    const endIndex = startIndex + pageSize;
+    const paginatedData = uredjaji.slice(startIndex, endIndex);
+    const totalItems = uredjaji.length;
+    const totalPages = Math.ceil(totalItems / pageSize);
+
+    return {
+        success: true,
+        data: paginatedData,
+        currentPage: page,
+        pageSize: pageSize,
+        totalPages: totalPages,
+        totalItems: totalItems
+    }
+}
+
 
 export default{
     get,
     dodaj,
     getBySifra,
     promjeni,
-    obrisi
+    obrisi,
+    getPage
 }

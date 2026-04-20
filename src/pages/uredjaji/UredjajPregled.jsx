@@ -16,20 +16,29 @@ export default function UredjajPregled(){
     const [uredjaji, setUredjaji] = useState([])
     const [kategorije, setKategorije] = useState([])
     const [statusi, setStatusi] = useState([])
+    const [currentPage, setCurrentPage] = useState(1)
+    const [totalPages, setTotalPages] = useState(0)
+    const [totalItems, setTotalItems] = useState(0)
+    const pageSize = 10
 
-    useEffect(()=>{
-        ucitajUredjaji()
+    useEffect(() => {
+        ucitajUredjaji(currentPage)
+    }, [currentPage])
+
+    useEffect(() => {
         ucitajKategorije()
         ucitajStatuse()
-    },[])
+    }, [])
 
-    async function ucitajUredjaji() {
-        await UredjajService.get().then((odgovor)=>{
+    async function ucitajUredjaji(page) {
+        await UredjajService.getPage(page, pageSize).then((odgovor)=>{
             if(!odgovor.success){
                 alert('Nije implementiran servis')
                 return
             }
             setUredjaji(odgovor.data)
+            setTotalPages(odgovor.totalPages)
+            setTotalItems(odgovor.totalItems)
         })
     }
 
@@ -56,9 +65,19 @@ export default function UredjajPregled(){
     async function brisanje(sifra) {
         if (!confirm('Sigurno obrisati?')) return;
         await UredjajService.obrisi(sifra);
-        await UredjajService.get().then((odgovor)=>{
-            setUredjaji(odgovor.data)
-        })
+
+        const newTotalItems = totalItems - 1;
+        const newTotalPages = Math.ceil(newTotalItems / pageSize);
+
+        if (currentPage > newTotalPages && newTotalPages > 0) {
+            setCurrentPage(newTotalPages);
+        } else {
+            ucitajUredjaji(currentPage);
+        }
+    }
+
+    function handlePageChange(page) {
+        setCurrentPage(page)
     }
 
     function dohvatiNazivKategorije(sifraKategorija) {
@@ -84,6 +103,9 @@ export default function UredjajPregled(){
                 dohvatiNazivStatusa={dohvatiNazivStatusa}
                 navigate={navigate} 
                 brisanje={brisanje} 
+                totalPages={totalPages}
+                currentPage={currentPage}
+                handlePageChange={handlePageChange}
             />
         ) : (
             <UredjajPregledTablica
@@ -92,6 +114,9 @@ export default function UredjajPregled(){
                 dohvatiNazivStatusa={dohvatiNazivStatusa} 
                 navigate={navigate} 
                 brisanje={brisanje} 
+                totalPages={totalPages}
+                currentPage={currentPage}
+                handlePageChange={handlePageChange}
             />
         )}
         </>

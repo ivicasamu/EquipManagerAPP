@@ -12,18 +12,24 @@ export default function KlijentiPregled(){
     const navigate = useNavigate()
     const sirina = useBreakpoint()
     const[klijenti, setKlijenti] = useState([])
+    const [currentPage, setCurrentPage] = useState(1)
+    const [totalPages, setTotalPages] = useState(0)
+    const [totalItems, setTotalItems] = useState(0)
+    const pageSize = 10
 
     useEffect(()=>{
-        ucitajKlijente()
-    },[])
+        ucitajKlijente(currentPage)
+    },[currentPage])
 
-    async function ucitajKlijente() {
-        await KlijentiService.get().then((odgovor)=>{
+    async function ucitajKlijente(page) {
+        await KlijentiService.getPage(page, pageSize).then((odgovor)=>{
             if(!odgovor.success){
                 alert('Nije implementiran servis')
                 return
             }
             setKlijenti(odgovor.data)
+            setTotalPages(odgovor.totalPages)
+            setTotalItems(odgovor.totalItems)
         })
     }
 
@@ -32,7 +38,18 @@ export default function KlijentiPregled(){
             return
         }
         await KlijentService.obrisi(sifra)
-        ucitajKlijente()
+        const newTotalItems = totalItems - 1;
+        const newTotalPages = Math.ceil(newTotalItems / pageSize);
+
+        if (currentPage > newTotalPages && newTotalPages > 0) {
+            setCurrentPage(newTotalPages);
+        } else {
+            ucitajKlijenti(currentPage);
+        }
+    }
+
+    function handlePageChange(page) {
+        setCurrentPage(page)
     }
 
     return(
@@ -44,13 +61,19 @@ export default function KlijentiPregled(){
             <KlijentPregledGrid
                 klijenti={klijenti} 
                 navigate={navigate} 
-                brisanje={brisanje} 
+                brisanje={brisanje}
+                totalPages={totalPages}
+                currentPage={currentPage}
+                handlePageChange={handlePageChange} 
             />
         ) : (
             <KlijentPregledTablica
                 klijenti={klijenti} 
                 navigate={navigate} 
-                brisanje={brisanje}  
+                brisanje={brisanje}
+                totalPages={totalPages}
+                currentPage={currentPage}
+                handlePageChange={handlePageChange}  
             />
         )}
         </>
