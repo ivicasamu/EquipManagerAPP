@@ -23,7 +23,7 @@ export default function UredjajPregled(){
     const [totalPages, setTotalPages] = useState(0)
     const [totalItems, setTotalItems] = useState(0)
 
-    cconst [sortConfig, setSortConfig] = useState(() => {
+    const [sortConfig, setSortConfig] = useState(() => {
         const saved = localStorage.getItem("uredjaji_sort");
         return saved ? JSON.parse(saved) : { key: null, direction: null };
     });
@@ -149,6 +149,8 @@ export default function UredjajPregled(){
         {['xs', 'sm', 'md'].includes(sirina) ? (
             <UredjajPregledGrid
                 uredjaji={uredjaji}
+                dohvatiNazivKategorije={dohvatiNazivKategorije}
+                dohvatiNazivStatusa={dohvatiNazivStatusa}
                 navigate={navigate}
                 brisanje={brisanje}
                 totalPages={totalPages}
