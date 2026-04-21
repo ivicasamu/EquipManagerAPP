@@ -1,17 +1,41 @@
 import { Button, Pagination, Table } from "react-bootstrap";
-import { FaEdit, FaTrash } from "react-icons/fa";
+import { FaEdit, FaSort, FaSortDown, FaSortUp, FaTrash } from "react-icons/fa";
 
-export default function UredjajPregledTablica({ uredjaji, dohvatiNazivKategorije, dohvatiNazivStatusa, navigate, brisanje, totalPages, currentPage, handlePageChange }) {
-    
+export default function UredjajPregledTablica({ 
+    uredjaji, 
+    dohvatiNazivKategorije, 
+    dohvatiNazivStatusa, 
+    navigate, 
+    brisanje, 
+    totalPages, 
+    currentPage, 
+    handlePageChange,
+    handleSort,
+    sortConfig
+}) {
+
+    const getSortIcon = (columnKey) => {
+        if (sortConfig.key !== columnKey || sortConfig.direction === null) {
+            return <FaSort />;
+        }
+        return sortConfig.direction === 'asc' ? <FaSortUp /> : <FaSortDown />;
+    };
+
     return (
         <>
         <Table striped bordered hover>
             <thead className="text-center">
                 <tr>
-                    <th>Kategorija</th>
-                    <th>Model</th>
+                    <th onClick={() => handleSort('kategorija')} style={{ cursor: 'pointer' }}>
+                        Kategorija {getSortIcon('kategorija')}
+                    </th>
+                    <th onClick={() => handleSort('model')} style={{ cursor: 'pointer' }}>
+                        Model {getSortIcon('model')}
+                    </th>
                     <th>Serijski broj</th>
-                    <th>Status</th>
+                    <th onClick={() => handleSort('status')} style={{ cursor: 'pointer' }}>
+                        Status {getSortIcon('status')}
+                    </th>
                     <th>Napomena</th>
                     <th>Akcija</th>
                 </tr>
@@ -38,59 +62,55 @@ export default function UredjajPregledTablica({ uredjaji, dohvatiNazivKategorije
             </tbody>
         </Table>
 
-        {/* Pagination komponenta */}
-                {totalPages > 1 && (
+        {totalPages > 1 && (
+            <div className="d-flex justify-content-center">
+                <Pagination>
+                    <Pagination.First
+                        onClick={() => handlePageChange(1)}
+                        disabled={currentPage === 1}
+                    />
+                    <Pagination.Prev
+                        onClick={() => handlePageChange(currentPage - 1)}
+                        disabled={currentPage === 1}
+                    />
 
-                    <div className="d-flex justify-content-center">
-                        <Pagination>
-                            <Pagination.First
-                                onClick={() => handlePageChange(1)}
-                                disabled={currentPage === 1}
-                            />
-                            <Pagination.Prev
-                                onClick={() => handlePageChange(currentPage - 1)}
-                                disabled={currentPage === 1}
-                            />
+                    {[...Array(totalPages)].map((_, index) => {
+                        const pageNumber = index + 1;
 
-                            {[...Array(totalPages)].map((_, index) => {
-                                const pageNumber = index + 1;
-                                // Prikaži samo stranice blizu trenutne stranice
-                                if (
-                                    pageNumber === 1 ||
-                                    pageNumber === totalPages ||
-                                    (pageNumber >= currentPage - 2 && pageNumber <= currentPage + 2)
-                                ) {
-                                    return (
-                                        <Pagination.Item
-                                            key={pageNumber}
-                                            active={pageNumber === currentPage}
-                                            onClick={() => handlePageChange(pageNumber)}
-                                        >
-                                            {pageNumber}
-                                        </Pagination.Item>
-                                    );
-                                } else if (
-                                    pageNumber === currentPage - 3 ||
-                                    pageNumber === currentPage + 3
-                                ) {
-                                    return <Pagination.Ellipsis key={pageNumber} disabled />;
-                                }
-                                return null;
-                            })}
+                        if (
+                            pageNumber === 1 ||
+                            pageNumber === totalPages ||
+                            (pageNumber >= currentPage - 2 && pageNumber <= currentPage + 2)
+                        ) {
+                            return (
+                                <Pagination.Item
+                                    key={pageNumber}
+                                    active={pageNumber === currentPage}
+                                    onClick={() => handlePageChange(pageNumber)}
+                                >
+                                    {pageNumber}
+                                </Pagination.Item>
+                            );
+                        } else if (
+                            pageNumber === currentPage - 3 ||
+                            pageNumber === currentPage + 3
+                        ) {
+                            return <Pagination.Ellipsis key={pageNumber} disabled />;
+                        }
+                        return null;
+                    })}
 
-                            <Pagination.Next
-                                onClick={() => handlePageChange(currentPage + 1)}
-                                disabled={currentPage === totalPages}
-                            />
-                            <Pagination.Last
-                                onClick={() => handlePageChange(totalPages)}
-                                disabled={currentPage === totalPages}
-                            />
-                        </Pagination>
-                    </div>
-
-                )}
-        </> 
-
+                    <Pagination.Next
+                        onClick={() => handlePageChange(currentPage + 1)}
+                        disabled={currentPage === totalPages}
+                    />
+                    <Pagination.Last
+                        onClick={() => handlePageChange(totalPages)}
+                        disabled={currentPage === totalPages}
+                    />
+                </Pagination>
+            </div>
+        )}
+        </>
     );
 }
