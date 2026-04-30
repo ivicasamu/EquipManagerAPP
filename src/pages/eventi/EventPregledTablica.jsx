@@ -2,7 +2,19 @@ import { Button, Pagination, Table } from "react-bootstrap";
 import FormatDatuma from "../../components/FormatDatuma";
 import { FaEdit, FaPrint, FaTrash } from "react-icons/fa";
 
-export default function EventPregledTablica({  eventi, dohvatiNazivKlijenta, navigate, brisanje, generirajPDFZaEvent, totalPages, currentPage, handlePageChange }) {
+export default function EventPregledTablica({  
+    eventi, 
+    dohvatiNazivKlijenta, 
+    navigate, brisanje, 
+    generirajPDFZaEvent, 
+    totalPages, 
+    currentPage, 
+    handlePageChange,
+    handleMouseEnter,
+    handleMouseMove, 
+    handleMouseLeave,
+    tooltip 
+}) {
     return (
         <>
         <Table striped bordered hover>
@@ -11,6 +23,7 @@ export default function EventPregledTablica({  eventi, dohvatiNazivKlijenta, nav
                         <th>Datum početka</th>
                         <th>Predviđeno trajanje</th>
                         <th>Lokacija</th>
+                        <th>Oprema</th>
                         <th>Klijent</th>
                         <th>Napomena</th>
                         <th>Akcija</th>
@@ -22,6 +35,13 @@ export default function EventPregledTablica({  eventi, dohvatiNazivKlijenta, nav
                             <td className="lead text-center"><FormatDatuma datum={event.datumPocetka} /></td>
                             <td className="text-center">{event.predvidenoTrajanje}</td>
                             <td>{event.lokacija}</td>
+                            <td
+                                className="text-center"
+                                style={{ cursor: 'help', fontWeight: 'bold' }}
+                                onMouseEnter={() => handleMouseEnter(event.uredjaji)}
+                                onMouseMove={handleMouseMove}
+                                onMouseLeave={handleMouseLeave}
+                            >{event.uredjaji ? event.uredjaji.length : 0}</td>
                             <td>{dohvatiNazivKlijenta(event.klijent)}</td>
                             <td>{event.napomena}</td>
                             <td className="text-center">
@@ -41,6 +61,30 @@ export default function EventPregledTablica({  eventi, dohvatiNazivKlijenta, nav
                     ))}
                 </tbody>
             </Table>
+
+            {/* Prikaz popisa polaznika (Tooltip) */}
+            {tooltip.vidljivo && (
+                <div style={{
+                    position: 'absolute',
+                    top: tooltip.y,
+                    left: tooltip.x,
+                    backgroundColor: 'white',
+                    border: '1px solid #ccc',
+                    padding: '10px',
+                    borderRadius: '5px',
+                    boxShadow: '0 4px 8px rgba(0,0,0,0.2)',
+                    zIndex: 1000,
+                    minWidth: '200px',
+                    pointerEvents: 'none' // Da tooltip ne "treperi" kad miš uđe u njega
+                }}>
+                    <h6>Oprema na eventu:</h6>
+                    <ol style={{ margin: 0, paddingLeft: '20px' }}>
+                        {tooltip.podaci.map(p => (
+                            <li key={p.sifra}>{p.model} - sn: {p.serijskiBroj}</li>
+                        ))}
+                    </ol>
+                </div>
+            )}
 
            {/* Pagination komponenta */}
                 {totalPages > 1 && (

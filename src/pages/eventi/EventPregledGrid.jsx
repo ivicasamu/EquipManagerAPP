@@ -2,7 +2,15 @@ import { Button, Card, Row, Col, Container, Pagination } from "react-bootstrap"
 import { FaEdit, FaPrint, FaTrash } from "react-icons/fa"
 import FormatDatuma from "../../components/FormatDatuma";
 
-export default function EventPregledGrid({ eventi, dohvatiNazivKlijenta, navigate, brisanje, generirajPDFZaEvent, totalPages, currentPage, handlePageChange }) {
+export default function EventPregledTablica({  
+    eventi, 
+    dohvatiNazivKlijenta, 
+    navigate, brisanje, 
+    generirajPDFZaEvent, 
+    totalPages, 
+    currentPage, 
+    handlePageChange
+}) {
 
     function skratiTekst(tekst, max = 100) {
         if (!tekst) return '-'
@@ -29,6 +37,11 @@ export default function EventPregledGrid({ eventi, dohvatiNazivKlijenta, navigat
                                 <div className="d-flex justify-content-between mb-2">
                                     <span className="text-muted">Predviđeno trajanje:</span>
                                     <span className="fw-semibold">{event.predvidenoTrajanje}</span>
+                                </div>
+
+                                <div className="d-flex justify-content-between mb-2">
+                                    <span className="text-muted">Količina opreme:</span>
+                                    <span className="fw-semibold">{event.uredjaji ? event.uredjaji.length : 0}</span>
                                 </div>
 
                                 <div className="d-flex justify-content-between mb-2">

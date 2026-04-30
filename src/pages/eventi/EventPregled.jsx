@@ -19,11 +19,20 @@ export default function EventPregled(){
     const [currentPage, setCurrentPage] = useState(1)
     const [totalPages, setTotalPages] = useState(0)
     const [totalItems, setTotalItems] = useState(0)
+    const [sviUredjaji, setSviUredjaji] = useState([])
     const pageSize = 10
 
+    const [tooltip, setTooltip] = useState({
+        vidljivo: false,
+        x: 0,
+        y: 0,
+        podaci: []
+    })
+
     useEffect(()=>{
-        ucitajEventi(currentPage)
+        ucitajUredjaje()
         ucitajKlijente()
+        ucitajEventi(currentPage)
     },[currentPage])
 
     async function ucitajEventi(page) {
@@ -59,6 +68,35 @@ export default function EventPregled(){
         } else {
             ucitajEventi(currentPage);
         }
+    }
+
+    async function ucitajUredjaje(){
+        await UredjajService.get().then((odgovor) => {
+            if (!odgovor.success) {
+                alert('Nije implementiran servis')
+                return
+            }
+            setSviUredjaji(odgovor.data)
+        })
+    }
+
+    // --- LOGIKA ZA TOOLTIP ---
+    const handleMouseEnter = (sifreUredjajaUGrupi) => {
+        if (!sifreUredjajaUGrupi || sifreUredjajaUGrupi.length === 0) return;
+
+        // Filtriraj objekte polaznika na temelju šifri iz grupe
+        const filtrirani = sviUredjaji.filter(p => sifreUredjajaUGrupi.includes(p.sifra));
+
+        setTooltip(prev => ({ ...prev, vidljivo: true, podaci: filtrirani }));
+    };
+
+    const handleMouseMove = (e) => {
+        // Pomicanje tooltipa 15px desno i dolje od miša da ne smeta kursoru
+        setTooltip(prev => ({ ...prev, x: e.pageX + 15, y: e.pageY + 15 }));
+    };
+
+    const handleMouseLeave = () => {
+        setTooltip(prev => ({ ...prev, vidljivo: false, podaci: [] }));
     }
 
     function handlePageChange(page) {
@@ -114,7 +152,7 @@ export default function EventPregled(){
             generirajPDFZaEvent={generirajPDFZaEvent}
             totalPages={totalPages}
             currentPage={currentPage}
-            handlePageChange={handlePageChange} 
+            handlePageChange={handlePageChange}
         />
         ) : (
         <EventPregledTablica
@@ -125,7 +163,11 @@ export default function EventPregled(){
             generirajPDFZaEvent={generirajPDFZaEvent}
             totalPages={totalPages}
             currentPage={currentPage}
-            handlePageChange={handlePageChange}  
+            handlePageChange={handlePageChange}
+            handleMouseEnter = {handleMouseEnter}
+            handleMouseMove = {handleMouseMove} 
+            handleMouseLeave = {handleMouseLeave} 
+            tooltip = {tooltip} 
         />
     )}
         </>
