@@ -132,15 +132,19 @@ export default function GeneriranjePodataka() {
     }
 
     const generirajEvente = async (broj) => {
-        const rezultat = await KlijentService.get()
-        const klijenti = rezultat.data
+        const rezultatKlijent = await KlijentService.get()
+        const rezultatUredjaj = await UredjajService.get()
+        const klijenti = rezultatKlijent.data
+        const uredjaji = rezultatUredjaj.data
 
         for (let i = 0; i < broj; i++) {
             const randomKlijent = klijenti[faker.number.int({ min: 0, max: klijenti.length - 1 })]
-  
+            const randomUredjaj = uredjaji[faker.number.int({min: 0, max: uredjaji.length - 1})]
+
             const uredjaj = {
                 datumPocetka: faker.date.soon().toISOString().split('T')[0],
                 predvidenoTrajanje: faker.number.int({ min: 0, max: 30 }),
+                uredjaji: [randomUredjaj.sifra],
                 lokacija: faker.location.city(),
                 klijent: randomKlijent.sifra,
                 napomena: faker.lorem.sentence(2)
