@@ -1,7 +1,18 @@
-import { Button, Card, Row, Col, Container, Pagination } from "react-bootstrap"
-import { FaEdit, FaTrash } from "react-icons/fa"
+import { Button, Card, Row, Col, Container, Pagination, InputGroup, Form } from "react-bootstrap"
+import { FaEdit, FaSearch, FaTrash } from "react-icons/fa"
 
-export default function UredjajPregledGrid({ uredjaji, dohvatiNazivKategorije, dohvatiNazivStatusa, navigate, brisanje, totalPages, currentPage, handlePageChange }) {
+export default function UredjajPregledGrid({ 
+    uredjaji, 
+    dohvatiNazivKategorije, 
+    dohvatiNazivStatusa, 
+    navigate, 
+    brisanje, 
+    totalPages, 
+    currentPage, 
+    handlePageChange,
+    handleSearchChange,
+    searchTerm 
+}) {
 
     function skratiTekst(tekst, max = 100) {
         if (!tekst) return '-'
@@ -13,6 +24,17 @@ export default function UredjajPregledGrid({ uredjaji, dohvatiNazivKategorije, d
     return (
         <>
             <Container className="py-3 px-0">
+                <InputGroup className="mb-3">
+                    <InputGroup.Text>
+                        <FaSearch />
+                    </InputGroup.Text>
+                    <Form.Control
+                        type="text"
+                        placeholder="Pretraži uređaje (model, serijski broj, status, kategorija)..."
+                        value={searchTerm}
+                        onChange={handleSearchChange}
+                    />
+                </InputGroup>
                 <Row>
                     {uredjaji && uredjaji.map((uredjaj) => (
 

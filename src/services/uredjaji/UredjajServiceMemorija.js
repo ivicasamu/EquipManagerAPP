@@ -1,4 +1,6 @@
-import { uredjaji } from "./UredjajPodaci";
+import { uredjaji } from "./UredjajPodaci"
+import { statusi } from "../statusi/StatusPodaci"
+import { kategorije } from "../kategorije/KategorijaPodaci"
 
 
 // 1/4 Read od CRUD
@@ -33,28 +35,64 @@ function nadiIndex(sifra){
 
 // 4/4 Delete od CRUD
 async function obrisi(sifra) {
-    const index = nadiIndex(sifra);
+    const index = nadiIndex(sifra)
     if (index > -1) {
-        uredjaji.splice(index, 1);
+        uredjaji.splice(index, 1)
     }
     return;
 }
 
-// Straničenje - dohvati stranicu polaznika
-async function getPage(page = 1, pageSize = 8) {
-    const startIndex = (page - 1) * pageSize;
-    const endIndex = startIndex + pageSize;
-    const paginatedData = uredjaji.slice(startIndex, endIndex);
-    const totalItems = uredjaji.length;
-    const totalPages = Math.ceil(totalItems / pageSize);
+function napraviStatusMap() {
+    const map = {}
+    statusi.forEach(s => {
+        map[s.sifra] = (s.naziv || '').toLowerCase()
+    })
+    return map
+}
+
+function napraviKategorijaMap() {
+    const map = {}
+    kategorije.forEach(k => {
+        map[k.sifra] = (k.naziv || '').toLowerCase()
+    })
+    return map
+}
+
+// 📄 Pagination + Search
+
+async function getPage(page = 1, pageSize = 8, searchTerm = '') {
+    let filteredUredjaji = [...uredjaji]
+    const statusMap = napraviStatusMap()
+    const kategorijaMap = napraviKategorijaMap()
+
+    if (searchTerm && searchTerm.trim() !== '') {
+        const search = searchTerm.toLowerCase().trim()
+        filteredUredjaji = filteredUredjaji.filter(uredjaj => {
+            const model = (uredjaj.model || '').toLowerCase()
+            const serijskiBroj = (uredjaj.serijskiBroj || '').toLowerCase()
+            const statusNaziv =
+                statusMap[parseInt(uredjaj.status)] || ''
+            const kategorijaNaziv =
+                kategorijaMap[parseInt(uredjaj.kategorija)] || ''
+            return (
+                model.includes(search) ||
+                serijskiBroj.includes(search) ||
+                statusNaziv.includes(search) ||
+                kategorijaNaziv.includes(search)
+            )
+        })
+    }
+
+    const startIndex = (page - 1) * pageSize
+    const endIndex = startIndex + pageSize
 
     return {
         success: true,
-        data: paginatedData,
+        data: filteredUredjaji.slice(startIndex, endIndex),
         currentPage: page,
         pageSize: pageSize,
-        totalPages: totalPages,
-        totalItems: totalItems
+        totalPages: Math.ceil(filteredUredjaji.length / pageSize),
+        totalItems: filteredUredjaji.length
     }
 }
 

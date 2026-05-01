@@ -1,5 +1,5 @@
-import { Button, Card, Row, Col, Container, Pagination } from "react-bootstrap"
-import { FaEdit, FaPrint, FaTrash } from "react-icons/fa"
+import { Button, Card, Row, Col, Container, Pagination, InputGroup, Form } from "react-bootstrap"
+import { FaEdit, FaPrint, FaSearch, FaTrash } from "react-icons/fa"
 import FormatDatuma from "../../components/FormatDatuma";
 
 export default function EventPregledTablica({  
@@ -9,7 +9,9 @@ export default function EventPregledTablica({
     generirajPDFZaEvent, 
     totalPages, 
     currentPage, 
-    handlePageChange
+    handlePageChange,
+    handleSearchChange,
+    searchTerm
 }) {
 
     function skratiTekst(tekst, max = 100) {
@@ -22,6 +24,18 @@ export default function EventPregledTablica({
     return (
         <>
         <Container className="py-3 px-0">
+            {/* Search input */}
+            <InputGroup className="mb-3">
+                <InputGroup.Text>
+                    <FaSearch />
+                </InputGroup.Text>
+                <Form.Control
+                    type="text"
+                    placeholder="Pretraži evente (datum, lokacija, klijent)..."
+                    value={searchTerm}
+                    onChange={handleSearchChange}
+                />
+            </InputGroup>
             <Row>
                 {eventi && eventi.map((event) => (
 

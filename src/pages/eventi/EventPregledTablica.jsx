@@ -1,6 +1,7 @@
-import { Button, Pagination, Table } from "react-bootstrap";
+import { Button, Form, InputGroup, Pagination, Table } from "react-bootstrap";
 import FormatDatuma from "../../components/FormatDatuma";
-import { FaEdit, FaPrint, FaTrash } from "react-icons/fa";
+import { FaEdit, FaPrint, FaSearch, FaTrash } from "react-icons/fa";
+
 
 export default function EventPregledTablica({  
     eventi, 
@@ -13,10 +14,24 @@ export default function EventPregledTablica({
     handleMouseEnter,
     handleMouseMove, 
     handleMouseLeave,
-    tooltip 
+    tooltip,
+    handleSearchChange,
+    searchTerm 
 }) {
     return (
         <>
+        {/* Search input */}
+            <InputGroup className="mb-3">
+                <InputGroup.Text>
+                    <FaSearch />
+                </InputGroup.Text>
+                <Form.Control
+                    type="text"
+                    placeholder="Pretraži evente (datum, lokacija, klijent)..."
+                    value={searchTerm}
+                    onChange={handleSearchChange}
+                />
+            </InputGroup>
         <Table striped bordered hover>
                 <thead className="text-center">
                     <tr>

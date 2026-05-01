@@ -20,6 +20,7 @@ export default function EventPregled(){
     const [totalPages, setTotalPages] = useState(0)
     const [totalItems, setTotalItems] = useState(0)
     const [sviUredjaji, setSviUredjaji] = useState([])
+    const [searchTerm, setSearchTerm] = useState('')
     const pageSize = 10
 
     const [tooltip, setTooltip] = useState({
@@ -32,11 +33,11 @@ export default function EventPregled(){
     useEffect(()=>{
         ucitajUredjaje()
         ucitajKlijente()
-        ucitajEventi(currentPage)
-    },[currentPage])
+        ucitajEventi(currentPage, searchTerm)
+    },[currentPage,searchTerm])
 
-    async function ucitajEventi(page) {
-        await EventService.getPage(page, pageSize).then((odgovor)=>{
+    async function ucitajEventi(page, search) {
+        await EventService.getPage(page, pageSize, search).then((odgovor)=>{
             if(!odgovor.success){
                 alert('Nije implementiran servis')
                 return
@@ -66,7 +67,7 @@ export default function EventPregled(){
         if (currentPage > newTotalPages && newTotalPages > 0) {
             setCurrentPage(newTotalPages);
         } else {
-            ucitajEventi(currentPage);
+            ucitajEventi(currentPage, searchTerm);
         }
     }
 
@@ -101,6 +102,11 @@ export default function EventPregled(){
 
     function handlePageChange(page) {
         setCurrentPage(page)
+    }
+
+    function handleSearchChange(e) {
+        setSearchTerm(e.target.value)
+        setCurrentPage(1) // Reset na prvu stranicu pri pretraživanju
     }
 
     function dohvatiNazivKlijenta(sifraKlijent) {
@@ -153,6 +159,8 @@ export default function EventPregled(){
             totalPages={totalPages}
             currentPage={currentPage}
             handlePageChange={handlePageChange}
+            handleSearchChange={handleSearchChange}
+            searchTerm={searchTerm}
         />
         ) : (
         <EventPregledTablica
@@ -167,7 +175,9 @@ export default function EventPregled(){
             handleMouseEnter = {handleMouseEnter}
             handleMouseMove = {handleMouseMove} 
             handleMouseLeave = {handleMouseLeave} 
-            tooltip = {tooltip} 
+            tooltip = {tooltip}
+            handleSearchChange={handleSearchChange}
+            searchTerm={searchTerm} 
         />
     )}
         </>

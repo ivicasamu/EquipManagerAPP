@@ -1,5 +1,5 @@
-import { Button, Pagination, Table } from "react-bootstrap";
-import { FaEdit, FaSort, FaSortDown, FaSortUp, FaTrash } from "react-icons/fa";
+import { Button, Form, InputGroup, Pagination, Table } from "react-bootstrap";
+import { FaEdit, FaSearch, FaSort, FaSortDown, FaSortUp, FaTrash } from "react-icons/fa";
 
 export default function UredjajPregledTablica({ 
     uredjaji, 
@@ -11,7 +11,9 @@ export default function UredjajPregledTablica({
     currentPage, 
     handlePageChange,
     handleSort,
-    sortConfig
+    sortConfig,
+    handleSearchChange,
+    searchTerm
 }) {
 
     const getSortIcon = (columnKey) => {
@@ -23,6 +25,17 @@ export default function UredjajPregledTablica({
 
     return (
         <>
+        <InputGroup className="mb-3">
+            <InputGroup.Text>
+                <FaSearch />
+            </InputGroup.Text>
+            <Form.Control
+                type="text"
+                placeholder="Pretraži uređaje (model, serijski broj, status, kategorija)..."
+                value={searchTerm}
+                onChange={handleSearchChange}
+            />
+        </InputGroup>
         <Table striped bordered hover>
             <thead className="text-center">
                 <tr>

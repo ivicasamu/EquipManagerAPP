@@ -1,5 +1,4 @@
-import { eventi } from "./EventPodaci";
-
+import { eventi } from "./EventPodaci"
 
 // 1/4 Read od CRUD
 async function get(){
@@ -40,12 +39,39 @@ async function obrisi(sifra) {
     return;
 }
 
+function formatirajDatum(datum) {
+    if (!datum) return ''
+
+    const d = new Date(datum)
+    if (isNaN(d.getTime())) return ''
+
+    return new Intl.DateTimeFormat('hr-HR', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric'
+    }).format(d) + (datum.includes('T') ? '' : '.')
+}
+
 // Straničenje - dohvati stranicu polaznika
-async function getPage(page = 1, pageSize = 8) {
+async function getPage(page = 1, pageSize = 8, searchTerm = '') {
+    let filteredEventi = [...eventi]
+        
+        // Filtriranje prema search termu
+        if (searchTerm && searchTerm.trim() !== '') {
+            const lowerSearchTerm = searchTerm.toLowerCase().trim()
+            filteredEventi = filteredEventi.filter(event => {
+                const datum = formatirajDatum(event.datumPocetka).toLowerCase()
+                const lokacija = (event.lokacija || '').toLowerCase()
+                
+                return datum.includes(lowerSearchTerm) ||
+                       lokacija.includes(lowerSearchTerm)
+            })
+        }
+
     const startIndex = (page - 1) * pageSize;
     const endIndex = startIndex + pageSize;
-    const paginatedData = eventi.slice(startIndex, endIndex);
-    const totalItems = eventi.length;
+    const paginatedData = filteredEventi.slice(startIndex, endIndex);
+    const totalItems = filteredEventi.length;
     const totalPages = Math.ceil(totalItems / pageSize);
 
     return {

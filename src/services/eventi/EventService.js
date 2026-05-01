@@ -23,7 +23,7 @@ const PrazanServis = {
     dodaj: async (event) => { console.error("Servis nije učitan"); },
     promjeni: async (sifra, event) => { console.error("Servis nije učitan"); },
     obrisi: async (sifra) => { console.error("Servis nije učitan"); },
-    getPage: async (page, pageSize) => ({ success: false, data: [], totalPages: 0, totalItems: 0 })
+    getPage: async (page, pageSize, searchTerm) => ({ success: false, data: [], totalPages: 0, totalItems: 0 })
 };
 
 // 3. Jedan jedini export na kraju
@@ -36,5 +36,5 @@ export default {
     dodaj: (event) => AktivniServis.dodaj(event),
     promjeni: (sifra, event) => AktivniServis.promjeni(sifra, event),
     obrisi: (sifra) => AktivniServis.obrisi(sifra),
-    getPage: (page, pageSize) => AktivniServis.getPage(page, pageSize)
+    getPage: (page, pageSize, searchTerm) => AktivniServis.getPage(page, pageSize, searchTerm)
 };

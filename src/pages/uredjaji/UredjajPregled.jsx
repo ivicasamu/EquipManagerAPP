@@ -22,6 +22,7 @@ export default function UredjajPregled(){
     const [currentPage, setCurrentPage] = useState(1)
     const [totalPages, setTotalPages] = useState(0)
     const [totalItems, setTotalItems] = useState(0)
+    const [searchTerm, setSearchTerm] = useState('')
 
     const [sortConfig, setSortConfig] = useState(() => {
         const saved = localStorage.getItem("uredjaji_sort");
@@ -31,67 +32,31 @@ export default function UredjajPregled(){
     const pageSize = 10
 
     useEffect(() => {
-        ucitajSveUredjaje()
+        ucitajSveUredjaje(1, '')
         ucitajKategorije()
         ucitajStatuse()
     }, [])
 
     useEffect(() => {
-        obradiPodatke()
-    }, [sviUredjaji, currentPage, sortConfig])
+        ucitajSveUredjaje(currentPage, searchTerm)
+    }, [currentPage, searchTerm])
 
-    async function ucitajSveUredjaje() {
-        const odgovor = await UredjajService.get()
+    async function ucitajSveUredjaje(page, search) {
+    const odgovor = await UredjajService.getPage(
+        page,
+        pageSize,
+        search
+    )
 
-        if(!odgovor.success){
-            alert('Nije implementiran servis')
-            return
-        }
-
-        setSviUredjaji(odgovor.data)
+    if (!odgovor.success) {
+        alert('Greška')
+        return
     }
 
-    function obradiPodatke() {
-        let data = [...sviUredjaji]
-
-        // SORT
-        if (sortConfig.direction) {
-            data.sort((a, b) => {
-                let aValue = a[sortConfig.key]
-                let bValue = b[sortConfig.key]
-
-                if (sortConfig.key === 'kategorija') {
-                    aValue = dohvatiNazivKategorije(a.kategorija)
-                    bValue = dohvatiNazivKategorije(b.kategorija)
-                }
-
-                if (sortConfig.key === 'status') {
-                    aValue = dohvatiNazivStatusa(a.status)
-                    bValue = dohvatiNazivStatusa(b.status)
-                }
-
-                if (typeof aValue === 'string') {
-                    const result = aValue.localeCompare(bValue, 'hr', { sensitivity: 'accent' })
-                    return sortConfig.direction === 'asc' ? result : -result
-                }
-
-                return sortConfig.direction === 'asc'
-                    ? aValue - bValue
-                    : bValue - aValue
-            })
-        }
-
-        // PAGINATION
-        const totalItems = data.length
-        const totalPages = Math.ceil(totalItems / pageSize)
-
-        const start = (currentPage - 1) * pageSize
-        const paginated = data.slice(start, start + pageSize)
-
-        setUredjaji(paginated)
-        setTotalItems(totalItems)
-        setTotalPages(totalPages)
-    }
+    setUredjaji(odgovor.data) // ✔ array
+    setTotalPages(odgovor.totalPages)
+    setTotalItems(odgovor.totalItems)
+}
 
     async function ucitajKategorije() {
         const odgovor = await KategorijaService.get()
@@ -114,6 +79,11 @@ export default function UredjajPregled(){
 
     function handlePageChange(page) {
         setCurrentPage(page)
+    }
+
+    function handleSearchChange(e) {
+        setSearchTerm(e.target.value)
+        setCurrentPage(1) // Reset na prvu stranicu pri pretraživanju
     }
 
     function handleSort(key) {
@@ -156,6 +126,8 @@ export default function UredjajPregled(){
                 totalPages={totalPages}
                 currentPage={currentPage}
                 handlePageChange={handlePageChange}
+                handleSearchChange = {handleSearchChange}
+                searchTerm = {searchTerm}
             />
         ) : (
             <UredjajPregledTablica
@@ -169,6 +141,8 @@ export default function UredjajPregled(){
                 handlePageChange={handlePageChange}
                 handleSort={handleSort}
                 sortConfig={sortConfig}
+                handleSearchChange = {handleSearchChange}
+                searchTerm = {searchTerm}
             />
         )}
         </>
