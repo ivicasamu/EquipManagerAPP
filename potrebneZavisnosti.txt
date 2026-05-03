@@ -13,3 +13,5 @@ U terminalu nakon što ste zaustavili aplikaciju (ctrl + c) izvesti:
     npm install @faker-js/faker
 
     npm install jspdf jspdf-autotable
+
+    npm install zed

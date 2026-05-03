@@ -5,6 +5,7 @@ import { Link, useNavigate, useParams } from "react-router-dom"
 import EventService from "../../services/eventi/EventService"
 import KlijentService from "../../services/klijenti/KlijentService"
 import UredjajService from "../../services/uredjaji/UredjajService"
+import { ShemaEvent } from "../../schemas/ShemaEvent"
 
 export default function EventNovi() {
 
@@ -18,6 +19,7 @@ export default function EventNovi() {
     const [pretragaUredjaja, setPretragaUredjaja] = useState('')
     const [prikaziAutocomplete, setPrikaziAutocomplete] = useState(false)
     const [odabraniIndex, setOdabraniIndex] = useState(-1)
+    const [errors, setErrors] = useState({})
 
     useEffect(() => {
         ucitajEvent()
@@ -116,6 +118,26 @@ export default function EventNovi() {
         e.preventDefault()
         const podaci = new FormData(e.target)
 
+        setErrors({});
+        const objektPodataka = Object.fromEntries(podaci);
+
+        const rezultat = ShemaEvent.safeParse(objektPodataka);
+
+        if (!rezultat.success) {
+            const noveGreske = {};
+
+            // Prolazimo kroz sve issues (probleme) koje je Zod pronašao
+            rezultat.error.issues.forEach((issue) => {
+                const kljuc = issue.path[0];
+                if (!noveGreske[kljuc]) {
+                    noveGreske[kljuc] = issue.message;
+                }
+            });
+
+            setErrors(noveGreske);
+            return;
+        }
+
         const odabraniKlijent = parseInt(podaci.get('klijent'))
 
         promjeni(params.sifra,{
@@ -126,6 +148,14 @@ export default function EventNovi() {
             uredjaji: odabraniUredjaji.map(u => u.sifra),
             napomena: podaci.get('napomena')
         })
+
+        const ocistiGresku = (nazivPolja) => {
+            if (errors[nazivPolja]) {
+                const noveGreske = { ...errors };
+                delete noveGreske[nazivPolja];
+                setErrors(noveGreske);
+            }
+        }
     }
 
     return (
@@ -141,11 +171,17 @@ export default function EventNovi() {
                                 <Col xs={6}>
                                     <Form.Group controlId="datumPocetka" className="mb-3">
                                         <Form.Label className="fw-bold">Datum početka</Form.Label>
-                                        <Form.Control type="date" name="datumPocetka" 
+                                        <Form.Control 
+                                        type="date" 
+                                        name="datumPocetka" 
+                                        isInvalid={!!errors.datumPocetka}
                                             onClick={(e) => e.target.showPicker()} 
                                             onFocus={(e) => e.target.showPicker()}
                                             defaultValue={event.datumPocetka?.substring(0, 10)}
                                         />
+                                        <Form.Control.Feedback type="invalid">
+                                            {errors.datumPocetka}
+                                        </Form.Control.Feedback>
                                     </Form.Group>
 
                                     <Form.Group controlId="predvidenoTrajanje" className="mb-3">
@@ -163,14 +199,23 @@ export default function EventNovi() {
                                         <Form.Control
                                             type="text"
                                             name="lokacija"
+                                            isInvalid={!!errors.lokacija}
                                             placeholder="Unesite lokaciju eventa"
                                             defaultValue={event.lokacija}
                                         />
+                                        <Form.Control.Feedback type="invalid">
+                                            {errors.lokacija}
+                                        </Form.Control.Feedback>
                                     </Form.Group>
 
                                     <Form.Group controlId="klijent" className="mb-3">
                                         <Form.Label className="fw-bold">Klijent</Form.Label>
-                                        <Form.Select name="klijent" required value={event.klijent || ''} onChange={(e) => setEvent({...event, klijent: parseInt(e.target.value)})}>
+                                        <Form.Select 
+                                        name="klijent" 
+                                        value={event.klijent || ''} 
+                                        isInvalid={!!errors.klijent}
+                                        onFocus={() => ocistiGresku('klijent')}
+                                        onChange={(e) => setEvent({...event, klijent: parseInt(e.target.value)})}>
                                             <option value="">Odaberite klijenta</option>
                                             {klijenti && [...klijenti]
                                                 .sort((a, b) => a.naziv.localeCompare(b.naziv, 'hr'))

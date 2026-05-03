@@ -1,11 +1,14 @@
-import { Button, Col, Form, Row } from "react-bootstrap";
-import { Link, useNavigate } from "react-router-dom";
-import { RouteNames } from "../../constants";
-import KategorijaService from "../../services/kategorije/KategorijaService";
+import { Button, Col, Form, Row } from "react-bootstrap"
+import { Link, useNavigate } from "react-router-dom"
+import { RouteNames } from "../../constants"
+import KategorijaService from "../../services/kategorije/KategorijaService"
+import { ShemaKategorija } from "../../schemas/ShemaKategorija"
+import { useState } from "react"
 
 export default function KategorijaNovi(){
 
     const navigate = useNavigate()
+    const [errors, setErrors] = useState({})
 
     async function dodaj(kategorija){
         // console.table(kategorija)
@@ -17,22 +20,39 @@ export default function KategorijaNovi(){
     function odradiSubmit(e){
         e.preventDefault()
         const podaci = new FormData(e.target)
-        // console.log(podaci.get('aktivna'))
+        
+        setErrors({});
+        const objektPodataka = Object.fromEntries(podaci);
 
-        if (!podaci.get('naziv') || podaci.get('naziv').trim().length === 0) {
-            alert("Naziv je obavezan i ne smije sadržavati samo razmake!")
-            return // Prekid
-        }
+        const rezultat = ShemaKategorija.safeParse(objektPodataka);
 
-        if(podaci.get('naziv').trim().length < 3) {
-            alert("Naziv kategorije mora imati najmanje 3 znaka!")
-            return
+        if (!rezultat.success) {
+            const noveGreske = {};
+
+            // Prolazimo kroz sve issues (probleme) koje je Zod pronašao
+            rezultat.error.issues.forEach((issue) => {
+                const kljuc = issue.path[0];
+                if (!noveGreske[kljuc]) {
+                    noveGreske[kljuc] = issue.message;
+                }
+            });
+
+            setErrors(noveGreske);
+            return;
         }
 
         dodaj({
             naziv: podaci.get('naziv'),
             aktivna: podaci.get('aktivna') === 'on'
         })
+
+        const ocistiGresku = (nazivPolja) => {
+            if (errors[nazivPolja]) {
+                const noveGreske = { ...errors };
+                delete noveGreske[nazivPolja];
+                setErrors(noveGreske);
+            }
+        }
     }
 
     return(
@@ -41,7 +61,13 @@ export default function KategorijaNovi(){
             <Form onSubmit={odradiSubmit}>
                 <Form.Group controlId="ime">
                     <Form.Label>Naziv</Form.Label>
-                    <Form.Control type="text" name="naziv"/>
+                    <Form.Control 
+                    type="text" 
+                    name="naziv" 
+                    isInvalid={!!errors.naziv}/>
+                    <Form.Control.Feedback type="invalid">
+                        {errors.naziv}
+                    </Form.Control.Feedback>
                 </Form.Group>
 
                 <Form.Group controlId="aktivna" className="mb-3 mt-md-3">

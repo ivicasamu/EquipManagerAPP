@@ -1,13 +1,16 @@
-import { Button, Col, Form, Row } from "react-bootstrap";
-import { Link, useNavigate, useParams } from "react-router-dom";
-import { RouteNames } from "../../constants";
-import { useEffect, useState } from "react";
-import KategorijaService from "../../services/kategorije/KategorijaService";
+import { Button, Col, Form, Row } from "react-bootstrap"
+import { Link, useNavigate, useParams } from "react-router-dom"
+import { RouteNames } from "../../constants"
+import { useEffect, useState } from "react"
+import KategorijaService from "../../services/kategorije/KategorijaService"
+import { ShemaKategorija } from "../../schemas/ShemaKategorija"
+
 
 export default function KorisnikPromjena(){
 
     const navigate = useNavigate()
     const params = useParams()
+    const [errors, setErrors] = useState({})
 
     const [kategorija, setKategorija] = useState({
         naziv: "",
@@ -45,10 +48,26 @@ export default function KorisnikPromjena(){
 
     function odradiSubmit(e){
         e.preventDefault()
+        const podaci = new FormData(e.target)
 
-        if (!kategorija.naziv || kategorija.naziv.trim().length === 0) {
-            alert("Naziv je obavezan i ne smije sadržavati samo razmake!")
-            return
+        setErrors({});
+        const objektPodataka = Object.fromEntries(podaci);
+
+        const rezultat = ShemaKategorija.safeParse(objektPodataka);
+
+        if (!rezultat.success) {
+            const noveGreske = {};
+
+            // Prolazimo kroz sve issues (probleme) koje je Zod pronašao
+            rezultat.error.issues.forEach((issue) => {
+                const kljuc = issue.path[0];
+                if (!noveGreske[kljuc]) {
+                    noveGreske[kljuc] = issue.message;
+                }
+            });
+
+            setErrors(noveGreske);
+            return;
         }
 
         promjeni(kategorija)
@@ -65,6 +84,7 @@ export default function KorisnikPromjena(){
                     <Form.Control
                         type="text"
                         value={kategorija.naziv}
+                        isInvalid={!!errors.naziv}
                         onChange={(e) =>
                             setKategorija({
                                 ...kategorija,
@@ -72,6 +92,9 @@ export default function KorisnikPromjena(){
                             })
                         }
                     />
+                    <Form.Control.Feedback type="invalid">
+                        {errors.naziv}
+                    </Form.Control.Feedback>
                 </Form.Group>
 
                 <Form.Group controlId="aktivna" className="mb-3 mt-md-3">
