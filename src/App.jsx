@@ -24,47 +24,50 @@ import EventPregled from './pages/eventi/EventPregled'
 import EventNovi from './pages/eventi/EventNovi'
 import EventPromjena from './pages/eventi/EventPromjena'
 import GeneriranjePodataka from './pages/GeneriranjePodataka'
+import LoadingSpinner from './components/LoadingSpinner.jsx'
 
 function App() {
 
   return (
-    <Container style={ {backgroundColor: window.location.hostname === 'localhost' ? '#ffff023c' : 'none'}}>
-      <Izbornik />
-      <Container className='app'>
-        <Routes>
-          <Route path={RouteNames.HOME} element={<Home />} />
+    <>
+      <LoadingSpinner />
+      <Container style={ {backgroundColor: window.location.hostname === 'localhost' ? '#ffff023c' : 'none'}}>
+        <Izbornik />
+        <Container className='app'>
+          <Routes>
+            <Route path={RouteNames.HOME} element={<Home />} />
 
-          <Route path={RouteNames.KORISNICI} element={<KorisnikPregled />} />
-          <Route path={RouteNames.KORISNICI_NOVI} element={<KorisnikNovi />} />
-          <Route path={RouteNames.KORISNICI_PROMJENA} element={<KorisnikPromjena />} />
+            <Route path={RouteNames.KORISNICI} element={<KorisnikPregled />} />
+            <Route path={RouteNames.KORISNICI_NOVI} element={<KorisnikNovi />} />
+            <Route path={RouteNames.KORISNICI_PROMJENA} element={<KorisnikPromjena />} />
 
-          <Route path={RouteNames.KATEGORIJE} element={<KategorijaPregled />} />
-          <Route path={RouteNames.KATEGORIJE_NOVI} element={<KategorijaNovi />} />
-          <Route path={RouteNames.KATEGORIJE_PROMJENA} element={<KategorijaPromjena />} />
+            <Route path={RouteNames.KATEGORIJE} element={<KategorijaPregled />} />
+            <Route path={RouteNames.KATEGORIJE_NOVI} element={<KategorijaNovi />} />
+            <Route path={RouteNames.KATEGORIJE_PROMJENA} element={<KategorijaPromjena />} />
 
-          <Route path={RouteNames.STATUSI} element={<StatusPregled />} />
-          <Route path={RouteNames.STATUSI_NOVI} element={<StatusNovi />} />
-          <Route path={RouteNames.STATUSI_PROMJENA} element={<StatusPromjena />} />
+            <Route path={RouteNames.STATUSI} element={<StatusPregled />} />
+            <Route path={RouteNames.STATUSI_NOVI} element={<StatusNovi />} />
+            <Route path={RouteNames.STATUSI_PROMJENA} element={<StatusPromjena />} />
 
-          <Route path={RouteNames.UREDJAJI} element={<UredjajPregled />} />
-          <Route path={RouteNames.UREDJAJI_NOVI} element={<UredjajNovi />} />
-          <Route path={RouteNames.UREDJAJI_PROMJENA} element={<UredjajPromjena />} />
+            <Route path={RouteNames.UREDJAJI} element={<UredjajPregled />} />
+            <Route path={RouteNames.UREDJAJI_NOVI} element={<UredjajNovi />} />
+            <Route path={RouteNames.UREDJAJI_PROMJENA} element={<UredjajPromjena />} />
 
-          <Route path={RouteNames.KLIJENTI} element={<KlijentPregled />} />
-          <Route path={RouteNames.KLIJENTI_NOVI} element={<KlijentNovi />} />
-          <Route path={RouteNames.KLIJENTI_PROMJENA} element={<KlijentPromjena />} />
+            <Route path={RouteNames.KLIJENTI} element={<KlijentPregled />} />
+            <Route path={RouteNames.KLIJENTI_NOVI} element={<KlijentNovi />} />
+            <Route path={RouteNames.KLIJENTI_PROMJENA} element={<KlijentPromjena />} />
 
-          <Route path={RouteNames.EVENTI} element={<EventPregled />} />
-          <Route path={RouteNames.EVENTI_NOVI} element={<EventNovi />} />
-          <Route path={RouteNames.EVENTI_PROMJENA} element={<EventPromjena />} />
+            <Route path={RouteNames.EVENTI} element={<EventPregled />} />
+            <Route path={RouteNames.EVENTI_NOVI} element={<EventNovi />} />
+            <Route path={RouteNames.EVENTI_PROMJENA} element={<EventPromjena />} />
 
-          <Route path={RouteNames.GENERIRANJE_PODATAKA} element={<GeneriranjePodataka />} />
-        </Routes>
-        <hr />
-        &copy; {IME_APLIKACIJE}
+            <Route path={RouteNames.GENERIRANJE_PODATAKA} element={<GeneriranjePodataka />} />
+          </Routes>
+          <hr />
+          &copy; {IME_APLIKACIJE}
+        </Container>
       </Container>
-    </Container>
-    
+    </>
   )
 }
 

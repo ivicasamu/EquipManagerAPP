@@ -32,3 +32,12 @@ export const RouteNames = {
 
 // memorija, localStorage, firebase
 export const DATA_SOURCE = 'localStorage'
+
+export const PrefixStorage = {
+   KORISNICI: 'korisnici',
+   KATEGORIJE: 'kategorije',
+   STATUSI: 'statusi',
+   UREDJAJI: 'uredjaji',
+   KLIJENTI: 'klijenti',
+   EVENTI: 'eventi'
+}

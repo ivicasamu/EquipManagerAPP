@@ -11,3 +11,7 @@ export const eventi = [
     { sifra: 10, datumPocetka: '2026-07-12T17:00:00', predvidenoTrajanje: 11, lokacija: 'Zadar Forum', klijent: 4, oprema: [3,6,9], napomena: 'Noćni event, dodatna rasvjeta' },
     { sifra: 11, datumPocetka: '2026-07-20T10:00:00', predvidenoTrajanje: 6, lokacija: 'Karlovac Korana', klijent: 1, oprema: [1,2,8], napomena: 'Provjeriti dostupnost struje na lokaciji' }
 ]
+
+export default{
+    eventi
+}

@@ -11,3 +11,7 @@ export const uredjaji = [
     { sifra: 10, kategorija: 1, model: 'NEC M322H', serijskiBroj: 'NECM322H-44567', status: 3, napomena: 'DLP projektor za učionice'},
     { sifra: 11, kategorija: 1, model: 'EPSON EB-2250U', serijskiBroj: 'EPS2250U-77845', status: 1, napomena: 'Full HD, poslovna upotreba'}
 ]
+
+export default{
+    uredjaji
+}

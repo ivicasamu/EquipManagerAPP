@@ -16,3 +16,7 @@ export const klijenti = [
     { sifra: 15, naziv: 'Tomić Gradnja', adresa: 'Lapadska obala 3, Dubrovnik', oib: 45678321098, kontaktOsoba: 'Karlo Tomić', tel: '091-606-6060', email: 'gradnja@tomic.hr' },
     { sifra: 16, naziv: 'Marić Logistic', adresa: 'Industrijska 9, Slavonski Brod', oib: 56789432109, kontaktOsoba: 'Ivan Marić', tel: '091-707-7070', email: 'logistic@maric.hr' },
 ]
+
+export default{
+    klijenti
+}

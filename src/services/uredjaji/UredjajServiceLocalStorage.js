@@ -1,7 +1,6 @@
 import StatusService from "../statusi/StatusService"
 import KategorijaService from "../kategorije/KategorijaService"
-
-const STORAGE_KEY = 'uredjaji'
+import { PrefixStorage } from "../../constants"
 
 function dohvatiNazivStatusa(sifra, statusi) {
     const s = statusi.find(x => x.sifra === sifra)
@@ -10,13 +9,13 @@ function dohvatiNazivStatusa(sifra, statusi) {
 
 // Pomoćna funkcija za dohvaćanje podataka iz local storage-a
 function dohvatiSveIzStorage() {
-    const podaci = localStorage.getItem(STORAGE_KEY)
+    const podaci = localStorage.getItem(PrefixStorage.UREDJAJI)
     return podaci ? JSON.parse(podaci) : []
 }
 
 // Pomoćna funkcija za spremanje podataka
 function spremiUStorage(podaci) {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(podaci))
+    localStorage.setItem(PrefixStorage.UREDJAJI, JSON.stringify(podaci));
 }
 
 // 1/4 Read - dohvati sve

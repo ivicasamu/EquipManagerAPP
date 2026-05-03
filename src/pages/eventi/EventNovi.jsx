@@ -5,6 +5,8 @@ import { Link, useNavigate } from "react-router-dom"
 import EventService from "../../services/eventi/EventService"
 import KlijentService from "../../services/klijenti/KlijentService"
 import UredjajService from "../../services/uredjaji/UredjajService"
+import LoadingSpinner from "../../components/LoadingSpinner.jsx"
+import useLoading from "../../hooks/useLoading"
 
 
 export default function EventNovi() {
@@ -16,6 +18,7 @@ export default function EventNovi() {
     const [pretragaUredjaja, setPretragaUredjaja] = useState('')
     const [prikaziAutocomplete, setPrikaziAutocomplete] = useState(false)
     const [odabraniIndex, setOdabraniIndex] = useState(-1)
+    const { showLoading, hideLoading} = useLoading()
 
     useEffect(() => {
         ucitajKlijente()
@@ -95,9 +98,12 @@ export default function EventNovi() {
     }
 
     async function dodaj(event) {
+        showLoading()
+        await new Promise(resolve => setTimeout(resolve, 1200))
         await EventService.dodaj(event).then(() => {
             navigate(RouteNames.EVENTI)
         })
+        hideLoading()
     }
 
     function odradiSubmit(e) {

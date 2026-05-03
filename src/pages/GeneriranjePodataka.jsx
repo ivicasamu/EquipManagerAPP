@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Button, Form, Alert, Container, Row, Col } from 'react-bootstrap'
 import { en, en_US, Faker, hr } from '@faker-js/faker'
 import KategorijaService from '../services/kategorije/KategorijaService'
@@ -7,6 +7,20 @@ import UredjajService from '../services/uredjaji/UredjajService'
 import KlijentService from '../services/klijenti/KlijentService'
 import KorisnikService from '../services/korisnici/KorisnikService'
 import EventService from '../services/eventi/EventService'
+import { DATA_SOURCE, IME_APLIKACIJE, PrefixStorage } from '../constants'
+import EventServiceMemorija from '../services/eventi/EventServiceMemorija'
+import KategorijaServiceMemorija from '../services/kategorije/KategorijaServiceMemorija'
+import KlijentServiceMemorija from '../services/klijenti/KlijentServiceMemorija'
+import KorisnikServiceMemorija from '../services/korisnici/KorisnikServiceMemorija'
+import StatusServiceMemorija from '../services/statusi/StatusServiceMemorija'
+import UredjajServiceMemorija from '../services/uredjaji/UredjajServiceMemorija'
+import eventiMemorija from '../services/eventi/EventPodaci'
+import kategorijeMemorija from '../services/kategorije/KategorijaPodaci'
+import klijentiMemorija from '../services/klijenti/KlijentPodaci'
+import korisniciMemorija from '../services/korisnici/KorisnikPodaci'
+import statusiMemorija from '../services/statusi/StatusPodaci'
+import uredjajiMemorija from '../services/uredjaji/UredjajPodaci'
+
 
 export default function GeneriranjePodataka() {
     const [brojKorisnika, setBrojKorisnika] = useState(5)
@@ -15,6 +29,8 @@ export default function GeneriranjePodataka() {
     const [brojEvenata, setBrojEvenata] = useState(10)
     const [poruka, setPoruka] = useState(null)
     const [loading, setLoading] = useState(false)
+
+    useEffect(() => {document.title = 'Generiranje podataka, ' + IME_APLIKACIJE})
 
     async function osigurajKategorijeIStatuse() {
         const rezultatKategorije = await KategorijaService.get()
@@ -364,6 +380,44 @@ export default function GeneriranjePodataka() {
         }
     }
 
+        const handleMemorijaULocalStorage = async () => {
+        if (!window.confirm('Jeste li sigurni da želite pretočiti iz memorije u localStorage?')) {
+            return;
+        }
+
+        setLoading(true);
+        setPoruka(null);
+
+        try {
+
+            localStorage.setItem(PrefixStorage.EVENTI, JSON.stringify(eventiMemorija.eventi))
+            localStorage.setItem(PrefixStorage.KATEGORIJE, JSON.stringify(kategorijeMemorija.kategorije))
+            localStorage.setItem(PrefixStorage.KLIJENTI, JSON.stringify(klijentiMemorija.klijenti))
+            localStorage.setItem(PrefixStorage.KORISNICI, JSON.stringify(korisniciMemorija.korisnici))
+            localStorage.setItem(PrefixStorage.STATUSI, JSON.stringify(statusiMemorija.statusi))
+            localStorage.setItem(PrefixStorage.UREDJAJI, JSON.stringify(uredjajiMemorija.uredjaji))
+
+            setPoruka({
+                tip: 'success',
+                tekst: `Uspješno presipano`
+            });
+        } catch (error) {
+            setPoruka({
+                tip: 'danger',
+                tekst: 'Greška pri presipavanju memorija - localStorage: ' + error.message
+            });
+        } finally {
+            setLoading(false);
+        }
+    };
+
+
+    const handleMemorijaUFirebase = async () => {
+        // kasnije
+    };
+
+
+
     return (
         <Container className="mt-4">
             <h1>Generiranje podataka</h1>
@@ -542,6 +596,37 @@ export default function GeneriranjePodataka() {
             <Alert variant="danger" className="mt-3">
                 <strong>Oprez!</strong> Brisanje podataka je trajna akcija i ne može se poništiti.
             </Alert>
+
+            {DATA_SOURCE != 'memorija' && (
+                <>
+                    <hr />
+                    <h3>Pretakanje podataka iz jednog izvora u drugi</h3>
+                    <Row className="mt-3">
+                        <Col md={6}>
+                            <Button
+                                variant="success"
+                                onClick={handleMemorijaULocalStorage}
+                                disabled={loading}
+                                className="w-100 mb-2"
+                            >
+                                {loading ? 'Pretakanje...' : 'Iz memorije u localStorage'}
+                            </Button>
+                        </Col>
+                        <Col md={6}>
+                            <Button
+                                variant="success"
+                                onClick={handleMemorijaUFirebase}
+                                disabled={loading}
+                                className="w-100 mb-2"
+                            >
+                                {loading ? 'Pretakanje...' : 'Iz memorije u firebase'}
+                            </Button>
+                        </Col>
+
+                    </Row>
+                </>
+
+            )}
         </Container>
     );
 }

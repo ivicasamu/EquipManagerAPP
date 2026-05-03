@@ -100,3 +100,7 @@ export const korisnici = [
     // { sifra: 99, ime: 'Luka', prezime: 'Šimić', korisnickoIme: 'lsimic2', lozinka: 'pass99', email: 'luka.simic@gmail.com', administrator: false },
     // { sifra: 100, ime: 'Ana', prezime: 'Knežević', korisnickoIme: 'aknezevic2', lozinka: 'pass100', email: 'ana.knezevic@gmail.com', administrator: false }
 ]
+
+export default{
+    korisnici
+}

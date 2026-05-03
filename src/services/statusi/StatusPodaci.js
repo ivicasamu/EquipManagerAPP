@@ -6,3 +6,7 @@ export const statusi = [
     { sifra: 5, naziv: 'U servisu', opis: 'Pokvareno ili na održavanju' },
     { sifra: 6, naziv: 'Neaktivno', opis: 'Nije u ponudi(staro, otpisno, blokirano' }
 ]
+
+export default{
+    statusi
+}

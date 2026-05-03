@@ -6,3 +6,7 @@ export const kategorije = [
     { sifra: 5, naziv: 'Računalo', aktivna: true },
     { sifra: 6, naziv: 'Procesor zvuka', aktivna: true },
 ]
+
+export default{
+    kategorije
+}

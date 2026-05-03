@@ -5,6 +5,8 @@ import { Link, useNavigate } from "react-router-dom"
 import UredjajService from "../../services/uredjaji/UredjajService"
 import KategorijaService from "../../services/kategorije/KategorijaService"
 import StatusService from "../../services/statusi/StatusService"
+import LoadingSpinner from "../../components/LoadingSpinner.jsx"
+import useLoading from "../../hooks/useLoading"
 
 
 export default function UredjajNovi() {
@@ -12,6 +14,7 @@ export default function UredjajNovi() {
     const navigate = useNavigate()
     const [kategorije, setKategorije] = useState([])
     const [statusi, setStatusi] = useState([])
+    const { showLoading, hideLoading} = useLoading()
 
     useEffect(() => {
         ucitajKategorije()
@@ -39,9 +42,12 @@ export default function UredjajNovi() {
     }
 
     async function dodaj(uredjaj) {
+        showLoading()
+        await new Promise(resolve => setTimeout(resolve, 1200))
         await UredjajService.dodaj(uredjaj).then(() => {
             navigate(RouteNames.UREDJAJI)
         })
+        hideLoading()
     }
 
     function odradiSubmit(e) {

@@ -8,6 +8,7 @@ import EventPregledGrid from "./EventPregledGrid"
 import EventPregledTablica from "./EventPregledTablica"
 import useBreakpoint from "../../hooks/useBrakepoint"
 import EventPDFGenerator from "../../components/EventPDFGenerator"
+import useLoading from "../../hooks/useLoading"
 
 export default function EventPregled(){
 
@@ -22,6 +23,7 @@ export default function EventPregled(){
     const [sviUredjaji, setSviUredjaji] = useState([])
     const [searchTerm, setSearchTerm] = useState('')
     const pageSize = 10
+    const { showLoading, hideLoading} = useLoading()
 
     const [tooltip, setTooltip] = useState({
         vidljivo: false,
@@ -37,6 +39,8 @@ export default function EventPregled(){
     },[currentPage,searchTerm])
 
     async function ucitajEventi(page, search) {
+        showLoading()
+        await new Promise(resolve => setTimeout(resolve, 1000))
         await EventService.getPage(page, pageSize, search).then((odgovor)=>{
             if(!odgovor.success){
                 alert('Nije implementiran servis')
@@ -45,6 +49,7 @@ export default function EventPregled(){
             setEventi(odgovor.data)
             setTotalPages(odgovor.totalPages)
             setTotalItems(odgovor.totalItems)
+            hideLoading()
         })
     }
 
@@ -60,9 +65,15 @@ export default function EventPregled(){
 
     async function brisanje(sifra) {
         if (!confirm('Sigurno obrisati?')) return;
+
+        showLoading()
+        await new Promise(resolve => setTimeout(resolve, 1000))
+
         await EventService.obrisi(sifra);
         const newTotalItems = totalItems - 1;
         const newTotalPages = Math.ceil(newTotalItems / pageSize);
+
+        hideLoading()
 
         if (currentPage > newTotalPages && newTotalPages > 0) {
             setCurrentPage(newTotalPages);

@@ -7,6 +7,7 @@ import StatusService from "../../services/statusi/StatusService"
 import useBreakpoint from "../../hooks/useBrakepoint"
 import UredjajPregledTablica from "./UredjajPregledTablica"
 import UredjajPregledGrid from "./UredjajPregledGrid"
+import useLoading from "../../hooks/useLoading"
 
 export default function UredjajPregled(){
 
@@ -23,6 +24,7 @@ export default function UredjajPregled(){
     const [totalPages, setTotalPages] = useState(0)
     const [totalItems, setTotalItems] = useState(0)
     const [searchTerm, setSearchTerm] = useState('')
+    const { showLoading, hideLoading} = useLoading()
 
     const [sortConfig, setSortConfig] = useState(() => {
         const saved = localStorage.getItem("uredjaji_sort");
@@ -42,21 +44,24 @@ export default function UredjajPregled(){
     }, [currentPage, searchTerm])
 
     async function ucitajSveUredjaje(page, search) {
-    const odgovor = await UredjajService.getPage(
-        page,
-        pageSize,
-        search
-    )
+        showLoading()
+        await new Promise(resolve => setTimeout(resolve, 1000))
+        const odgovor = await UredjajService.getPage(
+            page,
+            pageSize,
+            search
+        )
 
-    if (!odgovor.success) {
-        alert('Greška')
-        return
+        if (!odgovor.success) {
+            alert('Greška')
+            return
+        }
+
+        setUredjaji(odgovor.data) // ✔ array
+        setTotalPages(odgovor.totalPages)
+        setTotalItems(odgovor.totalItems)
+        hideLoading()
     }
-
-    setUredjaji(odgovor.data) // ✔ array
-    setTotalPages(odgovor.totalPages)
-    setTotalItems(odgovor.totalItems)
-}
 
     async function ucitajKategorije() {
         const odgovor = await KategorijaService.get()
@@ -71,10 +76,20 @@ export default function UredjajPregled(){
     async function brisanje(sifra) {
         if (!confirm('Sigurno obrisati?')) return;
 
-        await UredjajService.obrisi(sifra)
+        showLoading()
+        await new Promise(resolve => setTimeout(resolve, 1000))
 
-        const novi = sviUredjaji.filter(u => u.sifra !== sifra)
-        setSviUredjaji(novi)
+        await UredjajService.obrisi(sifra);
+        const newTotalItems = totalItems - 1;
+        const newTotalPages = Math.ceil(newTotalItems / pageSize);
+
+        hideLoading()
+
+        if (currentPage > newTotalPages && newTotalPages > 0) {
+            setCurrentPage(newTotalPages);
+        } else {
+            ucitajSveUredjaje(currentPage, searchTerm);
+        }
     }
 
     function handlePageChange(page) {
