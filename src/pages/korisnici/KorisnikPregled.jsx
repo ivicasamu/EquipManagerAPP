@@ -27,7 +27,7 @@ export default function KorisniciPregled(){
         })
     }
 
-    async function brisanje(sifra) {
+    async function obrisi(sifra) {
         if(!confirm('Sigurno obrisati')){
             return
         }
@@ -44,13 +44,13 @@ export default function KorisniciPregled(){
             <KorisnikPregledGrid
                 korisnici={korisnici} 
                 navigate={navigate} 
-                brisanje={brisanje} 
+                obrisi={obrisi} 
             />
         ) : (
             <KorisnikPregledTablica
                 korisnici={korisnici} 
                 navigate={navigate} 
-                brisanje={brisanje}  
+                obrisi={obrisi}  
             />
         )}
         </>

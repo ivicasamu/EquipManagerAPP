@@ -1,7 +1,13 @@
 import { Button, Pagination, Table } from "react-bootstrap";
 import { FaEdit, FaTrash } from "react-icons/fa";
 
-export default function KlijentPregledTablica({ klijenti, navigate, brisanje, totalPages, currentPage, handlePageChange }) {
+export default function KlijentPregledTablica({ 
+    klijenti, 
+    navigate, 
+    obrisi, 
+    totalPages, 
+    currentPage, 
+    handlePageChange }) {
     
     return (
         <>
@@ -23,7 +29,7 @@ export default function KlijentPregledTablica({ klijenti, navigate, brisanje, to
                         <td>{klijent.adresa}</td>
                         <td>{klijent.oib}</td>
                         <td>{klijent.kontaktOsoba}</td>
-                        <td>{klijent.tel},<br /> {klijent.email}</td>
+                        <td>{klijent.tel}<br /> {klijent.email}</td>
                         <td className="text-center">
                             <Button onClick={()=>{navigate(`/klijenti/${klijent.sifra}`)}}>
                                 <FaEdit />

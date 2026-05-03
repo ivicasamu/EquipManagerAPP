@@ -33,7 +33,7 @@ export default function KlijentiPregled(){
         })
     }
 
-    async function brisanje(sifra) {
+    async function obrisi(sifra) {
         if(!confirm('Sigurno obrisati')){
             return
         }
@@ -44,7 +44,7 @@ export default function KlijentiPregled(){
         if (currentPage > newTotalPages && newTotalPages > 0) {
             setCurrentPage(newTotalPages);
         } else {
-            ucitajKlijenti(currentPage);
+            ucitajKlijente(currentPage);
         }
     }
 
@@ -61,7 +61,7 @@ export default function KlijentiPregled(){
             <KlijentPregledGrid
                 klijenti={klijenti} 
                 navigate={navigate} 
-                brisanje={brisanje}
+                obrisi={obrisi}
                 totalPages={totalPages}
                 currentPage={currentPage}
                 handlePageChange={handlePageChange} 
@@ -70,7 +70,7 @@ export default function KlijentiPregled(){
             <KlijentPregledTablica
                 klijenti={klijenti} 
                 navigate={navigate} 
-                brisanje={brisanje}
+                obrisi={obrisi}
                 totalPages={totalPages}
                 currentPage={currentPage}
                 handlePageChange={handlePageChange}  

@@ -2,7 +2,13 @@ import { Button, Card, Row, Col, Container, Pagination } from "react-bootstrap"
 import { FaEdit, FaTrash } from "react-icons/fa"
 import { GrDislike, GrLike } from "react-icons/gr";
 
-export default function KlijentPregledGrid({ klijenti, navigate, brisanje, totalPages, currentPage, handlePageChange }) {
+export default function KlijentPregledGrid({ 
+    klijenti, 
+    navigate, 
+    obrisi, 
+    totalPages, 
+    currentPage, 
+    handlePageChange }) {
 
     return (
         <>
