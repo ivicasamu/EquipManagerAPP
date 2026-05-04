@@ -80,6 +80,9 @@ async function getPage(page = 1, pageSize = 10, searchTerm = '') {
         kategorijaMap[s.sifra] = (s.naziv || '').toLowerCase()
     })
 
+    // Ovdje bi trebalo doći sortiranje, moraš primiti još jedan objekt ili dva parametra.
+    // Pogledaj https://github.com/BornaNovak/AeroMusicay/blob/main/src/services/albumi/AlbumServiceLocalStorage.js
+
     // Filtriranje
     if (searchTerm && searchTerm.trim() !== '') {
         const search = searchTerm.toLowerCase().trim()
