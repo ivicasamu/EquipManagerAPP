@@ -65,7 +65,13 @@ async function obrisi(sifra) {
 }
 
 // Straničenje - dohvati stranicu polaznika
-async function getPage(page = 1, pageSize = 10, searchTerm = '') {
+async function getPage(
+    page = 1, 
+    pageSize = 10, 
+    searchTerm = '', 
+    sortBy = 'model', 
+    sortDir = 'asc'
+) {
     let uredjaji = dohvatiSveIzStorage()
     
     const statusi = (await StatusService.get()).data
@@ -79,9 +85,6 @@ async function getPage(page = 1, pageSize = 10, searchTerm = '') {
     kategorije.forEach(s => {
         kategorijaMap[s.sifra] = (s.naziv || '').toLowerCase()
     })
-
-    // Ovdje bi trebalo doći sortiranje, moraš primiti još jedan objekt ili dva parametra.
-    // Pogledaj https://github.com/BornaNovak/AeroMusicay/blob/main/src/services/albumi/AlbumServiceLocalStorage.js
 
     // Filtriranje
     if (searchTerm && searchTerm.trim() !== '') {
@@ -102,6 +105,41 @@ async function getPage(page = 1, pageSize = 10, searchTerm = '') {
             )
         })
     }
+
+    // Ovdje bi trebalo doći sortiranje, moraš primiti još jedan objekt ili dva parametra.
+    // Pogledaj https://github.com/BornaNovak/AeroMusicay/blob/main/src/services/albumi/AlbumServiceLocalStorage.js
+
+    // SORTIRANJE
+    uredjaji.sort((a, b) => {
+        let vrijednostA = ''
+        let vrijednostB = ''
+
+        if (sortBy === 'model') {
+            vrijednostA = (a.model || '').toLowerCase()
+            vrijednostB = (b.model || '').toLowerCase()
+        } 
+        else if (sortBy === 'status') {
+            vrijednostA = statusMap[parseInt(a.status)] || ''
+            vrijednostB = statusMap[parseInt(b.status)] || ''
+        } 
+        else if (sortBy === 'kategorija') {
+            vrijednostA = kategorijaMap[parseInt(a.kategorija)] || ''
+            vrijednostB = kategorijaMap[parseInt(b.kategorija)] || ''
+        }
+
+        else if (sortBy === 'sifra') {
+            vrijednostA = a.sifra || 0
+            vrijednostB = b.sifra || 0
+
+            return sortDir === 'asc' 
+                ? vrijednostA - vrijednostB 
+                : vrijednostB - vrijednostA
+        }
+
+        const rezultat = vrijednostA.localeCompare(vrijednostB)
+
+        return sortDir === 'asc' ? rezultat : -rezultat
+    })
 
     const startIndex = (page - 1) * pageSize
     const endIndex = startIndex + pageSize

@@ -15,7 +15,6 @@ export default function UredjajPregled(){
     const sirina = useBreakpoint();
 
     const [uredjaji, setUredjaji] = useState([])
-    const [sviUredjaji, setSviUredjaji] = useState([])
 
     const [kategorije, setKategorije] = useState([])
     const [statusi, setStatusi] = useState([])
@@ -26,40 +25,37 @@ export default function UredjajPregled(){
     const [searchTerm, setSearchTerm] = useState('')
     const { showLoading, hideLoading} = useLoading()
 
-    const [sortConfig, setSortConfig] = useState(() => {
-        const saved = localStorage.getItem("uredjaji_sort");
-        return saved ? JSON.parse(saved) : { key: null, direction: null };
-    });
+    const [sortConfig, setSortConfig] = useState({
+        key: 'sifra',
+        direction: 'asc'
+    })
 
     const pageSize = 10
 
     useEffect(() => {
-        ucitajSveUredjaje(1, '')
         ucitajKategorije()
         ucitajStatuse()
     }, [])
 
     useEffect(() => {
-        ucitajSveUredjaje(currentPage, searchTerm)
-    }, [currentPage, searchTerm])
+        ucitajSveUredjaje(currentPage, searchTerm, sortConfig)
+    }, [currentPage, searchTerm, sortConfig])
 
-    async function ucitajSveUredjaje(page, search) {
+    async function ucitajSveUredjaje(page, search, sort) {
         showLoading()
-        await new Promise(resolve => setTimeout(resolve, 1000))
+
         const odgovor = await UredjajService.getPage(
             page,
             pageSize,
-            search
+            search,
+            sort.key,
+            sort.direction
         )
 
-        if (!odgovor.success) {
-            alert('Greška')
-            return
-        }
-
-        setUredjaji(odgovor.data) // ✔ array
+        setUredjaji(odgovor.data)
         setTotalPages(odgovor.totalPages)
         setTotalItems(odgovor.totalItems)
+
         hideLoading()
     }
 
@@ -102,16 +98,17 @@ export default function UredjajPregled(){
     }
 
     function handleSort(key) {
-        let direction = 'asc'
+        setSortConfig(prev => {
+            let direction = 'asc'
 
-        if (sortConfig.key === key && sortConfig.direction === 'asc') {
-            direction = 'desc'
-        } else if (sortConfig.key === key && sortConfig.direction === 'desc') {
-            direction = null
-        }
+            if (prev.key === key && prev.direction === 'asc') {
+                direction = 'desc'
+            }
 
-        setSortConfig({ key, direction })
-        setCurrentPage(1) // UX fix
+            return { key, direction }
+        })
+
+        setCurrentPage(1)
     }
 
     function dohvatiNazivKategorije(sifra) {

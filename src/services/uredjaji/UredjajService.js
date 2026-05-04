@@ -36,5 +36,5 @@ export default {
     dodaj: (uredjaj) => AktivniServis.dodaj(uredjaj),
     promjeni: (sifra, uredjaj) => AktivniServis.promjeni(sifra, uredjaj),
     obrisi: (sifra) => AktivniServis.obrisi(sifra),
-    getPage: (page, pageSize, searchTerm) => AktivniServis.getPage(page, pageSize, searchTerm)
+    getPage: (page, pageSize, searchTerm, sortBy, sortDir) => AktivniServis.getPage(page, pageSize, searchTerm, sortBy, sortDir)
 };
