@@ -2,10 +2,13 @@ import { Button, Col, Form, Row } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import { RouteNames } from "../../constants";
 import StatusService from "../../services/statusi/StatusService";
+import { ShemaStatus } from "../../schemas/ShemaStatus"
+import { useState } from "react";
 
 export default function StatusNovi(){
 
     const navigate = useNavigate()
+    const [errors, setErrors] = useState({})
 
     async function dodaj(status){
         // console.table(kategorija)
@@ -19,14 +22,24 @@ export default function StatusNovi(){
         const podaci = new FormData(e.target)
         // console.log(podaci.get('aktivna'))
 
-        if (!podaci.get('naziv') || podaci.get('naziv').trim().length === 0) {
-            alert("Naziv je obavezan i ne smije sadržavati samo razmake!")
-            return // Prekid
-        }
+        setErrors({});
+        const objektPodataka = Object.fromEntries(podaci);
 
-        if(podaci.get('naziv').trim().length < 3) {
-            alert("Naziv kategorije mora imati najmanje 3 znaka!")
-            return
+        const rezultat = ShemaStatus.safeParse(objektPodataka);
+
+        if (!rezultat.success) {
+            const noveGreske = {};
+
+            // Prolazimo kroz sve issues (probleme) koje je Zod pronašao
+            rezultat.error.issues.forEach((issue) => {
+                const kljuc = issue.path[0];
+                if (!noveGreske[kljuc]) {
+                    noveGreske[kljuc] = issue.message;
+                }
+            });
+
+            setErrors(noveGreske);
+            return;
         }
 
         dodaj({
@@ -35,18 +48,37 @@ export default function StatusNovi(){
         })
     }
 
+    const ocistiGresku = (nazivPolja) => {
+        if (errors[nazivPolja]) {
+            const noveGreske = { ...errors };
+            delete noveGreske[nazivPolja];
+            setErrors(noveGreske);
+        }
+    }
+
     return(
         <>
             <h3>Unos novog statusa::</h3>
             <Form onSubmit={odradiSubmit}>
                 <Form.Group controlId="ime">
                     <Form.Label>Naziv</Form.Label>
-                    <Form.Control type="text" name="naziv"/>
+                    <Form.Control 
+                        type="text" 
+                        name="naziv"
+                        isInvalid={!!errors.naziv} 
+                        onFocus={() => ocistiGresku('naziv')}
+                    />
+                    <Form.Control.Feedback type="invalid">
+                        {errors.naziv}
+                    </Form.Control.Feedback>
                 </Form.Group>
 
                 <Form.Group controlId="opis">
                     <Form.Label>Opis</Form.Label>
-                    <Form.Control type="text" name="opis"/>
+                    <Form.Control 
+                        type="text" 
+                        name="opis"
+                    />
                 </Form.Group>
                 
 

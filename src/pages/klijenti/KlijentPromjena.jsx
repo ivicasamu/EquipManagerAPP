@@ -1,8 +1,9 @@
-import { Button, Col, Form, Row } from "react-bootstrap";
-import { Link, useNavigate, useParams } from "react-router-dom";
-import { RouteNames } from "../../constants";
-import KlijentService from "../../services/klijenti/KlijentService";
-import { useEffect, useState } from "react";
+import { Button, Col, Form, Row } from "react-bootstrap"
+import { Link, useNavigate, useParams } from "react-router-dom"
+import { RouteNames } from "../../constants"
+import KlijentService from "../../services/klijenti/KlijentService"
+import { useEffect, useState } from "react"
+import { ShemaKlijent } from "../../schemas/ShemaKlijent"
 
 export default function KlijentPromjena(){
 
@@ -10,6 +11,7 @@ export default function KlijentPromjena(){
     const params = useParams()
     const [klijent, setKlijent] = useState({})
     const [administrator, setAdministrator] = useState(false)
+    const [errors, setErrors] = useState({})
 
     async function ucitajKlijenta(){
         await KlijentService.getBySifra(params.sifra).then((odgovor)=>{
@@ -40,19 +42,24 @@ export default function KlijentPromjena(){
         e.preventDefault()
         const podaci = new FormData(e.target)
 
-        if(!podaci.get('naziv') || podaci.get('naziv').trim().length === 0){
-            alert("Naziv je obavezno!")
-            return
-        }
+        setErrors({});
+        const objektPodataka = Object.fromEntries(podaci)
 
-        if(podaci.get('naziv').trim().length < 3) {
-            alert("Naziv mora imati najmanje 3 znaka!")
-            return
-        }
+        const rezultat = ShemaKlijent.safeParse(objektPodataka)
 
-        if(podaci.get('oib').trim().length != 11) {
-            alert("OIB mora imati 11 znakova!")
-            return
+        if (!rezultat.success) {
+            const noveGreske = {};
+
+            // Prolazimo kroz sve issues (probleme) koje je Zod pronašao
+            rezultat.error.issues.forEach((issue) => {
+                const kljuc = issue.path[0];
+                if (!noveGreske[kljuc]) {
+                    noveGreske[kljuc] = issue.message;
+                }
+            });
+
+            setErrors(noveGreske);
+            return;
         }   
 
         promjeni({
@@ -74,8 +81,13 @@ export default function KlijentPromjena(){
                         <Form.Group controlId="naziv" className="mb-3">
                             <Form.Label>Naziv</Form.Label>
                             <Form.Control type="text" name="naziv"
-                            defaultValue={klijent.naziv}
+                                defaultValue={klijent.naziv}
+                                isInvalid={!!errors.naziv}
+                                onChange={() => ocistiGresku('naziv')} 
                             />
+                            <Form.Control.Feedback type="invalid">
+                            {errors.naziv}
+                        </Form.Control.Feedback>
                         </Form.Group>
                     </Col>
 
@@ -83,9 +95,14 @@ export default function KlijentPromjena(){
                         <Form.Group controlId="adresa" className="mb-3">
                             <Form.Label>Adresa</Form.Label>
                             <Form.Control type="text" name="adresa" 
-                            defaultValue={klijent.adresa}
-                            />
-                        </Form.Group> 
+                                defaultValue={klijent.adresa}
+                                isInvalid={!!errors.adresa}
+                                onChange={() => ocistiGresku('adresa')} 
+                            /> 
+                        <Form.Control.Feedback type="invalid">
+                            {errors.adresa}
+                        </Form.Control.Feedback>
+                        </Form.Group>
                     </Col>
 
                     
@@ -94,8 +111,13 @@ export default function KlijentPromjena(){
                         <Form.Group controlId="oib" className="mb-3">
                             <Form.Label>OIB</Form.Label>
                             <Form.Control type="text" name="oib" 
-                            defaultValue={klijent.oib}
+                                defaultValue={klijent.oib}
+                                isInvalid={!!errors.oib}
+                                onChange={() => ocistiGresku('oib')} 
                             />
+                        <Form.Control.Feedback type="invalid">
+                            {errors.oib}
+                        </Form.Control.Feedback>
                         </Form.Group>
                     </Col>
 
@@ -103,8 +125,13 @@ export default function KlijentPromjena(){
                         <Form.Group controlId="kontaktOsoba" className="mb-3">
                             <Form.Label>Kontakt osoba</Form.Label>
                             <Form.Control type="text" name="kontaktOsoba" 
-                            defaultValue={klijent.kontaktOsoba}
+                                defaultValue={klijent.kontaktOsoba}
+                                isInvalid={!!errors.kontaktOsoba}
+                                onChange={() => ocistiGresku('kontaktOsoba')} 
                             />
+                        <Form.Control.Feedback type="invalid">
+                            {errors.kontaktOsoba}
+                        </Form.Control.Feedback>
                         </Form.Group>
                     </Col>
 
@@ -112,7 +139,7 @@ export default function KlijentPromjena(){
                         <Form.Group controlId="tel" className="mb-3">
                             <Form.Label>Telefon</Form.Label>
                             <Form.Control type="text" name="tel" 
-                            defaultValue={klijent.tel}
+                                defaultValue={klijent.tel}
                             />
                         </Form.Group>
                     </Col>
@@ -121,8 +148,13 @@ export default function KlijentPromjena(){
                         <Form.Group controlId="email" className="mb-3">
                             <Form.Label>Email</Form.Label>
                             <Form.Control type="email" name="email" 
-                            defaultValue={klijent.email}
+                                defaultValue={klijent.email}
+                                isInvalid={!!errors.email}
+                                onChange={() => ocistiGresku('email')} 
                             />
+                        <Form.Control.Feedback type="invalid">
+                            {errors.email}
+                        </Form.Control.Feedback>
                         </Form.Group>
                     </Col>
                     

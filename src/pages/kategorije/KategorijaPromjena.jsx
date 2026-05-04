@@ -48,29 +48,34 @@ export default function KorisnikPromjena(){
 
     function odradiSubmit(e){
         e.preventDefault()
-        const podaci = new FormData(e.target)
 
-        setErrors({});
-        const objektPodataka = Object.fromEntries(podaci);
+        setErrors({})
 
-        const rezultat = ShemaKategorija.safeParse(objektPodataka);
+        const rezultat = ShemaKategorija.safeParse(kategorija)
 
         if (!rezultat.success) {
-            const noveGreske = {};
+            const noveGreske = {}
 
-            // Prolazimo kroz sve issues (probleme) koje je Zod pronašao
             rezultat.error.issues.forEach((issue) => {
-                const kljuc = issue.path[0];
+                const kljuc = issue.path[0]
                 if (!noveGreske[kljuc]) {
-                    noveGreske[kljuc] = issue.message;
+                    noveGreske[kljuc] = issue.message
                 }
-            });
+            })
 
-            setErrors(noveGreske);
-            return;
+            setErrors(noveGreske)
+            return
         }
 
         promjeni(kategorija)
+    }
+
+    const ocistiGresku = (nazivPolja) => {
+        if (errors[nazivPolja]) {
+            const noveGreske = { ...errors };
+            delete noveGreske[nazivPolja];
+            setErrors(noveGreske);
+        }
     }
 
     return(
@@ -83,14 +88,15 @@ export default function KorisnikPromjena(){
                     <Form.Label>Naziv</Form.Label>
                     <Form.Control
                         type="text"
-                        value={kategorija.naziv}
+                        value={kategorija.naziv || ''}
                         isInvalid={!!errors.naziv}
-                        onChange={(e) =>
+                        onChange={(e) => {
+                            ocistiGresku('naziv')
                             setKategorija({
                                 ...kategorija,
                                 naziv: e.target.value
                             })
-                        }
+                        }}
                     />
                     <Form.Control.Feedback type="invalid">
                         {errors.naziv}

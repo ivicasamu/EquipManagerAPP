@@ -148,13 +148,13 @@ export default function EventNovi() {
             uredjaji: odabraniUredjaji.map(u => u.sifra),
             napomena: podaci.get('napomena')
         })
+    }
 
-        const ocistiGresku = (nazivPolja) => {
-            if (errors[nazivPolja]) {
-                const noveGreske = { ...errors };
-                delete noveGreske[nazivPolja];
-                setErrors(noveGreske);
-            }
+    const ocistiGresku = (nazivPolja) => {
+        if (errors[nazivPolja]) {
+            const noveGreske = { ...errors };
+            delete noveGreske[nazivPolja];
+            setErrors(noveGreske);
         }
     }
 
@@ -172,9 +172,10 @@ export default function EventNovi() {
                                     <Form.Group controlId="datumPocetka" className="mb-3">
                                         <Form.Label className="fw-bold">Datum početka</Form.Label>
                                         <Form.Control 
-                                        type="date" 
-                                        name="datumPocetka" 
-                                        isInvalid={!!errors.datumPocetka}
+                                            type="date" 
+                                            name="datumPocetka" 
+                                            isInvalid={!!errors.datumPocetka}
+                                            onChange={() => ocistiGresku('ime')}
                                             onClick={(e) => e.target.showPicker()} 
                                             onFocus={(e) => e.target.showPicker()}
                                             defaultValue={event.datumPocetka?.substring(0, 10)}
@@ -202,6 +203,7 @@ export default function EventNovi() {
                                             isInvalid={!!errors.lokacija}
                                             placeholder="Unesite lokaciju eventa"
                                             defaultValue={event.lokacija}
+                                            onChange={() => ocistiGresku('lokacija')}
                                         />
                                         <Form.Control.Feedback type="invalid">
                                             {errors.lokacija}

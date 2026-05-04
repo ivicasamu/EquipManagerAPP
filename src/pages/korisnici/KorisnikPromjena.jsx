@@ -1,8 +1,9 @@
-import { Button, Col, Form, Row } from "react-bootstrap";
-import { Link, useNavigate, useParams } from "react-router-dom";
-import { RouteNames } from "../../constants";
-import KorisnikService from "../../services/korisnici/KorisnikService";
-import { useEffect, useState } from "react";
+import { Button, Col, Form, Row } from "react-bootstrap"
+import { Link, useNavigate, useParams } from "react-router-dom"
+import { RouteNames } from "../../constants"
+import KorisnikService from "../../services/korisnici/KorisnikService"
+import { useEffect, useState } from "react"
+import { ShemaKorisnik } from "../../schemas/ShemaKorisnik"
 
 export default function KorisnikPromjena(){
 
@@ -10,6 +11,7 @@ export default function KorisnikPromjena(){
     const params = useParams()
     const [korisnik, setKorisnik] = useState({})
     const [administrator, setAdministrator] = useState(false)
+    const [errors, setErrors] = useState({})
 
     async function ucitajKorisnika(){
         await KorisnikService.getBySifra(params.sifra).then((odgovor)=>{
@@ -40,32 +42,40 @@ export default function KorisnikPromjena(){
         e.preventDefault()
         const podaci = new FormData(e.target)
 
-        if(!podaci.get('ime') || podaci.get('ime').trim().length === 0){
-            alert("Ime je obavezno!")
-            return
-        }
+        setErrors({});
+        const objektPodataka = Object.fromEntries(podaci)
 
-        if(podaci.get('ime').trim().length < 3) {
-            alert("Ime korisnika mora imati najmanje 3 znaka!")
-            return
-        }
+        const rezultat = ShemaKorisnik.safeParse(objektPodataka)
 
-        if(!podaci.get('prezime') || podaci.get('prezime').trim().length === 0){
-            alert("Prezime je obavezno!")
-            return
-        }
+        if (!rezultat.success) {
+            const noveGreske = {};
 
-        if(podaci.get('prezime').trim().length < 3) {
-            alert("Prezime korisnika mora imati najmanje 3 znaka!")
-            return
+            // Prolazimo kroz sve issues (probleme) koje je Zod pronašao
+            rezultat.error.issues.forEach((issue) => {
+                const kljuc = issue.path[0];
+                if (!noveGreske[kljuc]) {
+                    noveGreske[kljuc] = issue.message;
+                }
+            });
+
+            setErrors(noveGreske);
+            return;
         }
 
         promjeni({
             ime: podaci.get('ime'),
             prezime: podaci.get('prezime'),
             email: podaci.get('email'),
-            administrator: podaci.get('administrator') === 'on'
+            administrator: korisnik.administrator
         })
+    }
+
+    const ocistiGresku = (nazivPolja) => {
+        if (errors[nazivPolja]) {
+            const noveGreske = { ...errors };
+            delete noveGreske[nazivPolja];
+            setErrors(noveGreske);
+        }
     }
 
     return(
@@ -76,26 +86,49 @@ export default function KorisnikPromjena(){
                     <Col md={6}>
                         <Form.Group controlId="ime" className="mb-3">
                             <Form.Label>Ime</Form.Label>
-                            <Form.Control type="text" name="ime"
-                            defaultValue={korisnik.ime} 
+                            <Form.Control 
+                                type="text" 
+                                name="ime"
+                                defaultValue={korisnik.ime} 
+                                isInvalid={!!errors.ime}
+                                onChange={() => ocistiGresku('ime')}
                             />
+                            <Form.Control.Feedback type="invalid">
+                                {errors.ime}
+                            </Form.Control.Feedback>
                         </Form.Group>
                     </Col>
 
                     <Col md={6}>
                         <Form.Group controlId="prezime" className="mb-3">
                             <Form.Label>Prezime</Form.Label>
-                            <Form.Control type="text" name="prezime" 
-                            defaultValue={korisnik.prezime} 
+                            <Form.Control 
+                                type="text" 
+                                name="prezime" 
+                                defaultValue={korisnik.prezime} 
+                                isInvalid={!!errors.prezime}
+                                onChange={() => ocistiGresku('prezime')}
                             />
+
+                            <Form.Control.Feedback type="invalid">
+                                {errors.prezime}
+                            </Form.Control.Feedback>
                         </Form.Group> 
                     </Col>    
 
                     <Col md={6}>
                         <Form.Group controlId="email" className="mb-3">
                             <Form.Label>Email</Form.Label>
-                            <Form.Control type="email" name="email"
-                            defaultValue={korisnik.email} />
+                            <Form.Control 
+                                type="email" 
+                                name="email"
+                                defaultValue={korisnik.email} 
+                                isInvalid={!!errors.email}
+                                onChange={() => ocistiGresku('ime')}
+                            />
+                            <Form.Control.Feedback type="invalid">
+                                {errors.email}
+                            </Form.Control.Feedback>
                         </Form.Group>
                     </Col>
                     
@@ -105,7 +138,7 @@ export default function KorisnikPromjena(){
                                 type="switch"
                                 label="Korisnik je administrator"
                                 name="administrator"
-                                checked={korisnik.administrator}
+                                checked={korisnik.administrator || false} 
                                 className="fs-5"
                                 onChange={(e) =>
                                     setKorisnik({

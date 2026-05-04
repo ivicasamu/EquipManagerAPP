@@ -45,13 +45,13 @@ export default function KategorijaNovi(){
             naziv: podaci.get('naziv'),
             aktivna: podaci.get('aktivna') === 'on'
         })
+    }
 
-        const ocistiGresku = (nazivPolja) => {
-            if (errors[nazivPolja]) {
-                const noveGreske = { ...errors };
-                delete noveGreske[nazivPolja];
-                setErrors(noveGreske);
-            }
+    const ocistiGresku = (nazivPolja) => {
+        if (errors[nazivPolja]) {
+            const noveGreske = { ...errors };
+            delete noveGreske[nazivPolja];
+            setErrors(noveGreske);
         }
     }
 
@@ -62,9 +62,11 @@ export default function KategorijaNovi(){
                 <Form.Group controlId="ime">
                     <Form.Label>Naziv</Form.Label>
                     <Form.Control 
-                    type="text" 
-                    name="naziv" 
-                    isInvalid={!!errors.naziv}/>
+                        type="text" 
+                        name="naziv" 
+                        isInvalid={!!errors.naziv}
+                        onChange={() => ocistiGresku('naziv')} 
+                    />
                     <Form.Control.Feedback type="invalid">
                         {errors.naziv}
                     </Form.Control.Feedback>

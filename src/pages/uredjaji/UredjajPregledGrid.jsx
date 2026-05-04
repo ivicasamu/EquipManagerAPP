@@ -42,7 +42,7 @@ export default function UredjajPregledGrid({
                             <Card className="shadow-sm h-100">
                                 <Card.Header className="d-flex justify-content-between align-items-center bg-white py-3">
                                     <span className="fw-bold text-primary" style={{ fontSize: '1.1rem' }}>
-                                        {uredjaj.model} (sn: {uredjaj.serijskiBroj})
+                                        {uredjaj.model} <br />(sn: {uredjaj.serijskiBroj})
                                     </span>
                                 </Card.Header>
 

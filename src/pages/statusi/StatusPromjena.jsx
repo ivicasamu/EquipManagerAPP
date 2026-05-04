@@ -3,11 +3,13 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { RouteNames } from "../../constants";
 import { useEffect, useState } from "react";
 import StatusService from "../../services/statusi/StatusService";
+import { ShemaStatus } from "../../schemas/ShemaStatus"
 
 export default function StatusPromjena(){
 
     const navigate = useNavigate()
     const params = useParams()
+    const [errors, setErrors] = useState({})
 
     const [status, setStatus] = useState({
         naziv: "",
@@ -46,17 +48,33 @@ export default function StatusPromjena(){
     function odradiSubmit(e){
         e.preventDefault()
 
-        if (!status.naziv || status.naziv.trim().length === 0) {
-            alert("Naziv je obavezan i ne smije sadržavati samo razmake!")
-            return
-        }
+        setErrors({})
 
-        if(status.naziv.trim().length < 3) {
-            alert("Naziv kategorije mora imati najmanje 3 znaka!")
+        const rezultat = ShemaStatus.safeParse(status)
+
+        if (!rezultat.success) {
+            const noveGreske = {}
+
+            rezultat.error.issues.forEach((issue) => {
+                const kljuc = issue.path[0]
+                if (!noveGreske[kljuc]) {
+                    noveGreske[kljuc] = issue.message
+                }
+            })
+
+            setErrors(noveGreske)
             return
         }
 
         promjeni(status)
+    }
+
+    const ocistiGresku = (nazivPolja) => {
+        if (errors[nazivPolja]) {
+            const noveGreske = { ...errors };
+            delete noveGreske[nazivPolja];
+            setErrors(noveGreske);
+        }
     }
 
     return(
@@ -76,7 +94,12 @@ export default function StatusPromjena(){
                                 naziv: e.target.value
                             })
                         }
+                        isInvalid={!!errors.naziv} 
+                        onFocus={() => ocistiGresku('naziv')}
                     />
+                    <Form.Control.Feedback type="invalid">
+                        {errors.naziv}
+                    </Form.Control.Feedback>
                 </Form.Group>
 
                 <Form.Group controlId="opis">

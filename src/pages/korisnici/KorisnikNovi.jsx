@@ -1,11 +1,15 @@
-import { Button, Col, Form, Row } from "react-bootstrap";
-import { Link, useNavigate } from "react-router-dom";
-import { RouteNames } from "../../constants";
-import KorisnikService from "../../services/korisnici/KorisnikService";
+import { Button, Col, Form, Row } from "react-bootstrap"
+import { Link, useNavigate } from "react-router-dom"
+import { RouteNames } from "../../constants"
+import KorisnikService from "../../services/korisnici/KorisnikService"
+import { ShemaKorisnik } from "../../schemas/ShemaKorisnik"
+import { useState } from "react"
+
 
 export default function KorisnikNovi(){
 
     const navigate = useNavigate()
+    const [errors, setErrors] = useState({})
 
     async function dodaj(korisnik){
         // console.table(korisnik)
@@ -17,48 +21,27 @@ export default function KorisnikNovi(){
     function odradiSubmit(e){
         e.preventDefault()
         const podaci = new FormData(e.target)
-        console.log(podaci.get('ime').trim().length)
 
-        if(!podaci.get('ime') || podaci.get('ime').trim().length === 0){
-            alert("Ime je obavezno!")
-            return
+        setErrors({});
+        const objektPodataka = Object.fromEntries(podaci);
+
+        const rezultat = ShemaKorisnik.safeParse(objektPodataka);
+
+        if (!rezultat.success) {
+            const noveGreske = {};
+
+            // Prolazimo kroz sve issues (probleme) koje je Zod pronašao
+            rezultat.error.issues.forEach((issue) => {
+                const kljuc = issue.path[0];
+                if (!noveGreske[kljuc]) {
+                    noveGreske[kljuc] = issue.message;
+                }
+            });
+
+            setErrors(noveGreske);
+            return;
         }
-
-        if(podaci.get('ime').trim().length < 3) {
-            alert("Ime korisnika mora imati najmanje 3 znaka!")
-            return
-        }
-
-        if(!podaci.get('prezime') || podaci.get('prezime').trim().length === 0){
-            alert("Prezime je obavezno!")
-            return
-        }
-
-        if(podaci.get('prezime').trim().length < 3) {
-            alert("Prezime korisnika mora imati najmanje 3 znaka!")
-            return
-        }
-
-        if(!podaci.get('korisnickoIme') || podaci.get('korisnickoIme').trim().length === 0){
-            alert("Korisničko ime je obavezno!")
-            return
-        }
-
-        if(podaci.get('korisnickoIme').trim().length < 3) {
-            alert("Korisničko ime mora imati najmanje 3 znaka!")
-            return
-        }
-
-        if(!podaci.get('lozinka') || podaci.get('lozinka').trim().length === 0){
-            alert("Lozinka  je obavezna!")
-            return
-        }
-
-        if(podaci.get('lozinka').trim().length != 6) {
-            alert("Lozinka mora imati 6 znakova!")
-            return
-        }
-
+        
         dodaj({
             ime: podaci.get('ime'),
             prezime: podaci.get('prezime'),
@@ -69,6 +52,14 @@ export default function KorisnikNovi(){
         })
     }
 
+    const ocistiGresku = (nazivPolja) => {
+        if (errors[nazivPolja]) {
+            const noveGreske = { ...errors };
+            delete noveGreske[nazivPolja];
+            setErrors(noveGreske);
+        }
+    }
+
     return(
         <>
             <h3>Unos novog korisnika:</h3>
@@ -77,14 +68,30 @@ export default function KorisnikNovi(){
                     <Col md={6}>
                         <Form.Group controlId="ime" className="mb-3">
                             <Form.Label>Ime</Form.Label>
-                            <Form.Control type="text" name="ime"/>
+                            <Form.Control 
+                                type="text" 
+                                name="ime"
+                                isInvalid={!!errors.ime}
+                                onChange={() => ocistiGresku('ime')}
+                            />
+                            <Form.Control.Feedback type="invalid">
+                                {errors.ime}
+                            </Form.Control.Feedback>
                         </Form.Group>
                     </Col>
 
                     <Col md={6}>
-                        <Form.Group controlId="prezimee" className="mb-3">
+                        <Form.Group controlId="prezime" className="mb-3">
                             <Form.Label>Prezime</Form.Label>
-                            <Form.Control type="text" name="prezime" />
+                            <Form.Control 
+                                type="text" 
+                                name="prezime" 
+                                isInvalid={!!errors.prezime}
+                                onChange={() => ocistiGresku('prezime')}
+                            />
+                            <Form.Control.Feedback type="invalid">
+                                {errors.prezime}
+                            </Form.Control.Feedback>
                         </Form.Group> 
                     </Col>
 
@@ -93,21 +100,45 @@ export default function KorisnikNovi(){
                     <Col md={6}>
                         <Form.Group controlId="korisnickoIme" className="mb-3">
                             <Form.Label>Korisničko ime</Form.Label>
-                            <Form.Control type="text" name="korisnickoIme" />
+                            <Form.Control 
+                                type="text" 
+                                name="korisnickoIme" 
+                                isInvalid={!!errors.korisnickoIme}
+                                onChange={() => ocistiGresku('korisnickoIme')}
+                            />
+                            <Form.Control.Feedback type="invalid">
+                                {errors.korisnickoIme}
+                            </Form.Control.Feedback>
                         </Form.Group>
                     </Col>
 
                     <Col md={6}>
                         <Form.Group controlId="lozinka" className="mb-3">
                             <Form.Label>Lozinka</Form.Label>
-                            <Form.Control type="password" name="lozinka" />
+                            <Form.Control 
+                                type="password" 
+                                name="lozinka" 
+                                isInvalid={!!errors.lozinka}
+                                onChange={() => ocistiGresku('lozinka')}
+                            />
+                            <Form.Control.Feedback type="invalid">
+                                {errors.lozinka}
+                            </Form.Control.Feedback>
                         </Form.Group>
                     </Col>
 
                     <Col md={6}>
                         <Form.Group controlId="email" className="mb-3">
                             <Form.Label>Email</Form.Label>
-                            <Form.Control type="email" name="email" />
+                            <Form.Control 
+                                type="email" 
+                                name="email"
+                                isInvalid={!!errors.email}
+                                onChange={() => ocistiGresku('email')} 
+                            />
+                            <Form.Control.Feedback type="invalid">
+                                {errors.email}
+                            </Form.Control.Feedback>
                         </Form.Group>
                     </Col>
                     

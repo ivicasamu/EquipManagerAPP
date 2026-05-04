@@ -5,6 +5,7 @@ import { Link, useNavigate, useParams } from "react-router-dom"
 import UredjajService from "../../services/uredjaji/UredjajService"
 import KategorijaService from "../../services/kategorije/KategorijaService"
 import StatusService from "../../services/statusi/StatusService"
+import { ShemaUredjaj } from "../../schemas/ShemaUredjaj"
 
 
 export default function UredjajNovi() {
@@ -14,6 +15,7 @@ export default function UredjajNovi() {
     const [uredjaj, setUredjaj] = useState([])
     const [kategorije, setKategorije] = useState([])
     const [statusi, setStatusi] = useState([])
+    const [errors, setErrors] = useState({})
 
     useEffect(() => {
         ucitajUredjaj()
@@ -61,36 +63,41 @@ export default function UredjajNovi() {
         e.preventDefault()
         const podaci = new FormData(e.target)
 
-        const odabranaKategorija = parseInt(podaci.get('kategorija'));
-        if (isNaN(odabranaKategorija) || odabranaKategorija <= 0) {
-            alert("Odabrana kategorija nije valjana!");
-            return;
-        }
+        setErrors({});
+        const objektPodataka = Object.fromEntries(podaci);
 
+        const rezultat = ShemaUredjaj.safeParse(objektPodataka);
 
-        if (!podaci.get('model') || podaci.get('model').trim().length === 0) {
-            alert("Model uređaja je obavezan i ne smije sadržavati samo razmake!");
-            return;
-        }
+        if (!rezultat.success) {
+            const noveGreske = {};
 
-        if (podaci.get('model').trim().length < 3) {
-            alert("Model uređaja mora imati najmanje 3 znaka!");
-            return;
-        }
+            // Prolazimo kroz sve issues (probleme) koje je Zod pronašao
+            rezultat.error.issues.forEach((issue) => {
+                const kljuc = issue.path[0];
+                if (!noveGreske[kljuc]) {
+                    noveGreske[kljuc] = issue.message;
+                }
+            });
 
-        const odabraniStatus = parseInt(podaci.get('status'));
-        if (isNaN(odabraniStatus) || odabraniStatus <= 0) {
-            alert("Odabrani status nije valjan!");
+            setErrors(noveGreske);
             return;
         }
 
         promjeni({
-            kategorija: odabranaKategorija,
+            kategorija: parseInt(podaci.get('kategorija')),
             model: podaci.get('model'),
             serijskiBroj: podaci.get('serijskiBroj'),
-            status: odabraniStatus,
+            status: parseInt(podaci.get('status')),
             napomena: podaci.get('napomena')
         })
+    }
+
+    const ocistiGresku = (nazivPolja) => {
+        if (errors[nazivPolja]) {
+            const noveGreske = { ...errors };
+            delete noveGreske[nazivPolja];
+            setErrors(noveGreske);
+        }
     }
 
     return (
@@ -112,7 +119,12 @@ export default function UredjajNovi() {
                                             placeholder="Unesite model uređaja"
                                             required
                                             defaultValue={uredjaj.model}
+                                            isInvalid={!!errors.model}
+                                            onChange={() => ocistiGresku('model')}
                                         />
+                                        <Form.Control.Feedback type="invalid">
+                                            {errors.model}
+                                        </Form.Control.Feedback>
                                     </Form.Group>
                                 </Col>
                                 <Col xs={6}>
@@ -132,7 +144,13 @@ export default function UredjajNovi() {
                                 <Col xs={6}>
                                     <Form.Group controlId="kategorija" className="mb-3">
                                         <Form.Label className="fw-bold">Kategorija</Form.Label>
-                                        <Form.Select name="kategorija" required value={uredjaj.kategorija || ''} onChange={(e) => setUredjaj({...uredjaj, kategorija: parseInt(e.target.value)})}>
+                                        <Form.Select 
+                                            name="kategorija"  
+                                            value={uredjaj.kategorija || ''} 
+                                            onChange={(e) => setUredjaj({...uredjaj, kategorija: parseInt(e.target.value)})}
+                                            isInvalid={!!errors.kategorija}
+                                            onChange={() => ocistiGresku('kategorija')}
+                                        >
                                             <option value="">Odaberite kategoriju</option>
                                             {kategorije && kategorije.map((kategorija) => (
                                                 <option key={kategorija.sifra} value={kategorija.sifra}>
@@ -140,13 +158,22 @@ export default function UredjajNovi() {
                                                 </option>
                                             ))}
                                         </Form.Select>
+                                        <Form.Control.Feedback type="invalid">
+                                            {errors.kategorija}
+                                        </Form.Control.Feedback>
                                     </Form.Group>
                                 </Col>
 
                                 <Col xs={6}>
                                     <Form.Group controlId="status" className="mb-3">
                                         <Form.Label className="fw-bold">Status</Form.Label>
-                                        <Form.Select name="status" required value={uredjaj.status || ''} onChange={(e) => setUredjaj({...uredjaj, status: parseInt(e.target.value)})}>
+                                        <Form.Select 
+                                        name="status"  
+                                        value={uredjaj.status || ''} 
+                                        onChange={(e) => setUredjaj({...uredjaj, status: parseInt(e.target.value)})}
+                                        isInvalid={!!errors.status}
+                                        onChange={() => ocistiGresku('status')}
+                                        >
                                             <option value="">Odaberite status</option>
                                             {statusi && statusi.map((status) => (
                                                 <option key={status.sifra} value={status.sifra}>
@@ -154,6 +181,9 @@ export default function UredjajNovi() {
                                                 </option>
                                             ))}
                                         </Form.Select>
+                                        <Form.Control.Feedback type="invalid">
+                                            {errors.status}
+                                        </Form.Control.Feedback>
                                     </Form.Group>
                                 </Col>
                             </Row>

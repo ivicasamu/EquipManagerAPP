@@ -112,9 +112,9 @@ export default function EventNovi() {
         const podaci = new FormData(e.target)
 
         setErrors({});
-        const objektPodataka = Object.fromEntries(podaci);
+        const objektPodataka = Object.fromEntries(podaci)
 
-        const rezultat = ShemaEvent.safeParse(objektPodataka);
+        const rezultat = ShemaEvent.safeParse(objektPodataka)
 
         if (!rezultat.success) {
             const noveGreske = {};
@@ -168,6 +168,7 @@ export default function EventNovi() {
                                         type="date" 
                                         name="datumPocetka"
                                         isInvalid={!!errors.datumPocetka} 
+                                        onFocus={() => ocistiGresku('datumPocetka')}
                                         onClick={(e) => e.target.showPicker()} 
                                         onFocus={(e) => e.target.showPicker()}
                                         />
@@ -192,6 +193,7 @@ export default function EventNovi() {
                                             name="lokacija"
                                             isInvalid={!!errors.lokacija}
                                             placeholder="Unesite lokaciju eventa"
+                                            onFocus={() => ocistiGresku('datumPocetka')}
                                         />
                                         <Form.Control.Feedback type="invalid">
                                             {errors.lokacija}
