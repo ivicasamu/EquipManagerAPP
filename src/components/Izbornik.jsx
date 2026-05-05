@@ -7,6 +7,7 @@ export default function Izbornik() {
 
     const navigate = useNavigate()
     const { isLoggedIn, logout, authUser } = useAuth()
+    const isAdmin = authUser?.administrator
 
     return (
         <Navbar expand="lg" className="bg-body-tertiary">
@@ -15,15 +16,17 @@ export default function Izbornik() {
                 <Navbar.Toggle aria-controls="basic-navbar-nav" />
                 <Navbar.Collapse id="basic-navbar-nav">
                     <Nav className="me-auto">
-                        <Nav.Link
-                        onClick={()=>navigate(RouteNames.HOME)}
-                        >POČETNA</Nav.Link>
-
-                        {isLoggedIn && (
+                        {isLoggedIn &&(
                             <>
+                            {!isAdmin ? (
                                 <Nav.Link
-                                    onClick={()=>navigate(RouteNames.NADZORNA_PLOCA)}
-                                >NADZORNA PLOČA</Nav.Link>
+                                    onClick={()=>navigate(RouteNames.HOME)}
+                                >POČETNA</Nav.Link>
+                            ):(
+                                    <Nav.Link
+                                        onClick={()=>navigate(RouteNames.NADZORNA_PLOCA)}
+                                    >NADZORNA PLOČA</Nav.Link>
+                                )}
                                 <Nav.Link
                                     onClick={()=>navigate(RouteNames.UREDJAJI)}
                                 >UREĐAJI</Nav.Link>
@@ -32,18 +35,22 @@ export default function Izbornik() {
                                     onClick={()=>navigate(RouteNames.EVENTI)}
                                 >EVENTI</Nav.Link>
 
-                                <NavDropdown title="ADMINISTRACIJA" id="basic-nav-dropdown">
-                                    <NavDropdown.Item onClick={()=>navigate(RouteNames.KLIJENTI)}>KLIJENTI</NavDropdown.Item>
-                                    {authUser.administrator === true && (
-                                        <>
-                                            <NavDropdown.Item onClick={()=>navigate(RouteNames.KORISNICI)}>KORISNICI</NavDropdown.Item>
-                                            <NavDropdown.Item onClick={()=>navigate(RouteNames.KATEGORIJE)}>KATEGORIJE</NavDropdown.Item>
-                                            <NavDropdown.Item onClick={()=>navigate(RouteNames.STATUSI)}>STATUSI</NavDropdown.Item>
-                                            <hr />
-                                            <NavDropdown.Item onClick={()=>navigate(RouteNames.GENERIRANJE_PODATAKA)}>GENERIRANJE PODATAKA</NavDropdown.Item>
-                                        </>
-                                    )}
-                                </NavDropdown>
+                                {!isAdmin &&(
+                                    <Nav.Link
+                                        onClick={()=>navigate(RouteNames.KLIJENTI)}
+                                    >KLIJENTI</Nav.Link>
+                                )}
+
+                                {isAdmin &&(
+                                    <NavDropdown title="ADMINISTRACIJA" id="basic-nav-dropdown">
+                                        <NavDropdown.Item onClick={()=>navigate(RouteNames.KLIJENTI)}>KLIJENTI</NavDropdown.Item>
+                                        <NavDropdown.Item onClick={()=>navigate(RouteNames.KORISNICI)}>KORISNICI</NavDropdown.Item>
+                                        <NavDropdown.Item onClick={()=>navigate(RouteNames.KATEGORIJE)}>KATEGORIJE</NavDropdown.Item>
+                                        <NavDropdown.Item onClick={()=>navigate(RouteNames.STATUSI)}>STATUSI</NavDropdown.Item>
+                                        <hr />
+                                        <NavDropdown.Item onClick={()=>navigate(RouteNames.GENERIRANJE_PODATAKA)}>GENERIRANJE PODATAKA</NavDropdown.Item>
+                                    </NavDropdown>
+                                )}
                             </>
 
                         )}

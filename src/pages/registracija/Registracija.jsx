@@ -31,9 +31,12 @@ export default function Registracija() {
 
         // Provjera pomoću Zod sheme
         const rezultat = ShemaKorisnik.safeParse({
+            ime: objektPodataka.ime,
+            prezime: objektPodataka.prezime,
             email: objektPodataka.email,
+            korisnickoIme: objektPodataka.korisnickoIme,
             lozinka: objektPodataka.lozinka,
-            uloga: 'korisnik'
+            administrator: false
         })
 
         if (!rezultat.success) {
@@ -51,9 +54,12 @@ export default function Registracija() {
         }
 
         registriraj({
+            ime: podaci.get('ime'),
+            prezime: podaci.get('preime'),
             email: podaci.get('email'),
+            korisnickoIme: podaci.get('korisnickoIme'),
             lozinka: podaci.get('lozinka'),
-            uloga: 'korisnik'
+            administrator: false
         })
     }
 

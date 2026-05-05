@@ -44,48 +44,163 @@ function App() {
           <Routes>
             <Route path={RouteNames.HOME} element={<Home />} />
 
-            {isLoggedIn ? (
-              <>
-                <Route path={RouteNames.NADZORNA_PLOCA} element={<NadzornaPloca />} />
+            {/* LOGIN / REGISTRACIJA */}
+            <Route
+              path={RouteNames.LOGIN}
+              element={
+                !isLoggedIn 
+                  ? <Login /> 
+                  : authUser?.administrator
+                    ? <Navigate to={RouteNames.NADZORNA_PLOCA} />
+                    : <Navigate to={RouteNames.HOME} />
+              }
+            />
+            <Route
+              path={RouteNames.REGISTRACIJA}
+              element={!isLoggedIn ? <Registracija /> : <Navigate to={RouteNames.NADZORNA_PLOCA} />}
+            />
 
-                <Route path={RouteNames.UREDJAJI} element={<UredjajPregled />} />
-                <Route path={RouteNames.UREDJAJI_NOVI} element={<UredjajNovi />} />
-                <Route path={RouteNames.UREDJAJI_PROMJENA} element={<UredjajPromjena />} />
+            {/* UREĐAJI */}
+            <Route
+              path={RouteNames.UREDJAJI}
+              element={isLoggedIn ? <UredjajPregled /> : <Navigate to={RouteNames.LOGIN} />}
+            />
+            <Route
+              path={RouteNames.UREDJAJI_NOVI}
+              element={isLoggedIn ? <UredjajNovi /> : <Navigate to={RouteNames.LOGIN} />}
+            />
+            <Route
+              path={RouteNames.UREDJAJI_PROMJENA}
+              element={isLoggedIn ? <UredjajPromjena /> : <Navigate to={RouteNames.LOGIN} />}
+            />
 
-                <Route path={RouteNames.KLIJENTI} element={<KlijentPregled />} />
-                <Route path={RouteNames.KLIJENTI_NOVI} element={<KlijentNovi />} />
-                <Route path={RouteNames.KLIJENTI_PROMJENA} element={<KlijentPromjena />} />
+            {/* KLIJENTI */}
+            <Route
+              path={RouteNames.KLIJENTI}
+              element={isLoggedIn ? <KlijentPregled /> : <Navigate to={RouteNames.LOGIN} />}
+            />
+            <Route
+              path={RouteNames.KLIJENTI_NOVI}
+              element={isLoggedIn ? <KlijentNovi /> : <Navigate to={RouteNames.LOGIN} />}
+            />
+            <Route
+              path={RouteNames.KLIJENTI_PROMJENA}
+              element={isLoggedIn ? <KlijentPromjena /> : <Navigate to={RouteNames.LOGIN} />}
+            />
 
-                <Route path={RouteNames.EVENTI} element={<EventPregled />} />
-                <Route path={RouteNames.EVENTI_NOVI} element={<EventNovi />} />
-                <Route path={RouteNames.EVENTI_PROMJENA} element={<EventPromjena />} />
+            {/* EVENTI */}
+            <Route
+              path={RouteNames.EVENTI}
+              element={isLoggedIn ? <EventPregled /> : <Navigate to={RouteNames.LOGIN} />}
+            />
+            <Route
+              path={RouteNames.EVENTI_NOVI}
+              element={isLoggedIn ? <EventNovi /> : <Navigate to={RouteNames.LOGIN} />}
+            />
+            <Route
+              path={RouteNames.EVENTI_PROMJENA}
+              element={isLoggedIn ? <EventPromjena /> : <Navigate to={RouteNames.LOGIN} />}
+            />
 
-                {authUser.administrator === true && (
-                  <>
-                    <Route path={RouteNames.KORISNICI} element={<KorisnikPregled />} />
-                    <Route path={RouteNames.KORISNICI_NOVI} element={<KorisnikNovi />} />
-                    <Route path={RouteNames.KORISNICI_PROMJENA} element={<KorisnikPromjena />} />
+            {/* ADMIN ONLY */}
 
-                    <Route path={RouteNames.KATEGORIJE} element={<KategorijaPregled />} />
-                    <Route path={RouteNames.KATEGORIJE_NOVI} element={<KategorijaNovi />} />
-                    <Route path={RouteNames.KATEGORIJE_PROMJENA} element={<KategorijaPromjena />} />
+            <Route
+              path={RouteNames.NADZORNA_PLOCA}
+              element={
+                isLoggedIn 
+                  ? <NadzornaPloca /> 
+                  : location.pathname !== RouteNames.LOGIN
+                    ? <Navigate to={RouteNames.LOGIN} />
+                    : <NadzornaPloca />
+              }
+            />
 
-                    <Route path={RouteNames.STATUSI} element={<StatusPregled />} />
-                    <Route path={RouteNames.STATUSI_NOVI} element={<StatusNovi />} />
-                    <Route path={RouteNames.STATUSI_PROMJENA} element={<StatusPromjena />} />
+            <Route
+              path={RouteNames.KORISNICI}
+              element={
+                isLoggedIn && authUser?.administrator
+                  ? <KorisnikPregled />
+                  : <Navigate to={RouteNames.HOME} />
+              }
+            />
+            <Route
+              path={RouteNames.KORISNICI_NOVI}
+              element={
+                isLoggedIn && authUser?.administrator
+                  ? <KorisnikNovi />
+                  : <Navigate to={RouteNames.HOME} />
+              }
+            />
+            <Route
+              path={RouteNames.KORISNICI_PROMJENA}
+              element={
+                isLoggedIn && authUser?.administrator
+                  ? <KorisnikPromjena />
+                  : <Navigate to={RouteNames.HOME} />
+              }
+            />
 
-                    <Route path={RouteNames.GENERIRANJE_PODATAKA} element={<GenerirajPodatke />} />
-                  </>  
-                )}
-              </>
-            ):(
-              <>
-                <Route path={RouteNames.LOGIN} element={<Login />} />
-                <Route path={RouteNames.REGISTRACIJA} element={<Registracija />} />
-              </>
-            )}
+            <Route
+              path={RouteNames.KATEGORIJE}
+              element={
+                isLoggedIn && authUser?.administrator
+                  ? <KategorijaPregled />
+                  : <Navigate to={RouteNames.HOME} />
+              }
+            />
+            <Route
+              path={RouteNames.KATEGORIJE_NOVI}
+              element={
+                isLoggedIn && authUser?.administrator
+                  ? <KategorijaNovi />
+                  : <Navigate to={RouteNames.HOME} />
+              }
+            />
+            <Route
+              path={RouteNames.KATEGORIJE_PROMJENA}
+              element={
+                isLoggedIn && authUser?.administrator
+                  ? <KategorijaPromjena />
+                  : <Navigate to={RouteNames.HOME} />
+              }
+            />
 
+            <Route
+              path={RouteNames.STATUSI}
+              element={
+                isLoggedIn && authUser?.administrator
+                  ? <StatusPregled />
+                  : <Navigate to={RouteNames.HOME} />
+              }
+            />
+            <Route
+              path={RouteNames.STATUSI_NOVI}
+              element={
+                isLoggedIn && authUser?.administrator
+                  ? <StatusNovi />
+                  : <Navigate to={RouteNames.HOME} />
+              }
+            />
+            <Route
+              path={RouteNames.STATUSI_PROMJENA}
+              element={
+                isLoggedIn && authUser?.administrator
+                  ? <StatusPromjena />
+                  : <Navigate to={RouteNames.HOME} />
+              }
+            />
 
+            <Route
+              path={RouteNames.GENERIRANJE_PODATAKA}
+              element={
+                isLoggedIn && authUser?.administrator
+                  ? <GenerirajPodatke />
+                  : <Navigate to={RouteNames.HOME} />
+              }
+            />
+
+            {/* FALLBACK */}
+            <Route path="*" element={<Navigate to={RouteNames.HOME} />} />
           </Routes>
         </Container>
         <hr />

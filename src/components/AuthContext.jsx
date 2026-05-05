@@ -17,11 +17,10 @@ export function AuthProvider({ children }) {
 
     if (korisnik) {
       const parsed = JSON.parse(korisnik);
-      setAuthUser(parsed);
-      setIsLoggedIn(true);
+      setAuthUser(parsed)
+      setIsLoggedIn(true)
     } else {
-      setIsLoggedIn(false);
-      navigate(RouteNames.HOME);
+      setIsLoggedIn(false)
     }
   }, []);
 
@@ -32,16 +31,8 @@ export function AuthProvider({ children }) {
       localStorage.setItem('korisnik', JSON.stringify(odgovor.data));
       setAuthUser(odgovor.data);
       setIsLoggedIn(true);
-
-      // 👇 OVDJE JE NOVA LOGIKA
-      if (odgovor.data.administrator) {
-        navigate(RouteNames.NADZORNA_PLOCA); // admin
-      } else {
-        navigate(RouteNames.HOME); // obični korisnik
-      }
-
     } else {
-      alert(odgovor.message || "Neispravni podaci");
+      alert("Neispravni podaci");
       localStorage.removeItem('korisnik');
       setAuthUser({});
       setIsLoggedIn(false);
