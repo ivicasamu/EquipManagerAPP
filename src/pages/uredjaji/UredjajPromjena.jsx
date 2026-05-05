@@ -12,7 +12,7 @@ export default function UredjajNovi() {
 
     const navigate = useNavigate()
     const params = useParams()
-    const [uredjaj, setUredjaj] = useState([])
+    const [uredjaj, setUredjaj] = useState({})
     const [kategorije, setKategorije] = useState([])
     const [statusi, setStatusi] = useState([])
     const [errors, setErrors] = useState({})
@@ -147,9 +147,14 @@ export default function UredjajNovi() {
                                         <Form.Select 
                                             name="kategorija"  
                                             value={uredjaj.kategorija || ''} 
-                                            onChange={(e) => setUredjaj({...uredjaj, kategorija: parseInt(e.target.value)})}
+                                            onChange={(e) => {
+                                                setUredjaj({
+                                                    ...uredjaj, 
+                                                    kategorija: parseInt(e.target.value)
+                                                })
+                                                ocistiGresku('kategorija')
+                                            }}
                                             isInvalid={!!errors.kategorija}
-                                            onChange={() => ocistiGresku('kategorija')}
                                         >
                                             <option value="">Odaberite kategoriju</option>
                                             {kategorije && kategorije.map((kategorija) => (
@@ -168,11 +173,16 @@ export default function UredjajNovi() {
                                     <Form.Group controlId="status" className="mb-3">
                                         <Form.Label className="fw-bold">Status</Form.Label>
                                         <Form.Select 
-                                        name="status"  
-                                        value={uredjaj.status || ''} 
-                                        onChange={(e) => setUredjaj({...uredjaj, status: parseInt(e.target.value)})}
-                                        isInvalid={!!errors.status}
-                                        onChange={() => ocistiGresku('status')}
+                                            name="status"  
+                                            value={uredjaj.status || ''} 
+                                            onChange={(e) => {
+                                                setUredjaj({
+                                                    ...uredjaj, 
+                                                    status: parseInt(e.target.value)
+                                                })
+                                                ocistiGresku('status')
+                                            }}
+                                            isInvalid={!!errors.status}
                                         >
                                             <option value="">Odaberite status</option>
                                             {statusi && statusi.map((status) => (
