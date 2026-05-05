@@ -1,6 +1,7 @@
 import 'bootstrap/dist/css/bootstrap.min.css'
 import './App.css'
-import { Container } from 'react-bootstrap'
+import { Container} from 'react-bootstrap'
+import { Navigate } from 'react-router-dom'
 import Izbornik from './components/Izbornik'
 import { IME_APLIKACIJE, RouteNames } from './constants'
 import { Route, Routes } from 'react-router-dom'
@@ -23,49 +24,72 @@ import KlijentPromjena from './pages/klijenti/KlijentPromjena'
 import EventPregled from './pages/eventi/EventPregled'
 import EventNovi from './pages/eventi/EventNovi'
 import EventPromjena from './pages/eventi/EventPromjena'
-import GeneriranjePodataka from './pages/GeneriranjePodataka'
+import GenerirajPodatke from './pages/GeneriranjePodataka'
 import LoadingSpinner from './components/LoadingSpinner.jsx'
+import Login from './pages/login/Login'
+import Registracija from './pages/registracija/Registracija'
+import NadzornaPloca from './pages/NadzornaPloca'
+import useAuth from './hooks/useAuth'
 
 function App() {
+
+  const { isLoggedIn, authUser } = useAuth()
 
   return (
     <>
       <LoadingSpinner />
-      <Container style={ {backgroundColor: window.location.hostname === 'localhost' ? '#ffff023c' : 'none'}}>
+      <Container style={{ backgroundColor: window.location.hostname === 'localhost' ? '#ffff023c' : 'none' }}>
         <Izbornik />
         <Container className='app'>
           <Routes>
             <Route path={RouteNames.HOME} element={<Home />} />
 
-            <Route path={RouteNames.KORISNICI} element={<KorisnikPregled />} />
-            <Route path={RouteNames.KORISNICI_NOVI} element={<KorisnikNovi />} />
-            <Route path={RouteNames.KORISNICI_PROMJENA} element={<KorisnikPromjena />} />
+            {isLoggedIn ? (
+              <>
+                <Route path={RouteNames.NADZORNA_PLOCA} element={<NadzornaPloca />} />
 
-            <Route path={RouteNames.KATEGORIJE} element={<KategorijaPregled />} />
-            <Route path={RouteNames.KATEGORIJE_NOVI} element={<KategorijaNovi />} />
-            <Route path={RouteNames.KATEGORIJE_PROMJENA} element={<KategorijaPromjena />} />
+                <Route path={RouteNames.UREDJAJI} element={<UredjajPregled />} />
+                <Route path={RouteNames.UREDJAJI_NOVI} element={<UredjajNovi />} />
+                <Route path={RouteNames.UREDJAJI_PROMJENA} element={<UredjajPromjena />} />
 
-            <Route path={RouteNames.STATUSI} element={<StatusPregled />} />
-            <Route path={RouteNames.STATUSI_NOVI} element={<StatusNovi />} />
-            <Route path={RouteNames.STATUSI_PROMJENA} element={<StatusPromjena />} />
+                <Route path={RouteNames.KLIJENTI} element={<KlijentPregled />} />
+                <Route path={RouteNames.KLIJENTI_NOVI} element={<KlijentNovi />} />
+                <Route path={RouteNames.KLIJENTI_PROMJENA} element={<KlijentPromjena />} />
 
-            <Route path={RouteNames.UREDJAJI} element={<UredjajPregled />} />
-            <Route path={RouteNames.UREDJAJI_NOVI} element={<UredjajNovi />} />
-            <Route path={RouteNames.UREDJAJI_PROMJENA} element={<UredjajPromjena />} />
+                <Route path={RouteNames.EVENTI} element={<EventPregled />} />
+                <Route path={RouteNames.EVENTI_NOVI} element={<EventNovi />} />
+                <Route path={RouteNames.EVENTI_PROMJENA} element={<EventPromjena />} />
 
-            <Route path={RouteNames.KLIJENTI} element={<KlijentPregled />} />
-            <Route path={RouteNames.KLIJENTI_NOVI} element={<KlijentNovi />} />
-            <Route path={RouteNames.KLIJENTI_PROMJENA} element={<KlijentPromjena />} />
+                {authUser.administrator === true && (
+                  <>
+                    <Route path={RouteNames.KORISNICI} element={<KorisnikPregled />} />
+                    <Route path={RouteNames.KORISNICI_NOVI} element={<KorisnikNovi />} />
+                    <Route path={RouteNames.KORISNICI_PROMJENA} element={<KorisnikPromjena />} />
 
-            <Route path={RouteNames.EVENTI} element={<EventPregled />} />
-            <Route path={RouteNames.EVENTI_NOVI} element={<EventNovi />} />
-            <Route path={RouteNames.EVENTI_PROMJENA} element={<EventPromjena />} />
+                    <Route path={RouteNames.KATEGORIJE} element={<KategorijaPregled />} />
+                    <Route path={RouteNames.KATEGORIJE_NOVI} element={<KategorijaNovi />} />
+                    <Route path={RouteNames.KATEGORIJE_PROMJENA} element={<KategorijaPromjena />} />
 
-            <Route path={RouteNames.GENERIRANJE_PODATAKA} element={<GeneriranjePodataka />} />
+                    <Route path={RouteNames.STATUSI} element={<StatusPregled />} />
+                    <Route path={RouteNames.STATUSI_NOVI} element={<StatusNovi />} />
+                    <Route path={RouteNames.STATUSI_PROMJENA} element={<StatusPromjena />} />
+
+                    <Route path={RouteNames.GENERIRANJE_PODATAKA} element={<GenerirajPodatke />} />
+                  </>  
+                )}
+              </>
+            ):(
+              <>
+                <Route path={RouteNames.LOGIN} element={<Login />} />
+                <Route path={RouteNames.REGISTRACIJA} element={<Registracija />} />
+              </>
+            )}
+
+
           </Routes>
-          <hr />
-          &copy; {IME_APLIKACIJE}
         </Container>
+        <hr />
+          &copy; {IME_APLIKACIJE}
       </Container>
     </>
   )

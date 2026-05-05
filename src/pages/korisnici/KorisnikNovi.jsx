@@ -95,7 +95,21 @@ export default function KorisnikNovi(){
                         </Form.Group> 
                     </Col>
 
-                    
+                    <Col md={6}>
+                        <Form.Group controlId="email" className="mb-3">
+                            <Form.Label>Email</Form.Label>
+                            <Form.Control 
+                                type="email" 
+                                name="email"
+                                placeholder="test@test.hr"
+                                isInvalid={!!errors.email}
+                                onChange={() => ocistiGresku('email')} 
+                            />
+                            <Form.Control.Feedback type="invalid">
+                                {errors.email}
+                            </Form.Control.Feedback>
+                        </Form.Group>
+                    </Col>
 
                     <Col md={6}>
                         <Form.Group controlId="korisnickoIme" className="mb-3">
@@ -118,32 +132,22 @@ export default function KorisnikNovi(){
                             <Form.Control 
                                 type="password" 
                                 name="lozinka" 
+                                placeholder="Min 8 znakova, velika/mala slova, broj i znak"
                                 isInvalid={!!errors.lozinka}
                                 onChange={() => ocistiGresku('lozinka')}
                             />
                             <Form.Control.Feedback type="invalid">
                                 {errors.lozinka}
                             </Form.Control.Feedback>
-                        </Form.Group>
-                    </Col>
+                            <Form.Text className="text-muted">
+                                Lozinka mora sadržavati: najmanje 8 znakova, veliko slovo, malo slovo, broj i interpukcijski znak (!@#$%^&*...)
+                            </Form.Text>
 
-                    <Col md={6}>
-                        <Form.Group controlId="email" className="mb-3">
-                            <Form.Label>Email</Form.Label>
-                            <Form.Control 
-                                type="email" 
-                                name="email"
-                                isInvalid={!!errors.email}
-                                onChange={() => ocistiGresku('email')} 
-                            />
-                            <Form.Control.Feedback type="invalid">
-                                {errors.email}
-                            </Form.Control.Feedback>
                         </Form.Group>
                     </Col>
                     
                     <Col md={6}>
-                        <Form.Group controlId="aktivadministratoran" className="mb-3 mt-md-3">
+                        <Form.Group controlId="aktivanadministrator" className="mb-3 mt-md-3">
                             <Form.Check
                                 type="switch"
                                 label="Korisnik je administrator"

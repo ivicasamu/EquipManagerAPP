@@ -2,10 +2,12 @@ export const IME_APLIKACIJE='Equip Manager APP'
 
 export const RouteNames = {
     HOME: '/',
+    NADZORNA_PLOCA: '/nadzorna-ploca',
     
     KORISNICI: '/korisnici',
     KORISNICI_NOVI: '/korisnici/novi',
     KORISNICI_PROMJENA: '/korisnici/:sifra',
+    KORISNICI_PROMJENA_LOZINKE: '/korisnici/:sifra/lozinka',
 
     KATEGORIJE: '/kategorije',
     KATEGORIJE_NOVI: '/kategorije/novi',
@@ -28,6 +30,10 @@ export const RouteNames = {
     EVENTI_PROMJENA: '/eventi/:sifra',
 
     GENERIRANJE_PODATAKA: '/generiraj-podatke',
+
+    LOGIN: '/login',
+    REGISTRACIJA: '/registracija',
+
 }
 
 // memorija, localStorage, firebase
@@ -40,4 +46,5 @@ export const PrefixStorage = {
    UREDJAJI: 'uredjaji',
    KLIJENTI: 'klijenti',
    EVENTI: 'eventi'
+
 }

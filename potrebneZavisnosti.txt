@@ -15,3 +15,5 @@ U terminalu nakon što ste zaustavili aplikaciju (ctrl + c) izvesti:
     npm install jspdf jspdf-autotable
 
     npm install zed
+
+    npm install bcryptjs
