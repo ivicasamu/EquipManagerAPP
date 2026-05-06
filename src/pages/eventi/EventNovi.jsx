@@ -114,10 +114,25 @@ export default function EventNovi() {
     async function dodaj(event) {
         showLoading()
         await new Promise(resolve => setTimeout(resolve, 1200))
-        await EventService.dodaj(event).then(() => {
-            navigate(RouteNames.EVENTI)
-        })
+
+        // 1. Spremi event
+        await EventService.dodaj(event)
+
+        // 2. Dohvati status "Iznajmljeno"
+        const statusi = (await StatusService.get()).data
+        const iznajmljenoStatus = statusi.find(
+            s => s.naziv.toLowerCase() === 'iznajmljeno'
+        )
+
+        // 3. Promijeni status svim odabranim uređajima
+        for (const uredjaj of odabraniUredjaji) {
+            await UredjajService.promjeni(uredjaj.sifra, {
+                ...uredjaj,
+                status: iznajmljenoStatus.sifra
+            })
+        }
         hideLoading()
+        navigate(RouteNames.EVENTI)
     }
 
     function odradiSubmit(e) {

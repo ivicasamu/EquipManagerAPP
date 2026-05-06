@@ -21,17 +21,24 @@ export default function EventNovi() {
     const [prikaziAutocomplete, setPrikaziAutocomplete] = useState(false)
     const [odabraniIndex, setOdabraniIndex] = useState(-1)
     const [errors, setErrors] = useState({})
+    const [originalniUredjaji, setOriginalniUredjaji] = useState([])
 
     useEffect(() => {
         ucitajEvent()
         ucitajKlijente()
-        ucitajUredjaje()
     }, [])
+
+    useEffect(() => {
+        if (event.sifra) {
+            ucitajUredjaje()
+        }
+    }, [event.uredjaji])
 
     useEffect(() => {
         if (event.uredjaji && event.uredjaji.length > 0 && uredjaji.length > 0) {
             const odabrani = uredjaji.filter(p => event.uredjaji.includes(p.sifra))
             setOdabraniUredjaji(odabrani)
+            setOriginalniUredjaji(odabrani)
         }
     }, [event, uredjaji])
 
@@ -69,7 +76,9 @@ export default function EventNovi() {
                 }
     
                 const dostupniUredjaji = odgovor.data.filter(
-                    uredjaj => uredjaj.status === dostupanStatus.sifra
+                    uredjaj =>
+                        uredjaj.status === dostupanStatus.sifra ||
+                        event.uredjaji?.includes(uredjaj.sifra)
                 )
     
                 setUredjaji(dostupniUredjaji)
@@ -128,7 +137,7 @@ export default function EventNovi() {
         navigate(RouteNames.EVENTI)
     }
 
-    function odradiSubmit(e) {
+    async function odradiSubmit(e) {
         e.preventDefault()
         const podaci = new FormData(e.target)
 
@@ -154,6 +163,44 @@ export default function EventNovi() {
 
         const odabraniKlijent = parseInt(podaci.get('klijent'))
 
+        const uklonjeniUredjaji = originalniUredjaji.filter(
+            originalni =>
+                !odabraniUredjaji.find(
+                    novi => novi.sifra === originalni.sifra
+                )
+        )
+
+        const dodaniUredjaji = odabraniUredjaji.filter(
+            novi =>
+                !originalniUredjaji.find(
+                    originalni => originalni.sifra === novi.sifra
+                )
+        )
+
+        const statusi = (await StatusService.get()).data
+
+        const dostupanStatus = statusi.find(
+            s => s.naziv.toLowerCase() === 'dostupno'
+        )
+
+        const iznajmljenoStatus = statusi.find(
+            s => s.naziv.toLowerCase() === 'iznajmljeno'
+        )
+
+        for (const uredjaj of uklonjeniUredjaji) {
+            await UredjajService.promjeni(uredjaj.sifra, {
+                ...uredjaj,
+                status: dostupanStatus.sifra
+            })
+        }
+
+        for (const uredjaj of dodaniUredjaji) {
+            await UredjajService.promjeni(uredjaj.sifra, {
+                ...uredjaj,
+                status: iznajmljenoStatus.sifra
+            })
+        }
+
         promjeni(params.sifra,{
             datumPocetka: new Date(podaci.get('datumPocetka')).toISOString(),
             predvidenoTrajanje: podaci.get('predvidenoTrajanje'),
@@ -174,7 +221,7 @@ export default function EventNovi() {
 
     return (
         <>
-            <h3>Unos novog eventa</h3>
+            <h3>Promjena eventa</h3>
             <Form onSubmit={odradiSubmit}>
                 <Container className="mt-4">
                     <Card className="shadow-sm">
