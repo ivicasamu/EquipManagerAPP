@@ -6,6 +6,7 @@ import EventService from "../../services/eventi/EventService"
 import KlijentService from "../../services/klijenti/KlijentService"
 import UredjajService from "../../services/uredjaji/UredjajService"
 import { ShemaEvent } from "../../schemas/ShemaEvent"
+import StatusService from "../../services/statusi/StatusService"
 
 export default function EventNovi() {
 
@@ -54,13 +55,26 @@ export default function EventNovi() {
     }
 
     async function ucitajUredjaje() {
-        const odgovor = await UredjajService.get()
-        if (!odgovor.success) {
-            alert('Nije implementiran servis za uređaje')
-            return
+    
+            const statusi = (await StatusService.get()).data
+    
+            const dostupanStatus = statusi.find(
+                s => s.naziv.toLowerCase() === 'dostupno'
+            )
+    
+            await UredjajService.get().then((odgovor) => {
+                if (!odgovor.success) {
+                    alert('Nije implementiran servis za uređaje')
+                    return
+                }
+    
+                const dostupniUredjaji = odgovor.data.filter(
+                    uredjaj => uredjaj.status === dostupanStatus.sifra
+                )
+    
+                setUredjaji(dostupniUredjaji)
+            })
         }
-        setUredjaji(odgovor.data)
-    }
 
     function dodajUredjaj(uredjaj) {
         if (!odabraniUredjaji.find(p => p.sifra === uredjaj.sifra)) {

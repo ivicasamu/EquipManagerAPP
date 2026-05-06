@@ -8,6 +8,7 @@ import UredjajService from "../../services/uredjaji/UredjajService"
 import LoadingSpinner from "../../components/LoadingSpinner.jsx"
 import useLoading from "../../hooks/useLoading"
 import { ShemaEvent } from "../../schemas/ShemaEvent"
+import StatusService from "../../services/statusi/StatusService"
 
 export default function EventNovi() {
 
@@ -37,12 +38,24 @@ export default function EventNovi() {
     }
 
     async function ucitajUredjaje() {
+
+        const statusi = (await StatusService.get()).data
+
+        const dostupanStatus = statusi.find(
+            s => s.naziv.toLowerCase() === 'dostupno'
+        )
+
         await UredjajService.get().then((odgovor) => {
             if (!odgovor.success) {
                 alert('Nije implementiran servis za uređaje')
                 return
             }
-            setUredjaji(odgovor.data)
+
+            const dostupniUredjaji = odgovor.data.filter(
+                uredjaj => uredjaj.status === dostupanStatus.sifra
+            )
+
+            setUredjaji(dostupniUredjaji)
         })
     }
 
