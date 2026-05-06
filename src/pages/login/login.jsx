@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom"
 import { ShemaLogin } from "../../schemas/ShemaKorisnik"
 import { useState } from "react"
 import useAuth from "../../hooks/useAuth"
+import { BiFontSize } from "react-icons/bi"
 
 export default function Login() {
 
@@ -49,7 +50,8 @@ export default function Login() {
                     <Card className="shadow-sm">
                         <Card.Body>
                             <Card.Title className="mb-4">Podaci za prijavu</Card.Title>
-                             
+                            admin ili user, pass: Test123.
+
                             {errors.opce && (
                                 <div className="alert alert-danger" role="alert">
                                     {errors.opce}
