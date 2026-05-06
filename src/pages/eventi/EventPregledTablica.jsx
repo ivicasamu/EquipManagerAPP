@@ -32,50 +32,73 @@ export default function EventPregledTablica({
                     onChange={handleSearchChange}
                 />
             </InputGroup>
-        <Table striped bordered hover>
-                <thead className="text-center">
-                    <tr>
-                        <th>Datum početka</th>
-                        <th>Predviđeno trajanje</th>
-                        <th>Lokacija</th>
-                        <th>Oprema</th>
-                        <th>Klijent</th>
-                        <th>Napomena</th>
-                        <th>Akcija</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {eventi && eventi.map((event)=>(
-                        <tr key={event.sifra}>
-                            <td className="lead text-center"><FormatDatuma datum={event.datumPocetka} /></td>
-                            <td className="text-center">{event.predvidenoTrajanje}</td>
-                            <td>{event.lokacija}</td>
-                            <td
-                                className="text-center"
-                                style={{ cursor: 'help', fontWeight: 'bold' }}
-                                onMouseEnter={() => handleMouseEnter(event.uredjaji)}
-                                onMouseMove={handleMouseMove}
-                                onMouseLeave={handleMouseLeave}
-                            >{event.uredjaji ? event.uredjaji.length : 0}</td>
-                            <td>{dohvatiNazivKlijenta(event.klijent)}</td>
-                            <td>{event.napomena}</td>
-                            <td className="text-center">
-                                <Button onClick={()=>{navigate(`/eventi/${event.sifra}`)}}>
-                                    <FaEdit />
-                                </Button>
-                                &nbsp;&nbsp;
-                                <Button variant="danger" onClick={() => brisanje(event.sifra)}>
-                                    <FaTrash />
-                                </Button>
-                                &nbsp;&nbsp;
-                                <Button variant="info" onClick={() => generirajPDFZaEvent(event)} title="Generiraj PDF">
-                                   <FaPrint />
-                                </Button>
-                            </td>
+            <div className="table-responsive">
+                <Table striped bordered hover className="align-middle">
+                    <thead className="text-center">
+                        <tr>
+                            <th>Datum početka</th>
+                            <th>Predviđeno trajanje</th>
+                            <th>Lokacija</th>
+                            <th>Oprema</th>
+                            <th>Klijent</th>
+                            <th>Napomena</th>
+                            <th>Akcija</th>
                         </tr>
-                    ))}
-                </tbody>
-            </Table>
+                    </thead>
+                    <tbody>
+                        {eventi && eventi.map((event)=>(
+                            <tr key={event.sifra}>
+                                <td className="lead text-center"><FormatDatuma datum={event.datumPocetka} /></td>
+                                <td className="text-center">{event.predvidenoTrajanje}</td>
+                                <td>{event.lokacija}</td>
+                                <td
+                                    className="text-center"
+                                    style={{ cursor: 'help', fontWeight: 'bold' }}
+                                    onMouseEnter={() => handleMouseEnter(event.uredjaji)}
+                                    onMouseMove={handleMouseMove}
+                                    onMouseLeave={handleMouseLeave}
+                                >{event.uredjaji ? event.uredjaji.length : 0}</td>
+                                <td>{dohvatiNazivKlijenta(event.klijent)}</td>
+                                <td style={{
+                                    maxWidth: '200px',
+                                    whiteSpace: 'wrap',
+                                    overflow: 'hidden',
+                                    textOverflow: 'ellipsis'
+                                }}>
+                                    {event.napomena}
+                                </td>
+                                <td className="text-center align-middle">
+                                    <div className="d-flex justify-content-center gap-2 flex-nowrap">
+                                        <Button
+                                            size="sm"
+                                            onClick={() => navigate(`/eventi/${event.sifra}`)}
+                                        >
+                                            <FaEdit />
+                                        </Button>
+
+                                        <Button
+                                            size="sm"
+                                            variant="danger"
+                                            onClick={() => brisanje(event.sifra)}
+                                        >
+                                            <FaTrash />
+                                        </Button>
+
+                                        <Button
+                                            size="sm"
+                                            variant="info"
+                                            onClick={() => generirajPDFZaEvent(event)}
+                                            title="Generiraj PDF"
+                                        >
+                                            <FaPrint />
+                                        </Button>
+                                    </div>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </Table>
+            </div>
 
             {/* Prikaz popisa polaznika (Tooltip) */}
             {tooltip.vidljivo && (

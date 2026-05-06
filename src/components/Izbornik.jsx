@@ -61,16 +61,22 @@ export default function Izbornik() {
                     <Nav className="ms-auto">
                         {isLoggedIn ? (
                             <Button
+                                variant="primary"
                                 className="me-2"
                                 onClick={() => logout()}
                             >Logout {authUser.korisnickoIme}</Button>
                         ) : (
                             <>
                                 <Button
-                                    className="me-2"
+                                    className="me-2 login"
+                                    variant="outline-primary"
                                     onClick={() => navigate(RouteNames.REGISTRACIJA)}
                                 >Registracija</Button>
+                                
                                 <Button
+                                    
+                                    className="me-2 login"
+                                    variant="outline-success"
                                     onClick={() => navigate(RouteNames.LOGIN)}
                                 >Login</Button>
                             </>)}

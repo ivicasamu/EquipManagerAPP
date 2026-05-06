@@ -84,7 +84,7 @@ export default function Home(){
     return(
         <>
         <Row>
-            <Col md={6}>
+            <Col md={12}>
                 <h1>Dobro došli na {IME_APLIKACIJE}</h1>
 
                 <div style={{maxWidth: '800px', margin: 'auto', padding: '100px'}}>
@@ -93,11 +93,11 @@ export default function Home(){
                     />
                 </div>
             </Col>
-            <Col className="d-flex align-items-center justify-content-center">
-                <div style={{ width: '100%', maxWidth: '500px' }}>
+            <Col md={12} className="d-flex align-items-center justify-content-center">
+                <div style={{ width: '100%'}}>
                     <Row>
-                        <Col md={6} className="mb-3">
-                            <Card className="shadow-lg border-0 statistikaPanel h-100">
+                        <Col md={3} className="mb-3">
+                            <Card className="shadow-lg border-0 statistikaPanel h-100" bg="secondary">
                                 <Card.Body className="text-center">
                                     <p className="text-white">Klijenti</p>
                                     <div className="statistikaTekst">
@@ -106,8 +106,8 @@ export default function Home(){
                                 </Card.Body>
                             </Card>
                         </Col>
-                        <Col md={6} className="mb-3">
-                            <Card className="shadow-lg border-0 statistikaPanel h-100">
+                        <Col md={3} className="mb-3">
+                            <Card className="shadow-lg border-0 statistikaPanel h-100" bg="secondary">
                                 <Card.Body className="text-center">
                                     <p className="text-white">Uređaji</p>
                                     <div className="statistikaTekst">
@@ -116,10 +116,9 @@ export default function Home(){
                                 </Card.Body>
                             </Card>
                         </Col>
-                    </Row>
-                    <Row>
-                        <Col md={6} className="mb-3">
-                            <Card className="shadow-lg border-0 statistikaPanel h-100">
+
+                        <Col md={3} className="mb-3">
+                            <Card className="shadow-lg border-0 statistikaPanel h-100" bg="secondary">
                                 <Card.Body className="text-center">
                                     <p className="text-white">Eventi</p>
                                     <div className="statistikaTekst">
@@ -128,8 +127,8 @@ export default function Home(){
                                 </Card.Body>
                             </Card>
                         </Col>
-                        <Col md={6} className="mb-3">
-                            <Card className="shadow-lg border-0 statistikaPanel h-100">
+                        <Col md={3} className="mb-3">
+                            <Card className="shadow-lg border-0 statistikaPanel h-100" bg="secondary">
                                 <Card.Body className="text-center">
                                     <p className="text-white">Operateri</p>
                                     <div className="statistikaTekst">
