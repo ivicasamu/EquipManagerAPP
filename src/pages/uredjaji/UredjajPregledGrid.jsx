@@ -1,5 +1,5 @@
 import { Button, Card, Row, Col, Container, Pagination, InputGroup, Form } from "react-bootstrap"
-import { FaEdit, FaSearch, FaTrash } from "react-icons/fa"
+import { FaEdit, FaPrint, FaSearch, FaTrash } from "react-icons/fa"
 
 export default function UredjajPregledGrid({ 
     uredjaji, 
@@ -11,7 +11,8 @@ export default function UredjajPregledGrid({
     currentPage, 
     handlePageChange,
     handleSearchChange,
-    searchTerm 
+    searchTerm,
+    generirajPDFZaUredjaj
 }) {
 
     function skratiTekst(tekst, max = 100) {
@@ -80,6 +81,12 @@ export default function UredjajPregledGrid({
                                     >
                                         <FaTrash />
                                     </Button>
+                                        <Button 
+                                        variant="info" 
+                                        onClick={() => generirajPDFZaUredjaj(uredjaj)} 
+                                        title="Generiraj PDF">
+                                    <FaPrint />
+                                </Button>
                                 </Card.Footer>
                             </Card>
                         </Col>

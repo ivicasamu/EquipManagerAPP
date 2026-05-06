@@ -33,3 +33,7 @@
 .login{
   margin: 1rem;
 }
+
+.table tbody tr:hover {
+    background-color: #f8f9fa;
+}

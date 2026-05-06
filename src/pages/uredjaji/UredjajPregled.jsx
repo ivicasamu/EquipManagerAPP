@@ -8,6 +8,7 @@ import useBreakpoint from "../../hooks/useBrakepoint"
 import UredjajPregledTablica from "./UredjajPregledTablica"
 import UredjajPregledGrid from "./UredjajPregledGrid"
 import useLoading from "../../hooks/useLoading"
+import UredjajPDFGenerator from "../../components/UredjajPDFGenerator"
 
 export default function UredjajPregled(){
 
@@ -121,6 +122,29 @@ export default function UredjajPregled(){
         return s ? s.naziv : ''
     }
 
+     async function generirajPDFZaUredjaj(uredjaj) {
+            // Dohvati kategoriju
+            const kategorija = kategorije.find(s => s.sifra === uredjaj.kategorija)
+            if (!kategorija) {
+                alert('Kategorija nije pronađen')
+                return
+            }
+
+            const status = statusi.find(s => s.sifra === uredjaj.status)
+            if (!status) {
+                alert('Status nije pronađen')
+                return
+            }
+    
+            // Generiraj PDF
+            const generiraj = UredjajPDFGenerator({
+                uredjaj,
+                kategorija,
+                status
+            })
+            await generiraj()
+        }
+
     return(
         <>
         <Link to={RouteNames.UREDJAJI_NOVI}
@@ -140,6 +164,7 @@ export default function UredjajPregled(){
                 handlePageChange={handlePageChange}
                 handleSearchChange = {handleSearchChange}
                 searchTerm = {searchTerm}
+                generirajPDFZaUredjaj = {generirajPDFZaUredjaj}
             />
         ) : (
             <UredjajPregledTablica
@@ -155,6 +180,7 @@ export default function UredjajPregled(){
                 sortConfig={sortConfig}
                 handleSearchChange = {handleSearchChange}
                 searchTerm = {searchTerm}
+                generirajPDFZaUredjaj = {generirajPDFZaUredjaj}
             />
         )}
         </>

@@ -48,7 +48,7 @@ export default function EventPregledTablica({
                     <tbody>
                         {eventi && eventi.map((event)=>(
                             <tr key={event.sifra}>
-                                <td className="lead text-center"><FormatDatuma datum={event.datumPocetka} /></td>
+                                <td className="text-center fw-semibold"><FormatDatuma datum={event.datumPocetka} /></td>
                                 <td className="text-center">{event.predvidenoTrajanje}</td>
                                 <td>{event.lokacija}</td>
                                 <td
