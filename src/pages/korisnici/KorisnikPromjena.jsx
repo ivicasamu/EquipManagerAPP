@@ -43,7 +43,7 @@ export default function KorisnikPromjena(){
         const podaci = new FormData(e.target)
 
         setErrors({});
-        const objektPodataka = Object.fromEntries(podaci)
+        const objektPodataka = Object.fromEntries(podaci.entries())
 
         const rezultat = ShemaKorisnik.safeParse(objektPodataka)
 
@@ -124,7 +124,7 @@ export default function KorisnikPromjena(){
                                 name="email"
                                 defaultValue={korisnik.email} 
                                 isInvalid={!!errors.email}
-                                onChange={() => ocistiGresku('ime')}
+                                onChange={() => ocistiGresku('email')}
                             />
                             <Form.Control.Feedback type="invalid">
                                 {errors.email}

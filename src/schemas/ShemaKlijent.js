@@ -11,7 +11,7 @@ export const ShemaKlijent = z.object({
         .trim()
         .min(1, "Adresa je obavezno i ne smije sadržavati samo razmake!")
         .min(2, "Adresa mora imati najmanje 2 znaka!")
-        .max(20, "Adresa može imati najviše 20 znakova!"),
+        .max(100, "Adresa može imati najviše 100 znakova!"),
     
     kontaktOsoba: z.string()
         .trim()
