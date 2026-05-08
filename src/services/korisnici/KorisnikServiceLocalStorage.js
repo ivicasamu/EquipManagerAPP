@@ -13,17 +13,19 @@ function spremiUStorage(podaci) {
 async function get() {
     const korisnici = dohvatiSveIzStorage()
 
-    const korisniciBezLozinki = korisnici.map(op => ({
-        sifra: op.sifra,
-        ime: op.ime,
-        prezime: op.prezime,
-        email: op.email,
-        korisnickoIme: op.korisnickoIme,
-        administrator: op.administrator
+    const korisniciBezLozinki = korisnici.map(k => ({
+        sifra: k.sifra,
+        ime: k.ime,
+        prezime: k.prezime,
+        email: k.email,
+        korisnickoIme: k.korisnickoIme,
+        administrator: k.administrator
     }))
 
-    return {success: true,  data: [...korisnici] }
-
+    return {
+        success: true,
+        data: korisniciBezLozinki
+    }
 }
 
 async function getBySifra(sifra) {
@@ -65,7 +67,6 @@ async function dodaj(korisnik) {
         ime: korisnik.ime,
         prezime: korisnik.prezime,
         email: korisnik.email,
-        korisnickoIme: korisnik.korisnickoIme,
         administrator: korisnik.administrator
     }}
 }
@@ -84,17 +85,15 @@ async function promjeni(sifra, korisnik) {
         ime: korisnik.ime,
         prezime: korisnik.prezime,
         email: korisnik.email,
-        korisnickoIme: korisnik.korisnickoIme,
         administrator: korisnik.administrator,
         sifra: parseInt(sifra)
     }
     spremiUStorage(korisnici)
     return {success: true, data: {
-        ime: korisnik[index].ime,
-        prezime: korisnik[index].prezime,
-        email: korisnik[index].email,
-        korisnickoIme: korisnik[index].korisnickoIme,
-        administrator: korisnik[index].administrator
+        ime: korisnici[index].ime,
+        prezime: korisnici[index].prezime,
+        email: korisnici[index].email,
+        administrator: korisnici[index].administrator
     }}
 }
 

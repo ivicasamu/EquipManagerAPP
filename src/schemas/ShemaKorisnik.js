@@ -24,8 +24,9 @@ export const ShemaKorisnik = z.object({
     
     lozinka: z.string()
         .min(8, "Lozinka mora imati najmanje 6 znaka!")
-        .regex(passwordRegex, "Lozinka mora sadržavati: veliko slovo, malo slovo, broj i interpukcijski znak!"),
-    
+        .regex(passwordRegex, "Lozinka mora sadržavati: veliko slovo, malo slovo, broj i interpukcijski znak!")
+        .optional(),
+
     email: z.string()
         .trim()
         .min(1, "Email je obavezan!")
