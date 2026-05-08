@@ -159,7 +159,7 @@ export default function EventNovi() {
             return;
         }
 
-        const odabraniKlijent = parseInt(podaci.get('klijent'));
+        const odabraniKlijent = podaci.get('klijent');
 
         dodaj({
             datumPocetka: new Date(podaci.get('datumPocetka')).toISOString(),

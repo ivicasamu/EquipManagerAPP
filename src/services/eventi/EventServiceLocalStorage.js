@@ -21,7 +21,7 @@ async function get() {
 // Dohvati jedan po šifri
 async function getBySifra(sifra) {
     const eventi = dohvatiSveIzStorage()
-    const event = eventi.find(g => g.sifra === parseInt(sifra))
+    const event = eventi.find(g => g.sifra === sifra)
     return {success: true,  data: event }
 }
 
@@ -29,9 +29,12 @@ async function getBySifra(sifra) {
 async function dodaj(event) {
     const eventi = dohvatiSveIzStorage()
 
-    const maxSifra = Math.max(0, ...eventi.map(g => g.sifra || 0))
-    event.sifra = maxSifra + 1
-
+    if(eventi.length === 0){
+        event.sifra = '1'
+    } else {
+        event.sifra = String(parseInt(eventi[eventi.length - 1].sifra) + 1)
+    }
+    
     eventi.push(event)
     spremiUStorage(eventi)
 
@@ -41,10 +44,10 @@ async function dodaj(event) {
 // 3/4 Update - promjeni postojeći
 async function promjeni(sifra, event) {
     const eventi = dohvatiSveIzStorage()
-    const index = eventi.findIndex(g => g.sifra === parseInt(sifra))
+    const index = eventi.findIndex(g => g.sifra === sifra)
     
     if (index !== -1) {
-        eventi[index] = { ...eventi[index], ...event, sifra: parseInt(sifra) }
+        eventi[index] = { ...eventi[index], ...event, sifra: sifra }
         spremiUStorage(eventi)
     }
     return { data: eventi[index] }
@@ -53,7 +56,7 @@ async function promjeni(sifra, event) {
 // 4/4 Delete - obriši
 async function obrisi(sifra) {
     let eventi = dohvatiSveIzStorage()
-    eventi = eventi.filter(g => g.sifra !== parseInt(sifra))
+    eventi = eventi.filter(g => g.sifra !== sifra)
     spremiUStorage(eventi)
     return { message: 'Obrisano' }
 }
@@ -91,7 +94,7 @@ async function getPage(page = 1, pageSize = 10, searchTerm = '') {
                 .replaceAll('.', '')
 
             const lokacija = (event.lokacija || '').toLowerCase()
-            const klijentNaziv = klijentMap[parseInt(event.klijent)] || ''
+            const klijentNaziv = klijentMap[event.klijent] || ''
 
             return (
                 datum.includes(search) ||

@@ -16,7 +16,7 @@ async function get() {
 
 async function getBySifra(sifra) {
     const kategorije = dohvatiSveIzStorage()
-    const kategorija = kategorije.find(s => s.sifra === parseInt(sifra))
+    const kategorija = kategorije.find(s => s.sifra === sifra)
     return {success: true,  data: kategorija }
 }
 
@@ -24,10 +24,9 @@ async function dodaj(kategorija) {
     const kategorije = dohvatiSveIzStorage()
     
     if (kategorije.length === 0) {
-        kategorija.sifra = 1
+        kategorija.sifra = '1'
     } else {
-        const maxSifra = Math.max(...kategorije.map(s => s.sifra));
-        kategorija.sifra = maxSifra + 1
+        kategorija.sifra = String(parseInt(kategorije[kategorije.length - 1].sifra) + 1)
     }
     
     kategorije.push(kategorija)
@@ -37,7 +36,7 @@ async function dodaj(kategorija) {
 
 async function promjeni(sifra, kategorija) {
     const kategorije = dohvatiSveIzStorage();
-    const index = kategorije.findIndex(s => s.sifra === parseInt(sifra));
+    const index = kategorije.findIndex(s => s.sifra === sifra)
     
     if (index !== -1) {
         kategorije[index] = { ...kategorije[index], ...kategorija};
@@ -48,7 +47,7 @@ async function promjeni(sifra, kategorija) {
 
 async function obrisi(sifra) {
     let kategorije = dohvatiSveIzStorage();
-    kategorije = kategorije.filter(s => s.sifra !== parseInt(sifra));
+    kategorije = kategorije.filter(s => s.sifra !== sifra)
     spremiUStorage(kategorije);
     return { message: 'Obrisano' };
 }

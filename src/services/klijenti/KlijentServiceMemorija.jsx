@@ -7,15 +7,15 @@ async function get(){
 }
 
 async function getBySifra(sifra) {
-    return {success: true, data: klijenti.find(s => s.sifra === parseInt(sifra))}
+    return {success: true, data: klijenti.find(s => s.sifra === sifra)}
 }
 
 // 2/4 Create od CRUD
 async function dodaj(klijent){
-    if(klijenti.length===0){
-        klijent.sifra=1
-    }else{
-        klijent.sifra = klijenti[klijenti.length - 1].sifra + 1
+    if(klijenti.length === 0){
+        klijent.sifra = '1'
+    } else {
+        klijent.sifra = String(parseInt(klijenti[klijenti.length - 1].sifra) + 1)
     }
     
     klijenti.push(klijent)
@@ -28,7 +28,7 @@ async function promjeni(sifra,klijent) {
 }
 
 function nadiIndex(sifra){
-    return klijenti.findIndex(s=>s.sifra === parseInt(sifra))
+    return klijenti.findIndex(s=>s.sifra === sifra)
 }
 
 // 4/4 Delete od CRUD

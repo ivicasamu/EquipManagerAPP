@@ -161,7 +161,7 @@ export default function EventNovi() {
             return;
         }
 
-        const odabraniKlijent = parseInt(podaci.get('klijent'))
+        const odabraniKlijent = podaci.get('klijent')
 
         const uklonjeniUredjaji = originalniUredjaji.filter(
             originalni =>
@@ -278,7 +278,7 @@ export default function EventNovi() {
                                         value={event.klijent || ''} 
                                         isInvalid={!!errors.klijent}
                                         onFocus={() => ocistiGresku('klijent')}
-                                        onChange={(e) => setEvent({...event, klijent: parseInt(e.target.value)})}>
+                                        onChange={(e) => setEvent({...event, klijent: e.target.value})}>
                                             <option value="">Odaberite klijenta</option>
                                             {klijenti && [...klijenti]
                                                 .sort((a, b) => a.naziv.localeCompare(b.naziv, 'hr'))

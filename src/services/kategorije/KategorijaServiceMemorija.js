@@ -7,15 +7,15 @@ async function get(){
 }
 
 async function getBySifra(sifra) {
-    return {success: true, data: kategorije.find(s => s.sifra === parseInt(sifra))}
+    return {success: true, data: kategorije.find(s => s.sifra === sifra)}
 }
 
 // 2/4 Create od CRUD
 async function dodaj(kategorija){
     if(kategorije.length===0){
-        kategorija.sifra=1
+        kategorija.sifra = '1'
     }else{
-        kategorija.sifra = kategorije[kategorije.length - 1].sifra + 1
+        kategorija.sifra = String(parseInt(kategorije[kategorije.length - 1].sifra) + 1)
     }
     
     kategorije.push(kategorija)
@@ -28,7 +28,7 @@ async function promjeni(sifra,kategorija) {
 }
 
 function nadiIndex(sifra){
-    return kategorije.findIndex(s=>s.sifra === parseInt(sifra))
+    return kategorije.findIndex(s=>s.sifra === sifra)
 }
 
 // 4/4 Delete od CRUD

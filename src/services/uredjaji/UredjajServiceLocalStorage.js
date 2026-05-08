@@ -27,7 +27,7 @@ async function get() {
 // Dohvati jedan po šifri
 async function getBySifra(sifra) {
     const uredjaji = dohvatiSveIzStorage()
-    const uredjaj = uredjaji.find(g => g.sifra === parseInt(sifra))
+    const uredjaj = uredjaji.find(g => g.sifra === sifra)
     return {success: true,  data: uredjaj }
 }
 
@@ -35,8 +35,11 @@ async function getBySifra(sifra) {
 async function dodaj(uredjaj) {
     const uredjaji = dohvatiSveIzStorage()
 
-    const maxSifra = Math.max(0, ...uredjaji.map(g => g.sifra || 0))
-    uredjaj.sifra = maxSifra + 1
+    if(uredjaji.length === 0){
+        uredjaj.sifra = '1'
+    } else {
+        uredjaj.sifra = String(parseInt(uredjaji[uredjaji.length - 1].sifra) + 1)
+    }
 
     uredjaji.push(uredjaj)
     spremiUStorage(uredjaji)
@@ -47,10 +50,10 @@ async function dodaj(uredjaj) {
 // 3/4 Update - promjeni postojeći
 async function promjeni(sifra, uredjaj) {
     const uredjaji = dohvatiSveIzStorage()
-    const index = uredjaji.findIndex(g => g.sifra === parseInt(sifra))
+    const index = uredjaji.findIndex(g => g.sifra === sifra)
     
     if (index !== -1) {
-        uredjaji[index] = { ...uredjaji[index], ...uredjaj, sifra: parseInt(sifra) }
+        uredjaji[index] = { ...uredjaji[index], ...uredjaj, sifra: sifra }
         spremiUStorage(uredjaji)
     }
     return { data: uredjaji[index] }
@@ -59,7 +62,7 @@ async function promjeni(sifra, uredjaj) {
 // 4/4 Delete - obriši
 async function obrisi(sifra) {
     let uredjaji = dohvatiSveIzStorage()
-    uredjaji = uredjaji.filter(g => g.sifra !== parseInt(sifra))
+    uredjaji = uredjaji.filter(g => g.sifra !== sifra)
     spremiUStorage(uredjaji)
     return { message: 'Obrisano' }
 }
@@ -94,8 +97,8 @@ async function getPage(
             const model = (uredjaj.model || '').toLowerCase()
             const serijskiBroj = (uredjaj.serijskiBroj || '').toLowerCase()
 
-            const statusNaziv = statusMap[parseInt(uredjaj.status)] || ''
-            const kategorijaNaziv = kategorijaMap[parseInt(uredjaj.kategorija)] || ''
+            const statusNaziv = statusMap[uredjaj.status] || ''
+            const kategorijaNaziv = kategorijaMap[uredjaj.kategorija] || ''
 
             return (
                 model.includes(search) ||
@@ -119,12 +122,12 @@ async function getPage(
             vrijednostB = (b.model || '').toLowerCase()
         } 
         else if (sortBy === 'status') {
-            vrijednostA = statusMap[parseInt(a.status)] || ''
-            vrijednostB = statusMap[parseInt(b.status)] || ''
+            vrijednostA = statusMap[a.status] || ''
+            vrijednostB = statusMap[b.status] || ''
         } 
         else if (sortBy === 'kategorija') {
-            vrijednostA = kategorijaMap[parseInt(a.kategorija)] || ''
-            vrijednostB = kategorijaMap[parseInt(b.kategorija)] || ''
+            vrijednostA = kategorijaMap[a.kategorija] || ''
+            vrijednostB = kategorijaMap[b.kategorija] || ''
         }
 
         else if (sortBy === 'sifra') {

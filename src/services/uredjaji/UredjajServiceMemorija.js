@@ -9,15 +9,15 @@ async function get(){
 }
 
 async function getBySifra(sifra) {
-    return {success: true, data: uredjaji.find(g => g.sifra === parseInt(sifra))}
+    return {success: true, data: uredjaji.find(g => g.sifra === sifra)}
 }
 
 // 2/4 Create od CRUD
 async function dodaj(uredjaj){
-    if(uredjaji.length===0){
-        uredjaj.sifra=1
-    }else{
-        uredjaj.sifra = uredjaji[uredjaji.length - 1].sifra + 1
+    if(uredjaji.length === 0){
+        uredjaj.sifra = '1'
+    } else {
+        uredjaj.sifra = String(parseInt(uredjaji[uredjaji.length - 1].sifra) + 1)
     }
     
     uredjaji.push(uredjaj)
@@ -30,7 +30,7 @@ async function promjeni(sifra,uredjaj) {
 }
 
 function nadiIndex(sifra){
-    return uredjaji.findIndex(g=>g.sifra === parseInt(sifra))
+    return uredjaji.findIndex(g=>g.sifra === sifra)
 }
 
 // 4/4 Delete od CRUD
@@ -71,9 +71,9 @@ async function getPage(page = 1, pageSize = 8, searchTerm = '') {
             const model = (uredjaj.model || '').toLowerCase()
             const serijskiBroj = (uredjaj.serijskiBroj || '').toLowerCase()
             const statusNaziv =
-                statusMap[parseInt(uredjaj.status)] || ''
+                statusMap[uredjaj.status] || ''
             const kategorijaNaziv =
-                kategorijaMap[parseInt(uredjaj.kategorija)] || ''
+                kategorijaMap[uredjaj.kategorija] || ''
             return (
                 model.includes(search) ||
                 serijskiBroj.includes(search) ||

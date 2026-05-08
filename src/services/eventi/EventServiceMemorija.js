@@ -6,15 +6,15 @@ async function get(){
 }
 
 async function getBySifra(sifra) {
-    return {success: true, data: eventi.find(g => g.sifra === parseInt(sifra))}
+    return {success: true, data: eventi.find(g => g.sifra === sifra)}
 }
 
 // 2/4 Create od CRUD
 async function dodaj(event){
     if(eventi.length===0){
-        event.sifra=1
+        event.sifra = '1'
     }else{
-        event.sifra = eventi[eventi.length - 1].sifra + 1
+        event.sifra = String(parseInt(eventi[eventi.length - 1].sifra) + 1)
     }
     
     eventi.push(event)
@@ -27,7 +27,7 @@ async function promjeni(sifra,event) {
 }
 
 function nadiIndex(sifra){
-    return eventi.findIndex(g=>g.sifra === parseInt(sifra))
+    return eventi.findIndex(g=>g.sifra === sifra)
 }
 
 // 4/4 Delete od CRUD

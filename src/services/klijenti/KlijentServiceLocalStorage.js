@@ -16,15 +16,18 @@ async function get() {
 
 async function getBySifra(sifra) {
     const klijenti = dohvatiSveIzStorage();
-    const klijent = klijenti.find(s => s.sifra === parseInt(sifra));
+    const klijent = klijenti.find(s => s.sifra === sifra)
     return {success: true,  data: klijent };
 }
 
 async function dodaj(klijent) {
     const klijenti = dohvatiSveIzStorage();
 
-    const maxSifra = Math.max(0, ...klijenti.map(k => k.sifra || 0));
-    klijent.sifra = maxSifra + 1;
+    if(klijenti.length === 0){
+        klijent.sifra = '1'
+    } else {
+        klijent.sifra = String(parseInt(klijenti[klijenti.length - 1].sifra) + 1)
+    }
 
     klijenti.push(klijent);
     spremiUStorage(klijenti);
@@ -34,7 +37,7 @@ async function dodaj(klijent) {
 
 async function promjeni(sifra, klijent) {
     const klijenti = dohvatiSveIzStorage();
-    const index = klijenti.findIndex(s => s.sifra === parseInt(sifra));
+    const index = klijenti.findIndex(s => s.sifra === sifra)
     
     if (index !== -1) {
         klijenti[index] = { ...klijenti[index], ...klijent};
@@ -45,8 +48,8 @@ async function promjeni(sifra, klijent) {
 
 async function obrisi(sifra) {
     let klijenti = dohvatiSveIzStorage();
-    klijenti = klijenti.filter(s => s.sifra !== parseInt(sifra));
-    spremiUStorage(klijenti);
+    klijenti = klijenti.filter(s => s.sifra !== sifra)
+    spremiUStorage(klijenti)
     return { message: 'Obrisano' };
 }
 

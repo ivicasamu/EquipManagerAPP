@@ -17,7 +17,7 @@ async function get(){
 }
 
 async function getBySifra(sifra) {
-    const korisnik = korisnici.find(o => o.sifra === parseInt(sifra));
+    const korisnik = korisnici.find(o => o.sifra === sifra)
     
     if (!korisnik) {
         return {success: false, data: null}
@@ -36,9 +36,9 @@ async function getBySifra(sifra) {
 // 2/4 Create od CRUD
 async function dodaj(korisnik) {
     if (korisnici.length === 0) {
-        korisnik.sifra = 1
+        korisnik.sifra = '1'
     } else {
-        korisnik.sifra = korisnici[korisnici.length - 1].sifra + 1
+        korisnik.sifra = String(parseInt(klijenti[klijenti.length - 1].sifra) + 1)
     }
     
     // Hashiraj lozinku prije spremanja
@@ -72,7 +72,7 @@ async function promjeni(sifra, korisnik) {
         email: korisnik.email,
         korisnickoIme: korisnik.korisnickoIme,
         administrator: korisnik.administrator,
-        sifra: parseInt(sifra)
+        sifra: sifra
     }
 
     return {success: true, data: {
@@ -98,7 +98,7 @@ async function promjeniLozinku(sifra, novaLozinka) {
 }
 
 function nadiIndex(sifra){
-    return korisnici.findIndex(s=>s.sifra === parseInt(sifra))
+    return korisnici.findIndex(s=>s.sifra === sifra)
 }
 
 // 4/4 Delete od CRUD

@@ -30,7 +30,7 @@ async function get() {
 
 async function getBySifra(sifra) {
     const korisnici = dohvatiSveIzStorage();
-    const korisnik = korisnici.find(s => s.sifra === parseInt(sifra));
+    const korisnik = korisnici.find(s => s.sifra === sifra)
     
     if (!korisnik) {
         return {success: false, data: null}
@@ -50,11 +50,9 @@ async function dodaj(korisnik) {
     const korisnici = dohvatiSveIzStorage();
 
     if (korisnici.length === 0) {
-        korisnik.sifra = 1
+        korisnik.sifra = '1'
     } else {
-        // Pronalaženje najveće šifre da izbjegnemo duplikate
-        const maxSifra = Math.max(...korisnici.map(o => o.sifra))
-        korisnik.sifra = maxSifra + 1
+        korisnik.sifra = String(parseInt(korisnici[korisnici.length - 1].sifra) + 1)
     }
     
     // Hashiraj lozinku prije spremanja
@@ -73,7 +71,7 @@ async function dodaj(korisnik) {
 
 async function promjeni(sifra, korisnik) {
     const korisnici = dohvatiSveIzStorage()
-    const index = korisnici.findIndex(o => o.sifra === parseInt(sifra))
+    const index = korisnici.findIndex(o => o.sifra === sifra)
     
     if (index === -1) {
         return {success: false, message: "Korisnik nije pronađen"}
@@ -86,7 +84,7 @@ async function promjeni(sifra, korisnik) {
         prezime: korisnik.prezime,
         email: korisnik.email,
         administrator: korisnik.administrator,
-        sifra: parseInt(sifra)
+        sifra: sifra
     }
     spremiUStorage(korisnici)
     return {success: true, data: {
@@ -100,7 +98,7 @@ async function promjeni(sifra, korisnik) {
 
 async function promjeniLozinku(sifra, novaLozinka) {
     const korisnici = dohvatiSveIzStorage()
-    const index = korisnici.findIndex(o => o.sifra === parseInt(sifra))
+    const index = korisnici.findIndex(o => o.sifra === sifra)
     
     if (index === -1) {
         return {success: false, message: "Korisnik nije pronađen"}
@@ -142,7 +140,7 @@ async function prijava(korisnickoIme, lozinka) {
 
 async function obrisi(sifra) {
     let korisnici = dohvatiSveIzStorage();
-    korisnici = korisnici.filter(s => s.sifra !== parseInt(sifra));
+    korisnici = korisnici.filter(s => s.sifra !== sifra);
     spremiUStorage(korisnici);
     return { message: 'Obrisano' };
 }
