@@ -142,6 +142,7 @@ export default{
     dodaj,
     getBySifra,
     promjeni,
+    promjeniLozinku,
     obrisi, 
     prijava
 }

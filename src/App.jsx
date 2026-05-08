@@ -9,6 +9,7 @@ import Home from './pages/Home'
 import KorisnikPregled from './pages/korisnici/KorisnikPregled'
 import KorisnikNovi from './pages/korisnici/KorisnikNovi'
 import KorisnikPromjena from './pages/korisnici/KorisnikPromjena'
+import KorisnikPromjenaLozinke from './pages/korisnici/KorisnikPromjenaLozinke'
 import KategorijaPregled from './pages/kategorije/KategorijaPregled'
 import KategorijaNovi from './pages/kategorije/KategorijaNovi'
 import KategorijaPromjena from './pages/kategorije/KategorijaPromjena'
@@ -136,6 +137,15 @@ function App() {
               element={
                 isLoggedIn && authUser?.administrator
                   ? <KorisnikPromjena />
+                  : <Navigate to={RouteNames.HOME} />
+              }
+            />
+
+             <Route
+              path={RouteNames.KORISNICI_PROMJENA_LOZINKE}
+              element={
+                isLoggedIn && authUser?.administrator
+                  ? <KorisnikPromjenaLozinke />
                   : <Navigate to={RouteNames.HOME} />
               }
             />

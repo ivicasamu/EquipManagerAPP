@@ -154,7 +154,9 @@ export default function KorisnikPromjena(){
 
                 <Row className="d-grid gap-2 d-md-flex justify-content-md-left mt-4">
                     <Col md={6}>
-                        <a href="" className="btn btn-outline-primary ml-auto">Promjena lozinke</a>
+                        <Link to={RouteNames.KORISNICI_PROMJENA_LOZINKE.replace(':sifra', params.sifra)} className="btn btn-outline-primary ml-auto">
+                            Promjena lozinke
+                        </Link>
                     </Col>
                 </Row>   
 

@@ -12,19 +12,22 @@ export default function KorisnikPromjenaLozinke() {
     const [korisnik, setKorisnik] = useState({})
     const [errors, setErrors] = useState({})
 
+    async function ucitajKorisnika() {
+       await KorisnikService.getBySifra(params.sifra).then((odgovor)=>{
+            
+        if(!odgovor.success){
+            alert('Nije implementiran servis')
+            return
+        }
+        
+        const s = odgovor.data
+        setKorisnik(odgovor.data)
+        })
+    }
+
     useEffect(() => {
         ucitajKorisnika()
     }, [])
-
-    async function ucitajKorisnika() {
-        const odgovor = await KorisnikService.getBySifra(params.sifra)
-        if (!odgovor.success) {
-            alert('Korisnik nije pronađen')
-            navigate(RouteNames.KORISNICI)
-            return
-        }
-        setKorisnik(odgovor.data)
-    }
 
     async function promjeniLozinku(novaLozinka) {
         const rezultat = await KorisnikService.promjeniLozinku(params.sifra, novaLozinka)
