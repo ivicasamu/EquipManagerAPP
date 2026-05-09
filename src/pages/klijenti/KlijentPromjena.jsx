@@ -105,8 +105,6 @@ export default function KlijentPromjena(){
                         </Form.Group>
                     </Col>
 
-                    
-
                     <Col md={6}>
                         <Form.Group controlId="oib" className="mb-3">
                             <Form.Label>OIB</Form.Label>

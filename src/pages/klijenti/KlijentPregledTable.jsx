@@ -11,38 +11,49 @@ export default function KlijentPregledTablica({
     
     return (
         <>
-        <Table striped bordered hover>
-            <thead className="text-center">
-                <tr>
-                    <th>Naziv</th>
-                    <th>Adresa</th>
-                    <th>OIB</th>
-                    <th>Kontakt osoba</th>
-                    <th>Kontakt</th>
-                    <th>Akcija</th>
-                </tr>
-            </thead>
-            <tbody>
-                {klijenti && klijenti.map((klijent)=>(
-                    <tr key={klijent.sifra}>
-                        <td>{klijent.naziv}</td>
-                        <td>{klijent.adresa}</td>
-                        <td>{klijent.oib}</td>
-                        <td>{klijent.kontaktOsoba}</td>
-                        <td>{klijent.tel}<br /> {klijent.email}</td>
-                        <td className="text-center">
-                            <Button onClick={()=>{navigate(`/klijenti/${klijent.sifra}`)}}>
-                                <FaEdit />
-                            </Button>
-                            &nbsp;&nbsp;
-                            <Button variant="danger" onClick={()=>{obrisi(klijent.sifra)}}>
-                                <FaTrash />
-                            </Button>
-                        </td>
+        <div className="table-responsive">
+            <Table striped bordered hover className="align-middle"> 
+                <thead className="text-center">
+                    <tr>
+                        <th>Naziv</th>
+                        <th>Adresa</th>
+                        <th>OIB</th>
+                        <th>Kontakt osoba</th>
+                        <th>Kontakt</th>
+                        <th>Akcija</th>
                     </tr>
-                ))}
-            </tbody>
-        </Table>
+                </thead>
+                <tbody>
+                    {klijenti && klijenti.map((klijent)=>(
+                        <tr key={klijent.sifra}>
+                            <td>{klijent.naziv}</td>
+                            <td>{klijent.adresa}</td>
+                            <td>{klijent.oib}</td>
+                            <td>{klijent.kontaktOsoba}</td>
+                            <td>{klijent.tel}<br /> {klijent.email}</td>
+                            <td className="text-center align-middle">
+                                <div className="d-flex justify-content-center gap-2 flex-nowrap">
+                                    <Button 
+                                        
+                                        onClick={()=>{navigate(`/klijenti/${klijent.sifra}`)}}
+                                    >
+                                        <FaEdit />
+                                    </Button>
+                                    &nbsp;&nbsp;
+                                    <Button 
+                                        
+                                        variant="danger" 
+                                        onClick={()=>{obrisi(klijent.sifra)}}
+                                    >
+                                        <FaTrash />
+                                    </Button>
+                                </div>
+                            </td>
+                        </tr>
+                    ))}
+                </tbody>
+            </Table>
+        </div>
 
         {/* Pagination komponenta */}
                 {totalPages > 1 && (
