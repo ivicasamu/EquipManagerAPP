@@ -221,7 +221,7 @@ export default function EventNovi() {
                                             name="lokacija"
                                             isInvalid={!!errors.lokacija}
                                             placeholder="Unesite lokaciju eventa"
-                                            onFocus={() => ocistiGresku('datumPocetka')}
+                                            onFocus={() => ocistiGresku('lokacija')}
                                         />
                                         <Form.Control.Feedback type="invalid">
                                             {errors.lokacija}

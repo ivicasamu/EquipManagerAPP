@@ -85,7 +85,7 @@ export default function UredjajPregled(){
         if (currentPage > newTotalPages && newTotalPages > 0) {
             setCurrentPage(newTotalPages);
         } else {
-            ucitajSveUredjaje(currentPage, searchTerm);
+            ucitajSveUredjaje(currentPage, searchTerm, sortConfig);
         }
     }
 

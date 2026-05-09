@@ -63,6 +63,8 @@ export default function GrupaPDFGenerator({ event, klijent, uredjaji }) {
         doc.text(`Datum početka: ${datum.toLocaleDateString('hr-HR')}`, 25, yPosition)
         yPosition += 7;
         doc.text(`Predviđeno trajanje: ${event.predvidenoTrajanje} dana`, 25, yPosition);
+        yPosition += 7;
+        doc.text(`Lokacija: ${event.lokacija} dana`, 25, yPosition);
         yPosition += 15;
 
         // Podaci o klijentu

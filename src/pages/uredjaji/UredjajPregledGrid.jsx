@@ -81,12 +81,12 @@ export default function UredjajPregledGrid({
                                     >
                                         <FaTrash />
                                     </Button>
-                                        <Button 
+                                    <Button 
                                         variant="info" 
                                         onClick={() => generirajPDFZaUredjaj(uredjaj)} 
                                         title="Generiraj PDF">
-                                    <FaPrint />
-                                </Button>
+                                        <FaPrint />
+                                    </Button>
                                 </Card.Footer>
                             </Card>
                         </Col>

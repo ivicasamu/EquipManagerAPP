@@ -1,5 +1,5 @@
 import { Button, Form, InputGroup, Pagination, Table } from "react-bootstrap";
-import { FaEdit, FaSearch, FaSort, FaSortDown, FaSortUp, FaTrash } from "react-icons/fa";
+import { FaEdit, FaPrint, FaSearch, FaSort, FaSortDown, FaSortUp, FaTrash } from "react-icons/fa";
 
 export default function UredjajPregledTablica({ 
     uredjaji, 
@@ -13,7 +13,8 @@ export default function UredjajPregledTablica({
     handleSort,
     sortConfig,
     handleSearchChange,
-    searchTerm
+    searchTerm, 
+    generirajPDFZaUredjaj
 }) {
 
     const getSortIcon = (columnKey) => {
@@ -36,44 +37,73 @@ export default function UredjajPregledTablica({
                 onChange={handleSearchChange}
             />
         </InputGroup>
-        <Table striped bordered hover>
-            <thead className="text-center">
-                <tr>
-                    <th onClick={() => handleSort('kategorija')} style={{ cursor: 'pointer' }}>
-                        Kategorija {getSortIcon('kategorija')}
-                    </th>
-                    <th onClick={() => handleSort('model')} style={{ cursor: 'pointer' }}>
-                        Model {getSortIcon('model')}
-                    </th>
-                    <th>Serijski broj</th>
-                    <th onClick={() => handleSort('status')} style={{ cursor: 'pointer' }}>
-                        Status {getSortIcon('status')}
-                    </th>
-                    <th>Napomena</th>
-                    <th>Akcija</th>
-                </tr>
-            </thead>
-            <tbody>
-                {uredjaji && uredjaji.map((uredjaj)=>(
-                    <tr key={uredjaj.sifra}>
-                        <td className="lead">{dohvatiNazivKategorije(uredjaj.kategorija)}</td>
-                        <td>{uredjaj.model}</td>
-                        <td>{uredjaj.serijskiBroj}</td>
-                        <td>{dohvatiNazivStatusa(uredjaj.status)}</td>
-                        <td>{uredjaj.napomena}</td>
-                        <td className="text-center">
-                            <Button onClick={()=>{navigate(`/uredjaji/${uredjaj.sifra}`)}}>
-                                <FaEdit />
-                            </Button>
-                            &nbsp;&nbsp;
-                            <Button variant="danger" onClick={() => brisanje(uredjaj.sifra)}>
-                                <FaTrash />
-                            </Button>
-                        </td>
+        <div className="table-responsive">
+            <Table striped bordered hover className="align-middle">
+                <thead className="text-center">
+                    <tr>
+                        <th onClick={() => handleSort('kategorija')} style={{ cursor: 'pointer' }}>
+                            Kategorija {getSortIcon('kategorija')}
+                        </th>
+                        <th onClick={() => handleSort('model')} style={{ cursor: 'pointer' }}>
+                            Model {getSortIcon('model')}
+                        </th>
+                        <th>Serijski broj</th>
+                        <th onClick={() => handleSort('status')} style={{ cursor: 'pointer' }}>
+                            Status {getSortIcon('status')}
+                        </th>
+                        <th>Napomena</th>
+                        <th>Akcija</th>
                     </tr>
-                ))}
-            </tbody>
-        </Table>
+                </thead>
+                <tbody>
+                    {uredjaji && uredjaji.map((uredjaj)=>(
+                        <tr 
+                            key={uredjaj.sifra}
+                            onClick={()=>{navigate(`/uredjaji/${uredjaj.sifra}`)}}
+                            style={{cursor: 'pointe'}}
+                        >
+                            <td>{dohvatiNazivKategorije(uredjaj.kategorija)}</td>
+                            <td>{uredjaj.model}</td>
+                            <td>{uredjaj.serijskiBroj}</td>
+                            <td>{dohvatiNazivStatusa(uredjaj.status)}</td>
+                            <td style={{
+                                maxWidth: '200px',
+                                whiteSpace: 'wrap',
+                                overflow: 'hidden',
+                                textOverflow: 'ellipsis'
+                            }}>
+                                {uredjaj.napomena}
+                            </td>
+                            <td className="text-center align-middle">
+                                <div className="d-flex justify-content-center gap-2 flex-nowrap">
+                                    <Button onClick={(e) => {
+                                        e.stopPropagation()
+                                        {navigate(`/uredjaji/${uredjaj.sifra}`)}
+                                    }}>
+                                        <FaEdit />
+                                    </Button>
+                                    &nbsp;&nbsp;
+                                    <Button variant="danger" 
+                                        onClick={(e) => {
+                                            e.stopPropagation()
+                                            brisanje(uredjaj.sifra)
+                                    }}>
+                                        <FaTrash />
+                                    </Button>
+                                    &nbsp;&nbsp;
+                                    <Button 
+                                        variant="info" 
+                                        onClick={() => generirajPDFZaUredjaj(uredjaj)} 
+                                        title="Generiraj PDF">
+                                        <FaPrint />
+                                    </Button>
+                                </div>
+                            </td>
+                        </tr>
+                    ))}
+                </tbody>
+            </Table>
+        </div>
 
         {totalPages > 1 && (
             <div className="d-flex justify-content-center">

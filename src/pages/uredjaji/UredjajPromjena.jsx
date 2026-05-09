@@ -84,10 +84,10 @@ export default function UredjajNovi() {
         }
 
         promjeni({
-            kategorija: parseInt(podaci.get('kategorija')),
+            kategorija: podaci.get('kategorija'),
             model: podaci.get('model'),
             serijskiBroj: podaci.get('serijskiBroj'),
-            status: parseInt(podaci.get('status')),
+            status: podaci.get('status'),
             napomena: podaci.get('napomena')
         })
     }

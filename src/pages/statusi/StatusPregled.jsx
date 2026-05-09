@@ -36,35 +36,44 @@ export default function StatusPregled(){
 
     return(
         <>
-        <Link to={RouteNames.STATUSI_NOVI} className="btn btn-success w-100 mb-3 mt-3">
-            Dodavanje novi status
-        </Link>
-        <Table striped bordered hover>
-            <thead className="text-center">
-                <tr>
-                    <th>Naziv</th>
-                    <th>Opis</th>
-                    <th>Akcija</th>
-                </tr>
-            </thead>
-            <tbody>
-                {statusi && statusi.map((status)=>(
-                    <tr key={status.sifra}>
-                        <td>{status.naziv}</td>
-                        <td>{status.opis}</td>
-                        <td className="text-center">
-                            <Button onClick={()=>{navigate(`/statusi/${status.sifra}`)}}>
-                                <FaEdit />
-                            </Button>
-                            &nbsp;&nbsp;
-                            <Button variant="danger" onClick={()=>{obrisi(status.sifra)}}>
-                                <FaTrash />
-                            </Button>
-                        </td>
-                    </tr>
-                ))}
-            </tbody>
-        </Table>
+            <Link to={RouteNames.STATUSI_NOVI} className="btn btn-success w-100 mb-3 mt-3">
+                Dodavanje novi status
+            </Link>
+            <div className="table-responsive">
+                <Table striped bordered hover className="align-middle"> 
+                    <thead className="text-center">
+                        <tr>
+                            <th>Naziv</th>
+                            <th>Opis</th>
+                            <th>Akcija</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {statusi && statusi.map((status)=>(
+                            <tr key={status.sifra}>
+                                <td>{status.naziv}</td>
+                                <td>{status.opis}</td>
+                                <td className="text-center align-middle">
+                                <div className="d-flex justify-content-center gap-2 flex-nowrap">
+                                        <Button 
+                                            onClick={()=>{navigate(`/statusi/${status.sifra}`)}}
+                                        >
+                                            <FaEdit />
+                                        </Button>
+                                        &nbsp;&nbsp;
+                                        <Button 
+                                            variant="danger" 
+                                            onClick={()=>{obrisi(status.sifra)}}
+                                        >
+                                            <FaTrash />
+                                        </Button>
+                                    </div>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </Table>
+            </div>
         </>
     )
 }

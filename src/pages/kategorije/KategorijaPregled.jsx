@@ -39,46 +39,55 @@ export default function KategorijaPregled(){
         <Link to={RouteNames.KATEGORIJE_NOVI} className="btn btn-success w-100 mb-3 mt-3">
             Dodavanje nove kategorije
         </Link>
-        <Table striped bordered hover>
-            <thead className="text-center">
-                <tr>
-                    <th>Naziv</th>
-                    <th>Aktivna</th>
-                    <th>Akcija</th>
-                </tr>
-            </thead>
-            <tbody>
-                {kategorije && kategorije.map((kategorija)=>(
-                    <tr key={kategorija.sifra}>
-                        <td>{kategorija.naziv}</td>
-                        <td>
-                            {(kategorija.aktivna) &&
-                            <GrLike 
-                                size={20}
-                                color='green'
-                            />
-                            }
-                            {(!kategorija.aktivna) &&
-                            <GrDislike 
-                                size={20}
-                                color='red'
-                            />
-                            }
-                            
-                        </td>
-                        <td className="text-center">
-                            <Button onClick={()=>{navigate(`/kategorije/${kategorija.sifra}`)}}>
-                                <FaEdit />
-                            </Button>
-                            &nbsp;&nbsp;
-                            <Button variant="danger" onClick={()=>{obrisi(kategorija.sifra)}}>
-                                <FaTrash />
-                            </Button>
-                        </td>
+        <div className="table-responsive">
+            <Table striped bordered hover className="align-middle"> 
+                <thead className="text-center">
+                    <tr>
+                        <th>Naziv</th>
+                        <th>Aktivna</th>
+                        <th>Akcija</th>
                     </tr>
-                ))}
-            </tbody>
-        </Table>
+                </thead>
+                <tbody>
+                    {kategorije && kategorije.map((kategorija)=>(
+                        <tr key={kategorija.sifra}>
+                            <td>{kategorija.naziv}</td>
+                            <td className="text-center align-middle">
+                                {(kategorija.aktivna) &&
+                                <GrLike 
+                                    size={20}
+                                    color='green'
+                                />
+                                }
+                                {(!kategorija.aktivna) &&
+                                <GrDislike 
+                                    size={20}
+                                    color='red'
+                                />
+                                }
+                                
+                            </td>
+                           <td className="text-center align-middle">
+                                <div className="d-flex justify-content-center gap-2 flex-nowrap">
+                                    <Button 
+                                        onClick={()=>{navigate(`/kategorije/${kategorija.sifra}`)}}
+                                    >
+                                        <FaEdit />
+                                    </Button>
+                                    &nbsp;&nbsp;
+                                    <Button 
+                                        variant="danger" 
+                                        onClick={()=>{obrisi(kategorija.sifra)}}
+                                    >
+                                        <FaTrash />
+                                    </Button>
+                                </div>
+                            </td>
+                        </tr>
+                    ))}
+                </tbody>
+            </Table>
+        </div>
         </>
     )
 }
