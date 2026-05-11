@@ -401,6 +401,7 @@ export default function GeneriranjePodataka() {
                 tip: 'success',
                 tekst: `Uspješno presipano`
             });
+            window.location.reload()
         } catch (error) {
             setPoruka({
                 tip: 'danger',
