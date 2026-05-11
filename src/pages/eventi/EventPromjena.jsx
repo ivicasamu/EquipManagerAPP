@@ -236,9 +236,12 @@ export default function EventNovi() {
                                             type="date" 
                                             name="datumPocetka" 
                                             isInvalid={!!errors.datumPocetka}
-                                            onChange={() => ocistiGresku('ime')}
-                                            onClick={(e) => e.target.showPicker()} 
-                                            onFocus={(e) => e.target.showPicker()}
+                                            onFocus={() => ocistiGresku('datumPocetka')}
+                                            onClick={(e) => {
+                                                if (e.target.showPicker) {
+                                                    e.target.showPicker()
+                                                }
+                                            }}
                                             defaultValue={event.datumPocetka?.substring(0, 10)}
                                         />
                                         <Form.Control.Feedback type="invalid">
@@ -275,7 +278,7 @@ export default function EventNovi() {
                                         <Form.Label className="fw-bold">Klijent</Form.Label>
                                         <Form.Select 
                                         name="klijent" 
-                                        value={event.klijent || ''} 
+                                        value={event.klijent?.sifra || event.klijent || ''}
                                         isInvalid={!!errors.klijent}
                                         onFocus={() => ocistiGresku('klijent')}
                                         onChange={(e) => setEvent({...event, klijent: e.target.value})}>

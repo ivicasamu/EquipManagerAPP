@@ -69,7 +69,9 @@ export default function EventNovi() {
     }
 
     function ukloniUredjaj(sifra) {
-        setOdabraniUredjaji(setOdabraniUredjaji.filter(p => p.sifra !== sifra))
+        setOdabraniUredjaji(
+            odabraniUredjaji.filter(p => p.sifra !== sifra)
+        )
     }
 
     function filtrirajUredjaje() {
@@ -192,13 +194,16 @@ export default function EventNovi() {
                                 <Col xs={6}>
                                     <Form.Group controlId="datumPocetka" className="mb-3">
                                         <Form.Label className="fw-bold">Datum početka</Form.Label>
-                                        <Form.Control 
-                                        type="date" 
-                                        name="datumPocetka"
-                                        isInvalid={!!errors.datumPocetka} 
-                                        onFocus={() => ocistiGresku('datumPocetka')}
-                                        onClick={(e) => e.target.showPicker()} 
-                                        onFocus={(e) => e.target.showPicker()}
+                                        <Form.Control
+                                            type="date"
+                                            name="datumPocetka"
+                                            isInvalid={!!errors.datumPocetka}
+                                            onFocus={() => ocistiGresku('datumPocetka')}
+                                            onClick={(e) => {
+                                                if (e.target.showPicker) {
+                                                    e.target.showPicker()
+                                                }
+                                            }}
                                         />
                                         <Form.Control.Feedback type="invalid">
                                             {errors.datumPocetka}
