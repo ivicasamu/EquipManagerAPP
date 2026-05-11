@@ -17,3 +17,5 @@ U terminalu nakon što ste zaustavili aplikaciju (ctrl + c) izvesti:
     npm install zed
 
     npm install bcryptjs
+
+    npm install highcharts highcharts-react-official
