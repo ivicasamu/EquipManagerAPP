@@ -1,6 +1,6 @@
 import { Button, Form, InputGroup, Pagination, Table } from "react-bootstrap";
 import FormatDatuma from "../../components/FormatDatuma";
-import { FaEdit, FaPrint, FaSearch, FaTrash } from "react-icons/fa";
+import { FaCheckCircle, FaEdit, FaPrint, FaSearch, FaTrash } from "react-icons/fa";
 
 
 export default function EventPregledTablica({  
@@ -16,7 +16,8 @@ export default function EventPregledTablica({
     handleMouseLeave,
     tooltip,
     handleSearchChange,
-    searchTerm 
+    searchTerm,
+    zavrsiEvent 
 }) {
     return (
         <>
@@ -92,6 +93,14 @@ export default function EventPregledTablica({
                                         >
                                             <FaPrint />
                                         </Button>
+                                        <Button
+                                            size="sm"
+                                            variant="success"
+                                            onClick={() => zavrsiEvent(event.sifra)}
+                                            title="Završi event"
+                                        >
+                                            <FaCheckCircle />
+                                        </Button> 
                                     </div>
                                 </td>
                             </tr>

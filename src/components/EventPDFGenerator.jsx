@@ -38,6 +38,14 @@ export default function GrupaPDFGenerator({ event, klijent, uredjaji }) {
         doc.setFontSize(20);
         doc.setTextColor(105, 105, 105); 
         doc.text('Tvrtka d.o.o.', 20, 20);
+        let yPosition = 60;
+
+        if(event.eventZavrsen === true){
+            doc.setFontSize(20);
+            doc.setFont(undefined, 'bold');
+            doc.text('EVENT JE ZAVRŠEN', 120, yPosition);
+            yPosition += 10;
+        }
 
         // Naslov dokumenta
         doc.setFont('Roboto', 'bold');
@@ -49,8 +57,6 @@ export default function GrupaPDFGenerator({ event, klijent, uredjaji }) {
         doc.setDrawColor(0, 0, 0);
         doc.setLineWidth(0.5);
         doc.line(20, 48, 190, 48);
-
-        let yPosition = 60;
 
         // Podaci o eventu
         doc.setFontSize(14);
@@ -88,7 +94,7 @@ export default function GrupaPDFGenerator({ event, klijent, uredjaji }) {
         doc.text(`Telefon: ${klijent.email}`, 25, yPosition)
         yPosition += 15
 
-        // Popis polaznika
+
         doc.setFontSize(16);
         doc.setFont(undefined, 'bold');
         doc.text('Popis iznajmljene opreme:', 20, yPosition);

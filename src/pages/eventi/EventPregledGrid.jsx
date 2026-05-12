@@ -1,5 +1,5 @@
 import { Button, Card, Row, Col, Container, Pagination, InputGroup, Form } from "react-bootstrap"
-import { FaEdit, FaPrint, FaSearch, FaTrash } from "react-icons/fa"
+import { FaCheckCircle, FaEdit, FaPrint, FaSearch, FaTrash } from "react-icons/fa"
 import FormatDatuma from "../../components/FormatDatuma";
 
 export default function EventPregledTablica({  
@@ -11,7 +11,8 @@ export default function EventPregledTablica({
     currentPage, 
     handlePageChange,
     handleSearchChange,
-    searchTerm
+    searchTerm,
+    zavrsiEvent
 }) {
 
     function skratiTekst(tekst, max = 100) {
@@ -89,6 +90,13 @@ export default function EventPregledTablica({
                                 <Button variant="info" onClick={() => generirajPDFZaEvent(event)} title="Generiraj PDF">
                                     <FaPrint />
                                 </Button>
+                                <Button
+                                    variant="success"
+                                    onClick={() => zavrsiEvent(event.sifra)}
+                                    title="Završi event"
+                                >
+                                    <FaCheckCircle />
+                                </Button>   
 
                             </Card.Footer>
                         </Card>

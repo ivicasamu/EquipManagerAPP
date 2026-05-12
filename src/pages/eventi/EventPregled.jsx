@@ -9,6 +9,7 @@ import EventPregledTablica from "./EventPregledTablica"
 import useBreakpoint from "../../hooks/useBrakepoint"
 import EventPDFGenerator from "../../components/EventPDFGenerator"
 import useLoading from "../../hooks/useLoading"
+import StatusService from "../../services/statusi/StatusService"
 
 export default function EventPregled(){
 
@@ -154,6 +155,101 @@ export default function EventPregled(){
         await generiraj()
     }
 
+    async function zavrsiEvent(sifra) {
+        const odgovorEvent = await EventService.getBySifra(sifra)
+        const event = odgovorEvent.data
+  
+        if(event.eventZavrsen === false){
+            if (!window.confirm('Sigurno želiš završiti event?')) {
+                return
+            }
+
+            showLoading()
+
+            if (!odgovorEvent.success) {
+                hideLoading()
+                alert('Greška kod dohvaćanja eventa')
+                return
+            }
+
+            if (!event) {
+                hideLoading()
+                alert('Event nije pronađen')
+                return
+            }
+
+            const odgovorStatusi = await StatusService.get()
+
+            if (!odgovorStatusi.success) {
+                hideLoading()
+                alert('Greška kod dohvaćanja statusa')
+                return
+            }
+
+            const statusDostupno = odgovorStatusi.data.find(
+                s => s.naziv.toLowerCase() === 'dostupno'
+            )
+
+            if (!statusDostupno) {
+                hideLoading()
+                alert('Status Dostupno nije pronađen')
+                return
+            }
+
+            const sifraDostupno = statusDostupno.sifra
+
+            const uredjaji = event.uredjaji || []
+
+            // DOHVATI SVE UREĐAJE
+            const odgovorUredjaji = await UredjajService.get()
+
+            if (!odgovorUredjaji.success) {
+                hideLoading()
+                alert('Greška kod dohvaćanja uređaja')
+                return
+            }
+
+            // UPDATE SAMO UREĐAJA KOJI SU NA EVENTU
+            for (const sifraUredjaja of uredjaji) {
+
+                const uredjajObjekt = odgovorUredjaji.data.find(
+                    u => u.sifra === sifraUredjaja
+                )
+
+                if (!uredjajObjekt) continue
+
+                const uredjajZaUpdate = {
+                    ...uredjajObjekt,
+                    status: sifraDostupno
+                }
+
+                await UredjajService.promjeni(
+                    uredjajObjekt.sifra,
+                    uredjajZaUpdate
+                )
+            }
+
+            const eventZaUpdate = {
+                ...event,
+                eventZavrsen: true
+            }
+
+            await EventService.promjeni(
+                event.sifra,
+                eventZaUpdate
+            )
+
+            hideLoading()
+
+            alert('Event uspješno završen')
+
+            ucitajEventi(currentPage, searchTerm)
+            console.log(event.eventZavrsen)
+        } else {
+            alert('Odabrani event je već prije završen.')
+        }
+    } 
+
     return(
         <>
         <Link to={RouteNames.EVENTI_NOVI}
@@ -172,6 +268,7 @@ export default function EventPregled(){
             handlePageChange={handlePageChange}
             handleSearchChange={handleSearchChange}
             searchTerm={searchTerm}
+            zavrsiEvent={zavrsiEvent} 
         />
         ) : (
         <EventPregledTablica
@@ -189,6 +286,7 @@ export default function EventPregled(){
             tooltip = {tooltip}
             handleSearchChange={handleSearchChange}
             searchTerm={searchTerm} 
+            zavrsiEvent={zavrsiEvent} 
         />
     )}
         </>
