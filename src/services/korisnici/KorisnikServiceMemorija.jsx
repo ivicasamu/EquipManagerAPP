@@ -38,7 +38,7 @@ async function dodaj(korisnik) {
     if (korisnici.length === 0) {
         korisnik.sifra = '1'
     } else {
-        korisnik.sifra = String(parseInt(klijenti[klijenti.length - 1].sifra) + 1)
+        korisnik.sifra = String(parseInt(korisnici[korisnici.length - 1].sifra) + 1)
     }
     
     // Hashiraj lozinku prije spremanja

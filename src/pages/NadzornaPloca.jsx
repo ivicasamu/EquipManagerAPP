@@ -6,6 +6,9 @@ import useLoading from "../hooks/useLoading"
 import { Col, Container, Row } from "react-bootstrap"
 import Highcharts from 'highcharts'
 import HighchartsReactOfficial from 'highcharts-react-official'
+import useAuth from "../hooks/useAuth"
+import KorisnikServiceLocalStorage from "../services/korisnici/KorisnikServiceLocalStorage"
+import { DATA_SOURCE } from "../constants"
 
 const HighchartsReact = HighchartsReactOfficial.default
 
@@ -14,6 +17,25 @@ export default function NadzornaPloca() {
     const [podaciStatusi, setPodaciStatusi] = useState([])
     const [podaciEventi, setPodaciEventi] = useState([])
     const { showLoading, hideLoading } = useLoading()
+
+    const { isLoggedIn, logout, authUser } = useAuth()
+    const isAdmin = authUser?.administrator
+
+    const promijeniIzvor = async (noviIzvor) => {
+        let izvor = 'memorija';
+        
+        if (noviIzvor === 'localStorage') {
+            const servis = await KorisnikServiceLocalStorage.get();
+            if (servis.data.length > 0){
+                izvor = noviIzvor;
+            } 
+            
+        }
+
+        localStorage.setItem('dataSource', izvor);
+        logout()
+        window.location.reload();
+    }
     
     async function ucitajPodatkeStatusi() {
         const odgovorUredjaji = await UredjajService.get()
@@ -54,8 +76,6 @@ export default function NadzornaPloca() {
             name: status,
             y: statusMap[status]
         }))
-
-        console.log(chartPodaci)
 
         setPodaciStatusi(chartPodaci)
     }
@@ -213,6 +233,32 @@ export default function NadzornaPloca() {
                     </Container>
                 </Col>
             </Row>
+
+            {isLoggedIn && isAdmin &&(
+                <>
+                <hr className="mt-5" />
+
+                <Row className="mb-5">
+                    <Col className="text-center">
+                        <h5>Izvor podataka:</h5>
+                        <div className="btn-group">
+                            <button
+                                onClick={() => promijeniIzvor('memorija')}
+                                className={` me-2 login btn ${DATA_SOURCE === 'memorija' ? 'btn-success' : 'btn-danger'}`}
+                            >
+                                Memorija
+                            </button>
+                            <button
+                                onClick={() => promijeniIzvor('localStorage')}
+                                className={`me-2 login btn ${DATA_SOURCE === 'localStorage' ? 'btn-success' : 'btn-danger'}`}
+                            >
+                                Local Storage
+                            </button>
+                        </div>
+                    </Col>
+                </Row>
+            </>
+        )}
         </>
     )
 }

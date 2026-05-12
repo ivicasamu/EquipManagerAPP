@@ -1,5 +1,5 @@
 import { Card, Col, Row } from "react-bootstrap"
-import { IME_APLIKACIJE } from "../constants"
+import { DATA_SOURCE, IME_APLIKACIJE } from "../constants"
 import { DotLottieReact } from "@lottiefiles/dotlottie-react"
 import KorisnikService from "../services/korisnici/KorisnikService"
 import UredjajService from "../services/uredjaji/UredjajService"
@@ -83,69 +83,68 @@ export default function Home(){
     }, [animatedEventi, brojEvenata]);
     return(
         <>
-        <Row>
-            <Col md={12}>
-                <h1>Dobro došli na {IME_APLIKACIJE}</h1>
+            <Row>
+                <Col md={12}>
+                    <h1>Dobro došli na {IME_APLIKACIJE}</h1>
 
-                <div style={{maxWidth: '800px', margin: 'auto', padding: '100px'}}>
-                    <DotLottieReact
-                        src='/Animacija.lottie' loop autoplay
-                    />
-                </div>
-            </Col>
-            <Col md={12} className="d-flex align-items-center justify-content-center">
-                <div style={{ width: '100%'}}>
-                    <Row>
-                        <Col md={3} className="mb-3">
-                            <Card className="shadow-lg border-0 statistikaPanel h-100" bg="secondary">
-                                <Card.Body className="text-center">
-                                    <p className="text-white">Klijenti</p>
-                                    <div className="statistikaTekst">
-                                        {animatedKlijenti}
-                                    </div>
-                                </Card.Body>
-                            </Card>
-                        </Col>
-                        <Col md={3} className="mb-3">
-                            <Card className="shadow-lg border-0 statistikaPanel h-100" bg="secondary">
-                                <Card.Body className="text-center">
-                                    <p className="text-white">Uređaji</p>
-                                    <div className="statistikaTekst">
-                                        {animatedUredjaji}
-                                    </div>
-                                </Card.Body>
-                            </Card>
-                        </Col>
+                    <div style={{maxWidth: '800px', margin: 'auto', padding: '100px'}}>
+                        <DotLottieReact
+                            src='/Animacija.lottie' loop autoplay
+                        />
+                    </div>
+                </Col>
+                <Col md={12} className="d-flex align-items-center justify-content-center">
+                    <div style={{ width: '100%'}}>
+                        <Row>
+                            <Col md={3} className="mb-3">
+                                <Card className="shadow-lg border-0 statistikaPanel h-100" bg="secondary">
+                                    <Card.Body className="text-center">
+                                        <p className="text-white">Klijenti</p>
+                                        <div className="statistikaTekst">
+                                            {animatedKlijenti}
+                                        </div>
+                                    </Card.Body>
+                                </Card>
+                            </Col>
+                            <Col md={3} className="mb-3">
+                                <Card className="shadow-lg border-0 statistikaPanel h-100" bg="secondary">
+                                    <Card.Body className="text-center">
+                                        <p className="text-white">Uređaji</p>
+                                        <div className="statistikaTekst">
+                                            {animatedUredjaji}
+                                        </div>
+                                    </Card.Body>
+                                </Card>
+                            </Col>
 
-                        <Col md={3} className="mb-3">
-                            <Card className="shadow-lg border-0 statistikaPanel h-100" bg="secondary">
-                                <Card.Body className="text-center">
-                                    <p className="text-white">Eventi</p>
-                                    <div className="statistikaTekst">
-                                        {animatedEventi}
-                                    </div>
-                                </Card.Body>
-                            </Card>
-                        </Col>
-                        <Col md={3} className="mb-3">
-                            <Card className="shadow-lg border-0 statistikaPanel h-100" bg="secondary">
-                                <Card.Body className="text-center">
-                                    <p className="text-white">Operateri</p>
-                                    <div className="statistikaTekst">
-                                        {animatedKorisnici}
-                                    </div>
-                                    <div style={{ fontSize: '0.9rem', marginTop: '10px' }}>
-                                        <span className="badge bg-danger me-2">Admin: {brojAdmina}</span>
-                                        <span className="badge bg-primary">Korisnik: {brojStandardUsera}</span>
-                                    </div>
-                                </Card.Body>
-                            </Card>
-                        </Col>
-                    </Row>
-                </div>
-            </Col>
-        </Row>
-        
+                            <Col md={3} className="mb-3">
+                                <Card className="shadow-lg border-0 statistikaPanel h-100" bg="secondary">
+                                    <Card.Body className="text-center">
+                                        <p className="text-white">Eventi</p>
+                                        <div className="statistikaTekst">
+                                            {animatedEventi}
+                                        </div>
+                                    </Card.Body>
+                                </Card>
+                            </Col>
+                            <Col md={3} className="mb-3">
+                                <Card className="shadow-lg border-0 statistikaPanel h-100" bg="secondary">
+                                    <Card.Body className="text-center">
+                                        <p className="text-white">Operateri</p>
+                                        <div className="statistikaTekst">
+                                            {animatedKorisnici}
+                                        </div>
+                                        <div style={{ fontSize: '0.9rem', marginTop: '10px' }}>
+                                            <span className="badge bg-danger me-2">Admin: {brojAdmina}</span>
+                                            <span className="badge bg-primary">Korisnik: {brojStandardUsera}</span>
+                                        </div>
+                                    </Card.Body>
+                                </Card>
+                            </Col>
+                        </Row>
+                    </div>
+                </Col>
+            </Row>
         </>
     )
 }
