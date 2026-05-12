@@ -6,7 +6,8 @@ import UredjajService from "../../services/uredjaji/UredjajService"
 import KategorijaService from "../../services/kategorije/KategorijaService"
 import StatusService from "../../services/statusi/StatusService"
 import { ShemaUredjaj } from "../../schemas/ShemaUredjaj"
-
+import EventService from "../../services/eventi/EventService"
+import FormatDatuma from "../../components/FormatDatuma"
 
 export default function UredjajNovi() {
 
@@ -16,11 +17,13 @@ export default function UredjajNovi() {
     const [kategorije, setKategorije] = useState([])
     const [statusi, setStatusi] = useState([])
     const [errors, setErrors] = useState({})
+    const [eventi, setEventi] = useState([])
 
     useEffect(() => {
         ucitajUredjaj()
         ucitajKategorije()
         ucitajStatuse()
+        ucitajEvente()
     }, [])
 
     async function ucitajUredjaj() {
@@ -50,6 +53,17 @@ export default function UredjajNovi() {
                 return
             }
             setStatusi(odgovor.data)
+        })
+    }
+
+    async function ucitajEvente() {
+        await EventService.get().then((odgovor) => {
+            if (!odgovor.success) {
+                alert('Nije implementiran servis za evente')
+                return
+            }
+
+            setEventi(odgovor.data)
         })
     }
 
@@ -100,9 +114,13 @@ export default function UredjajNovi() {
         }
     }
 
+    const eventiUredjaja = eventi.filter(
+        event => uredjaj.eventi?.includes(event.sifra.toString())
+    )
+
     return (
         <>
-            <h3>Unos novog uređaja</h3>
+            <h3>Promjena uređaja</h3>
             <Form onSubmit={odradiSubmit}>
                 <Container className="mt-4">
                     <Card className="shadow-sm">
@@ -214,6 +232,32 @@ export default function UredjajNovi() {
 
 
                             <hr />
+
+                            <Card className="mt-4 border-0 bg-light">
+                                <Card.Body>
+                                    <Card.Title>
+                                        Povijest evenata
+                                    </Card.Title>
+
+                                    {eventiUredjaja.length === 0 ? (
+                                        <p className="text-muted mb-0">
+                                            Uređaj još nije bio ni na jednom eventu
+                                        </p>
+                                    ) : (
+                                        <ul className="mb-0">
+                                            {eventiUredjaja.map((event) => (
+                                                <li key={event.sifra}>
+                                                    {event.naziv || (
+                                                        <>
+                                                            {event.lokacija} - <FormatDatuma datum={event.datumPocetka} />
+                                                        </>
+                                                    )}
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    )}
+                                </Card.Body>
+                            </Card>
 
                             {/* Gumbi za akciju */}
                             <div className="d-grid gap-2 d-md-flex justify-content-md-end mt-4">

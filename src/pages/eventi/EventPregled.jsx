@@ -211,16 +211,20 @@ export default function EventPregled(){
 
             // UPDATE SAMO UREĐAJA KOJI SU NA EVENTU
             for (const sifraUredjaja of uredjaji) {
-
                 const uredjajObjekt = odgovorUredjaji.data.find(
                     u => u.sifra === sifraUredjaja
                 )
 
                 if (!uredjajObjekt) continue
 
+                const postojeciEventi = uredjajObjekt.eventi || []
+
                 const uredjajZaUpdate = {
                     ...uredjajObjekt,
-                    status: sifraDostupno
+                    status: sifraDostupno,
+                    eventi: postojeciEventi.includes(event.sifra)
+                        ? postojeciEventi
+                        : [...postojeciEventi, event.sifra]
                 }
 
                 await UredjajService.promjeni(
