@@ -64,9 +64,13 @@ export default function EventPregledTablica({
                                     <span className="fw-semibold">{dohvatiNazivKlijenta(event.klijent)}</span>
                                 </div>
 
-                                <div className="d-flex justify-content-between mb-2">
+                                <div className="d-flex justify-content-between mb-2 text-end">
                                     <span className="text-muted">Napomena:</span>
                                     <span className="fw-semibold">{skratiTekst(event.napomena, 50)}</span>
+                                </div>
+                                <div className="d-flex justify-content-between mb-2">
+                                    <span className="text-muted">Event završen:</span>
+                                    <span className="fw-semibold">{event.eventZavrsen ? 'DA' : 'NE'}</span>
                                 </div>
                             </Card.Body>
 

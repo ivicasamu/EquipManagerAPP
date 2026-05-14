@@ -65,21 +65,28 @@ export default function EventPregled(){
     }
 
     async function brisanje(sifra) {
+        const odgovorEvent = await EventService.getBySifra(sifra)
+        const event = odgovorEvent.data
+
         if (!confirm('Sigurno obrisati?')) return;
 
-        showLoading()
-        await new Promise(resolve => setTimeout(resolve, 1000))
+        if(event.eventZavrsen === false && event.uredjaji.length === 0) {
+            showLoading()
+            await new Promise(resolve => setTimeout(resolve, 1000))
 
-        await EventService.obrisi(sifra);
-        const newTotalItems = totalItems - 1;
-        const newTotalPages = Math.ceil(newTotalItems / pageSize);
+            await EventService.obrisi(sifra);
+            const newTotalItems = totalItems - 1;
+            const newTotalPages = Math.ceil(newTotalItems / pageSize);
 
-        hideLoading()
+            hideLoading()
 
-        if (currentPage > newTotalPages && newTotalPages > 0) {
-            setCurrentPage(newTotalPages);
+            if (currentPage > newTotalPages && newTotalPages > 0) {
+                setCurrentPage(newTotalPages);
+            } else {
+                ucitajEventi(currentPage, searchTerm);
+            }
         } else {
-            ucitajEventi(currentPage, searchTerm);
+            alert('Event nije moguće obrisati (event je završen ili imate dodjeljene opreme)')
         }
     }
 

@@ -169,7 +169,8 @@ export default function EventNovi() {
             lokacija: podaci.get('lokacija'),
             klijent: odabraniKlijent,
             uredjaji: odabraniUredjaji.map(u => u.sifra),
-            napomena: podaci.get('napomena')
+            napomena: podaci.get('napomena'),
+            eventZavrsen: false
         })
     }
 

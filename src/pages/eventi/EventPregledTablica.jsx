@@ -43,12 +43,13 @@ export default function EventPregledTablica({
                             <th>Oprema</th>
                             <th>Klijent</th>
                             <th>Napomena</th>
+                            <th>Event završen</th>
                             <th>Akcija</th>
                         </tr>
                     </thead>
                     <tbody>
                         {eventi && eventi.map((event)=>(
-                            <tr>
+                            <tr key={event.sifra}>
                                 <td className="text-center fw-semibold"><FormatDatuma datum={event.datumPocetka} /></td>
                                 <td className="text-center">{event.predvidenoTrajanje}</td>
                                 <td>{event.lokacija}</td>
@@ -68,6 +69,7 @@ export default function EventPregledTablica({
                                 }}>
                                     {event.napomena}
                                 </td>
+                                <td className="text-center">{event.eventZavrsen ? 'DA' : 'NE'}</td>
                                 <td className="text-center align-middle">
                                     <div className="d-flex justify-content-center gap-2 flex-nowrap">
                                         <Button
