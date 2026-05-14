@@ -10,7 +10,7 @@ export default function Izbornik() {
     const isAdmin = authUser?.administrator
 
     return (
-        <Navbar expand="lg" className="bg-body-tertiary">
+        <Navbar expand="lg" className="bg-body-tertiary" role="navigation" aria-label="Glavni izbornik">
             <Container>
                 <Navbar.Brand>{IME_APLIKACIJE}</Navbar.Brand>
                 <Navbar.Toggle aria-controls="basic-navbar-nav" />

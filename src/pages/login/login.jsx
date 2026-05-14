@@ -89,6 +89,7 @@ export default function Login() {
                                                 placeholder="Unesite korisničko ime:"
                                                 isInvalid={!!errors.korisnickoIme}
                                                 onFocus={() => ocistiGresku('korisnickoIme')}
+                                                autoComplete="korisnickoIme"
                                             />
                                             <Form.Control.Feedback type="invalid">
                                                 {errors.korisnickoIme}
@@ -107,6 +108,7 @@ export default function Login() {
                                                 placeholder="Unesite lozinku"
                                                 isInvalid={!!errors.lozinka}
                                                 onFocus={() => ocistiGresku('lozinka')}
+                                                autoComplete="current-password"
                                             />
                                             <Form.Control.Feedback type="invalid">
                                                 {errors.lozinka}

@@ -39,7 +39,7 @@ function App() {
   return (
     <>
       <LoadingSpinner />
-      <Container style={{ backgroundColor: window.location.hostname === 'localhost' ? '#ffff023c' : 'none' }}>
+      <Container style={{ backgroundColor: window.location.hostname === 'localhost' ? '#ffff023c' : 'none' }} role="main">
         <Izbornik />
         <Container className='app'>
           <Routes>
@@ -214,7 +214,7 @@ function App() {
           </Routes>
         </Container>
         <hr />
-          &copy; {IME_APLIKACIJE}
+          <footer role="contentinfo">&copy; {IME_APLIKACIJE}</footer>
       </Container>
     </>
   )

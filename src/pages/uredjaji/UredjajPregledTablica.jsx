@@ -111,10 +111,12 @@ export default function UredjajPregledTablica({
                     <Pagination.First
                         onClick={() => handlePageChange(1)}
                         disabled={currentPage === 1}
+                        aria-label="Prva stranica"
                     />
                     <Pagination.Prev
                         onClick={() => handlePageChange(currentPage - 1)}
                         disabled={currentPage === 1}
+                        aria-label="Prethodna stranica"
                     />
 
                     {[...Array(totalPages)].map((_, index) => {
@@ -146,10 +148,12 @@ export default function UredjajPregledTablica({
                     <Pagination.Next
                         onClick={() => handlePageChange(currentPage + 1)}
                         disabled={currentPage === totalPages}
+                        aria-label="Sljedeća stranica"
                     />
                     <Pagination.Last
                         onClick={() => handlePageChange(totalPages)}
                         disabled={currentPage === totalPages}
+                        aria-label="Zadnja stranica"
                     />
                 </Pagination>
             </div>

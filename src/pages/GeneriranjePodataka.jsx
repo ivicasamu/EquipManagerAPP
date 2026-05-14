@@ -613,7 +613,7 @@ export default function GeneriranjePodataka() {
                                 {loading ? 'Pretakanje...' : 'Iz memorije u localStorage'}
                             </Button>
                         </Col>
-                        <Col md={6}>
+                        {/* <Col md={6}>
                             <Button
                                 variant="success"
                                 onClick={handleMemorijaUFirebase}
@@ -622,7 +622,7 @@ export default function GeneriranjePodataka() {
                             >
                                 {loading ? 'Pretakanje...' : 'Iz memorije u firebase'}
                             </Button>
-                        </Col>
+                        </Col> */}
 
                     </Row>
                 </>
