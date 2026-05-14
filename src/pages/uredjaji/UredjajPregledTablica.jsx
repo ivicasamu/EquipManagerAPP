@@ -60,7 +60,7 @@ export default function UredjajPregledTablica({
                         <tr 
                             key={uredjaj.sifra}
                             onClick={()=>{navigate(`/uredjaji/${uredjaj.sifra}`)}}
-                            style={{cursor: 'pointe'}}
+                            style={{cursor: 'pointer'}}
                         >
                             <td>{dohvatiNazivKategorije(uredjaj.kategorija)}</td>
                             <td>{uredjaj.model}</td>
@@ -93,7 +93,10 @@ export default function UredjajPregledTablica({
                                     &nbsp;&nbsp;
                                     <Button 
                                         variant="info" 
-                                        onClick={() => generirajPDFZaUredjaj(uredjaj)} 
+                                        onClick={(e) => {
+                                            e.stopPropagation()
+                                            generirajPDFZaUredjaj(uredjaj)
+                                            }} 
                                         title="Generiraj PDF">
                                         <FaPrint />
                                     </Button>

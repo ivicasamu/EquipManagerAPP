@@ -1,16 +1,13 @@
 import { z } from 'zod'
 
 export const ShemaEvent = z.object({
-    datumPocetka: z.coerce.date({
-    errorMap: (issue, ctx) => {
-      if (issue.code === z.ZodIssueCode.invalid_date) {
-        return { message: "Molimo unesite ispravan format datuma!" };
-      }
-      return { message: ctx.defaultError };
-    },
-    invalid_type_error: "Molimo unesite ispravan format datuma!",
-    required_error: "Datum je obavezan!"
-  }),
+    datumPocetka: z
+      .string()
+      .min(1, "Datum je obavezan!")
+      .transform((val) => new Date(val))
+      .refine((date) => !isNaN(date.getTime()), {
+          message: "Molimo unesite ispravan datum!"
+      }),
 
     lokacija: z.string()
         .trim()

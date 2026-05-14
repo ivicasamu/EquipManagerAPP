@@ -25,7 +25,7 @@ export default function KorisnikPregledTablica({
                             <td>{korisnik.ime} {korisnik.prezime}</td>
                             <td>{korisnik.korisnickoIme}</td>
                             <td>{korisnik.email}</td>
-                            <td>
+                            <td className="text-center align-middle">
                                 {(korisnik.administrator) &&
                                 <GrLike 
                                     size={20}

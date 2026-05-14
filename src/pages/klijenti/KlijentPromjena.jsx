@@ -72,6 +72,14 @@ export default function KlijentPromjena(){
         })
     }
 
+    const ocistiGresku = (nazivPolja) => {
+        if (errors[nazivPolja]) {
+            const noveGreske = { ...errors };
+            delete noveGreske[nazivPolja];
+            setErrors(noveGreske);
+        }
+    }
+
     return(
         <>
             <h3>Unos novog klijenta:</h3>

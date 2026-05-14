@@ -66,19 +66,19 @@ export default function GrupaPDFGenerator({ uredjaj, kategorija, status }) {
 
         doc.setFont('Roboto', 'bold');
         doc.text(`SERIJSKI BROJ:`, 25, yPosition);
-        doc.setFont('Roboto', 'regular');
+        doc.setFont('Roboto', 'normal');
         doc.text(`${uredjaj.serijskiBroj}`, 65, yPosition);
         yPosition += 15;
 
         doc.setFont('Roboto', 'bold');
         doc.text(`KATEGORIJA:`, 25, yPosition);
-        doc.setFont('Roboto', 'regular');
+        doc.setFont('Roboto', 'normal');
         doc.text(`${kategorija.naziv}`, 65, yPosition);
         yPosition += 10;
 
         doc.setFont('Roboto', 'bold');
         doc.text(`STATUS:`, 25, yPosition);
-        doc.setFont('Roboto', 'regular');
+        doc.setFont('Roboto', 'normal');
         doc.text(`${status.naziv}`, 65, yPosition);
         yPosition += 15;
 

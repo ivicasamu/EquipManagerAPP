@@ -19,7 +19,7 @@ export default function Home(){
     const [animatedKlijenti, setAnimatedKlijenti] = useState(0)
     const [animatedEventi, setAnimatedEventi] = useState(0)
 
-    useEffect(()=>{document.title='Početna, ' + IME_APLIKACIJE})
+    useEffect(()=>{document.title= IME_APLIKACIJE})
 
     useEffect(() => {
         const fetchData = async () => {

@@ -118,7 +118,7 @@ export default function KlijentNovi(){
                                 type="text" 
                                 name="kontaktOsoba"
                                 isInvalid={!!errors.kontaktOsoba}  
-                                onChange={() => ocistiGresku('adresa')} 
+                                onChange={() => ocistiGresku('kontaktOsoba')} 
                                 />
                             <Form.Control.Feedback type="invalid">
                             {errors.kontaktOsoba}
@@ -143,7 +143,7 @@ export default function KlijentNovi(){
                                 type="email" 
                                 name="email"
                                 isInvalid={!!errors.email}  
-                                onChange={() => ocistiGresku('adresa')} 
+                                onChange={() => ocistiGresku('email')} 
                                 />
                         <Form.Control.Feedback type="invalid">
                             {errors.email}

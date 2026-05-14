@@ -598,7 +598,7 @@ export default function GeneriranjePodataka() {
                 <strong>Oprez!</strong> Brisanje podataka je trajna akcija i ne može se poništiti.
             </Alert>
 
-            {DATA_SOURCE === 'memorija' && (
+            {(DATA_SOURCE == 'memorija' || DATA_SOURCE == 'localStorage') && (
                 <>
                     <hr />
                     <h3>Pretakanje podataka iz jednog izvora u drugi</h3>
