@@ -41,7 +41,6 @@ export default function EventPregled(){
 
     async function ucitajEventi(page, search) {
         showLoading()
-        await new Promise(resolve => setTimeout(resolve, 1000))
         await EventService.getPage(page, pageSize, search).then((odgovor)=>{
             if(!odgovor.success){
                 alert('Nije implementiran servis')
@@ -72,7 +71,6 @@ export default function EventPregled(){
 
         if(event.eventZavrsen === false && event.uredjaji.length === 0) {
             showLoading()
-            await new Promise(resolve => setTimeout(resolve, 1000))
 
             await EventService.obrisi(sifra);
             const newTotalItems = totalItems - 1;

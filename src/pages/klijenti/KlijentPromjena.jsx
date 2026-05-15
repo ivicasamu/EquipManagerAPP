@@ -82,7 +82,7 @@ export default function KlijentPromjena(){
 
     return(
         <>
-            <h3>Unos novog klijenta:</h3>
+            <h3>Promjena klijenta:</h3>
             <Form onSubmit={odradiSubmit}>
                 <Row>
                     <Col md={6}>

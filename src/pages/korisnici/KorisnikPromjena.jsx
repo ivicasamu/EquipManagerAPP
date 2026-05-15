@@ -80,7 +80,7 @@ export default function KorisnikPromjena(){
 
     return(
         <>
-            <h3>Unos novog korisnika:</h3>
+            <h3>Promjena korisnika:</h3>
             <Form onSubmit={odradiSubmit}>
                 <Row>
                     <Col md={6}>
