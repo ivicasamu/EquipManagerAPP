@@ -23,16 +23,17 @@ export default function Home(){
 
     useEffect(() => {
         const fetchData = async () => {
+            console.log("POZIVA FETCH DATA")
             try {
                 const korisnici = await KorisnikService.get()
                 const uredjaj = await UredjajService.get()
                 const klijent = await KlijentService.get()
                 const event = await EventService.get()
                 
-                setBrojKorisnika(korisnici.data.length)
-                setBrojUredjaja(uredjaj.data.length)
-                setBrojKlijenata(klijent.data.length)
-                setBrojEvenata(event.data.length)
+                setBrojKorisnika(korisnici?.data?.length || 0)
+                setBrojUredjaja(uredjaj?.data?.length || 0)
+                setBrojKlijenata(klijent?.data?.length || 0)
+                setBrojEvenata(event?.data?.length || 0)
 
                 const admini = korisnici.data.filter(op => op.administrator === true).length;
                 const standarUser = korisnici.data.filter(op => op.administrator === false).length;

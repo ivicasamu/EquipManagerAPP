@@ -32,6 +32,14 @@ export default function NadzornaPloca() {
             
         }
 
+        if (noviIzvor === 'firebase') {
+            const servis = await KorisnikServiceLocalStorage.get();
+            if (servis.data.length > 0){
+                izvor = noviIzvor;
+            } 
+            
+        }
+
         localStorage.setItem('dataSource', izvor);
         logout()
         window.location.reload();
@@ -253,6 +261,12 @@ export default function NadzornaPloca() {
                                 className={`me-2 login btn ${DATA_SOURCE === 'localStorage' ? 'btn-success' : 'btn-danger'}`}
                             >
                                 Local Storage
+                            </button>
+                            <button
+                                onClick={() => promijeniIzvor('firebase')}
+                                className={`me-2 login btn ${DATA_SOURCE === 'firebase' ? 'btn-success' : 'btn-danger'}`}
+                            >
+                                Firebase
                             </button>
                         </div>
                     </Col>

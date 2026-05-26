@@ -15,7 +15,6 @@ export const ShemaEvent = z.object({
         .min(3, "Lokacija mora imati najmanje 3 znaka!")
         .max(50, "Lokacija može imati najviše 50 znakova!"),
     
-    klijent: z.coerce.number()
-        .positive('Obavezan odabir klijenta')
+    klijent: z.string()
         
 });

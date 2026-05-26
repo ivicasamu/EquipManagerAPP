@@ -1,16 +1,20 @@
-import EventiServiceLocalStorage from "./EventServiceLocalStorage";
-import EventiServiceMemorija from "./EventServiceMemorija";
+import EventServiceLocalStorage from "./EventServiceLocalStorage";
+import EventServiceMemorija from "./EventServiceMemorija";
 import { DATA_SOURCE } from "../../constants";
+import EventServiceFirebase from "./EventServiceFirebase";
 
 let Servis = null;
 
 // 1. Odabir servisa
 switch (DATA_SOURCE) {
     case 'memorija':
-        Servis = EventiServiceMemorija;
+        Servis = EventServiceMemorija;
         break;
     case 'localStorage':
-        Servis = EventiServiceLocalStorage;
+        Servis = EventServiceLocalStorage;
+        break;
+    case 'firebase':
+        Servis = EventServiceFirebase;
         break;
     default:
         Servis = null;

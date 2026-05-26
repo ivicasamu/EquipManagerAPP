@@ -7,10 +7,8 @@ export const ShemaUredjaj = z.object({
         .min(3, "Model mora imati najmanje 3 znaka!")
         .max(30, "Model može imati najviše 30 znakova!"),
     
-    kategorija: z.coerce.number()
-        .positive('Obavezno odabir kategorije'),
+    kategorija: z.string(),
     
-    status: z.coerce.number()
-        .positive('Obavezno odabir statusa')
+    status: z.string()
         
 });

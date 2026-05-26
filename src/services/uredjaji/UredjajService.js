@@ -1,16 +1,20 @@
-import UredjajiServiceLocalStorage from "./UredjajServiceLocalStorage";
-import UredjajiServiceMemorija from "./UredjajServiceMemorija";
+import UredjajServiceLocalStorage from "./UredjajServiceLocalStorage";
+import UredjajServiceMemorija from "./UredjajServiceMemorija";
 import { DATA_SOURCE } from "../../constants";
+import UredjajServiceFirebase from "./UredjajServiceFirebase";
 
 let Servis = null;
 
 // 1. Odabir servisa
 switch (DATA_SOURCE) {
     case 'memorija':
-        Servis = UredjajiServiceMemorija;
+        Servis = UredjajServiceMemorija;
         break;
     case 'localStorage':
-        Servis = UredjajiServiceLocalStorage;
+        Servis = UredjajServiceLocalStorage;
+        break;
+    case 'firebase':
+        Servis = UredjajServiceFirebase;
         break;
     default:
         Servis = null;

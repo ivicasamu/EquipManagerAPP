@@ -33,6 +33,7 @@ export default function UredjajNovi() {
                 return
             }
             setUredjaj(odgovor.data)
+            console.log(odgovor.data)
         })
     }
 
@@ -168,7 +169,7 @@ export default function UredjajNovi() {
                                             onChange={(e) => {
                                                 setUredjaj({
                                                     ...uredjaj, 
-                                                    kategorija: parseInt(e.target.value)
+                                                    kategorija: e.target.value
                                                 })
                                                 ocistiGresku('kategorija')
                                             }}
@@ -196,7 +197,7 @@ export default function UredjajNovi() {
                                             onChange={(e) => {
                                                 setUredjaj({
                                                     ...uredjaj, 
-                                                    status: parseInt(e.target.value)
+                                                    status: e.target.value
                                                 })
                                                 ocistiGresku('status')
                                             }}

@@ -20,6 +20,12 @@ import klijentiMemorija from '../services/klijenti/KlijentPodaci'
 import korisniciMemorija from '../services/korisnici/KorisnikPodaci'
 import statusiMemorija from '../services/statusi/StatusPodaci'
 import uredjajiMemorija from '../services/uredjaji/UredjajPodaci'
+import StatusServiceFirebase from "../services/statusi/StatusServiceFirebase"
+import KategorijaServiceFirebase from "../services/kategorije/KategorijaServiceFirebase"
+import KlijentServiceFirebase from "../services/klijenti/KlijentServiceFirebase"
+import KorisnikServiceFirebase from "../services/korisnici/KorisnikServiceFirebase"
+import UredjajServiceFirebase from "../services/uredjaji/UredjajServiceFirebase"
+import EventServiceFirebase from "../services/eventi/EventServiceFirebase"
 
 
 export default function GeneriranjePodataka() {
@@ -414,8 +420,94 @@ export default function GeneriranjePodataka() {
 
 
     const handleMemorijaUFirebase = async () => {
-        // kasnije
-    };
+        if(!window.confirm('Jeste li sigurni da želite pretočiti iz memorije u firebase?')) {
+            return
+        }
+
+        setLoading(true)
+        setPoruka(null)
+
+        try {
+            //1. Statusi
+            let mapiranjeSifriStatusa = [];
+            for (const e of statusiMemorija.statusi) {
+                const { sifra, ...ostatak } = e;
+                const fb = await StatusServiceFirebase.dodaj(ostatak);
+                const noviId = fb.data.sifra;
+                mapiranjeSifriStatusa.push({ sifram: sifra, sifraf: noviId });
+            }
+
+            //2. Kategorije
+            let mapiranjeSifriKategorija = [];
+            for (const e of kategorijeMemorija.kategorije) {
+                const { sifra, ...ostatak } = e;
+                const fb = await KategorijaServiceFirebase.dodaj(ostatak);
+                const noviId = fb.data.sifra; 
+                mapiranjeSifriKategorija.push({ sifram: sifra, sifraf: noviId });
+            }
+
+            //3. Klijenti
+            let mapiranjeSifriKlijenata = [];
+            for (const e of klijentiMemorija.klijenti) {
+                const { sifra, ...ostatak } = e;
+                const fb = await KlijentServiceFirebase.dodaj(ostatak);
+                const noviId = fb.data.sifra;
+                mapiranjeSifriKlijenata.push({ sifram: sifra, sifraf: noviId });
+            }
+
+            //4. Korisnici
+            const korisniciPromises = korisniciMemorija.korisnici.map(e => {
+                const {sifra, ...ostatak} = e
+                return KorisnikServiceFirebase.dodajBezHash(ostatak)
+            })
+            await Promise.all(korisniciPromises)
+
+            console.table(mapiranjeSifriStatusa)
+            console.table(mapiranjeSifriKategorija)
+            console.table(mapiranjeSifriKlijenata)
+
+            //5. Uređaji
+            for (const e of uredjajiMemorija.uredjaji) {
+                const { sifra, ...ostatak } = e;
+
+                // Pronađi novi ID status
+                const mStatus = mapiranjeSifriStatusa.find(m => m.sifram == ostatak.status);
+                ostatak.status = mStatus ? mStatus.sifraf : null;
+
+                // Pronađi novi ID kategorija
+                const mKategorija = mapiranjeSifriKategorija.find(m => m.sifram == ostatak.kategorija);
+                ostatak.kategorija = mKategorija ? mKategorija.sifraf : null;
+
+                console.log('Dodajem uredjaj:', ostatak);
+                await UredjajServiceFirebase.dodaj(ostatak);
+            }
+
+            //6. Eventi
+            for (const e of eventiMemorija.eventi) {
+                const { sifra, ...ostatak } = e;
+
+                // Pronađi novi ID klijenta
+                const mKlijent = mapiranjeSifriKlijenata.find(m => m.sifram == ostatak.klijent);
+                ostatak.klijent = mKlijent ? mKlijent.sifraf : null;
+
+                console.log('Dodajem event:', ostatak);
+                await EventServiceFirebase.dodaj(ostatak);
+            }
+
+            setPoruka({
+                tip: 'success',
+                tekst: 'Uspješno presipano u Firebase'
+            })
+        }catch (error) {
+            console.error("Greška pri presipanju:", error);
+            setPoruka({
+                tip: 'error',
+                tekst: 'Došlo je do greške prilikom sinkronizacije.'
+            });
+        } finally {
+            setLoading(false);
+        }
+    }
 
 
 
@@ -613,7 +705,7 @@ export default function GeneriranjePodataka() {
                                 {loading ? 'Pretakanje...' : 'Iz memorije u localStorage'}
                             </Button>
                         </Col>
-                        {/* <Col md={6}>
+                        <Col md={6}>
                             <Button
                                 variant="success"
                                 onClick={handleMemorijaUFirebase}
@@ -622,7 +714,7 @@ export default function GeneriranjePodataka() {
                             >
                                 {loading ? 'Pretakanje...' : 'Iz memorije u firebase'}
                             </Button>
-                        </Col> */}
+                        </Col>
 
                     </Row>
                 </>

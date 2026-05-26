@@ -1,8 +1,9 @@
-import KorisnikServiceLocalStorage from "./KorisnikServiceLocalStorage";
-import KorisnikServiceMemorija from "./KorisnikServiceMemorija";
-import { DATA_SOURCE } from "../../constants";
+import KorisnikServiceLocalStorage from "./KorisnikServiceLocalStorage"
+import KorisnikServiceMemorija from "./KorisnikServiceMemorija"
+import KorisnikServiceFirebase from "./KorisnikServiceFirebase"
+import { DATA_SOURCE } from "../../constants"
 
-let Servis = null;
+let Servis = null
 
 
 switch (DATA_SOURCE) {
@@ -11,6 +12,9 @@ switch (DATA_SOURCE) {
         break;
     case 'localStorage':
         Servis = KorisnikServiceLocalStorage;
+        break;
+    case 'firebase':
+        Servis = KorisnikServiceFirebase;
         break;
     default:
         Servis = null;
