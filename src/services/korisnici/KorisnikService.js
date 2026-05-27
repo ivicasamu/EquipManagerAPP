@@ -1,12 +1,12 @@
 import KorisnikServiceLocalStorage from "./KorisnikServiceLocalStorage"
 import KorisnikServiceMemorija from "./KorisnikServiceMemorija"
 import KorisnikServiceFirebase from "./KorisnikServiceFirebase"
-import { DATA_SOURCE } from "../../constants"
+import { getDataSource } from "../../constants"
 
 let Servis = null
 
 
-switch (DATA_SOURCE) {
+switch (getDataSource()) {
     case 'memorija':
         Servis = KorisnikServiceMemorija;
         break;

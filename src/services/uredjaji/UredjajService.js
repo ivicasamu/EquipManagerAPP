@@ -1,12 +1,12 @@
 import UredjajServiceLocalStorage from "./UredjajServiceLocalStorage";
 import UredjajServiceMemorija from "./UredjajServiceMemorija";
-import { DATA_SOURCE } from "../../constants";
+import { getDataSource } from "../../constants";
 import UredjajServiceFirebase from "./UredjajServiceFirebase";
 
 let Servis = null;
 
 // 1. Odabir servisa
-switch (DATA_SOURCE) {
+switch (getDataSource()) {
     case 'memorija':
         Servis = UredjajServiceMemorija;
         break;

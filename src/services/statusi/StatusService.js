@@ -1,4 +1,4 @@
-import { DATA_SOURCE } from "../../constants";
+import { getDataSource } from "../../constants";
 import StatusServiceMemorija from "./StatusServiceMemorija";
 import StatusServiceLocalStorage from "./StatusServiceLocalStorage";
 import StatusServiceFirebase from "./StatusServiceFirebase";
@@ -6,7 +6,7 @@ import StatusServiceFirebase from "./StatusServiceFirebase";
 let Servis = null;
 
 
-switch (DATA_SOURCE) {
+switch (getDataSource()) {
     case 'memorija':
         Servis = StatusServiceMemorija;
         break;

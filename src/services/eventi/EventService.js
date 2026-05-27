@@ -1,12 +1,12 @@
 import EventServiceLocalStorage from "./EventServiceLocalStorage";
 import EventServiceMemorija from "./EventServiceMemorija";
-import { DATA_SOURCE } from "../../constants";
+import { getDataSource } from "../../constants";
 import EventServiceFirebase from "./EventServiceFirebase";
 
 let Servis = null;
 
 // 1. Odabir servisa
-switch (DATA_SOURCE) {
+switch (getDataSource()) {
     case 'memorija':
         Servis = EventServiceMemorija;
         break;

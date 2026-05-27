@@ -9,6 +9,7 @@ import HighchartsReactOfficial from 'highcharts-react-official'
 import useAuth from "../hooks/useAuth"
 import KorisnikServiceLocalStorage from "../services/korisnici/KorisnikServiceLocalStorage"
 import { DATA_SOURCE } from "../constants"
+import KorisnikServiceFirebase from "../services/korisnici/KorisnikServiceFirebase"
 
 const HighchartsReact = HighchartsReactOfficial.default
 
@@ -22,27 +23,39 @@ export default function NadzornaPloca() {
     const isAdmin = authUser?.administrator
 
     const promijeniIzvor = async (noviIzvor) => {
-        let izvor = 'memorija';
-        
-        if (noviIzvor === 'localStorage') {
-            const servis = await KorisnikServiceLocalStorage.get();
-            if (servis.data.length > 0){
-                izvor = noviIzvor;
-            } 
-            
-        }
 
-        if (noviIzvor === 'firebase') {
-            const servis = await KorisnikServiceLocalStorage.get();
-            if (servis.data.length > 0){
-                izvor = noviIzvor;
-            } 
-            
-        }
+        try {
 
-        localStorage.setItem('dataSource', izvor);
-        logout()
-        window.location.reload();
+            if (noviIzvor === 'localStorage') {
+
+                const servis = await KorisnikServiceLocalStorage.get();
+
+                if (servis.data.length === 0) {
+                    alert('Nema korisnika u LocalStorage');
+                    return;
+                }
+            }
+
+            if (noviIzvor === 'firebase') {
+
+                const servis = await KorisnikServiceFirebase.get();
+
+                if (servis.data.length === 0) {
+                    alert('Nema korisnika u Firebase');
+                    return;
+                }
+            }
+
+            localStorage.setItem('dataSource', noviIzvor);
+
+            logout();
+
+            window.location.reload();
+
+        } catch (e) {
+
+            console.error(e);
+        }
     }
     
     async function ucitajPodatkeStatusi() {

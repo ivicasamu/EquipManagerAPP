@@ -37,7 +37,11 @@ export const RouteNames = {
 }
 
 // memorija, localStorage, firebase
-export const DATA_SOURCE = localStorage.getItem('dataSource') || 'memorija';
+export const getDataSource = () => {
+    return localStorage.getItem('dataSource') || 'firebase';
+}
+
+export const DATA_SOURCE = getDataSource();
 
 export const PrefixStorage = {
    KORISNICI: 'korisnici',
